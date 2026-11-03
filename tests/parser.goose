@@ -191,6 +191,19 @@ fn ownership_and_index_tests() {
     assert(toml::find(doc, 0, "own.key") == -1 && doc.nodes[toml::find(doc, 0, "replacement")].integer == 2);
     assert(toml::parse_into("broken=", doc).len > 0);
     assert(toml::parse_into("", doc).len == 0 && doc.nodes.len == 1 && doc.nodes[0].count == 0);
+    // Arrays have no named entries: they must not inflate the key index.
+    var mixed = str("dense=[");
+    for i in 20000 { mixed.append("1,"); }
+    mixed.append("]\ntail=2\n");
+    assert(toml::parse_into(mixed, doc).len == 0);
+    assert(doc.nodes[toml::find(doc, 0, "dense")].count == 20000);
+    assert(doc.nodes[toml::find(doc, 0, "tail")].integer == 2);
+    assert(doc.index.len <= 32);
+    // Trigger several named-entry rehashes after the large unindexed subtree.
+    for i in 100 { format(mixed, "key", i, "=", i, "\n"); }
+    assert(toml::parse_into(mixed, doc).len == 0);
+    assert(doc.nodes[toml::find(doc, 0, "dense")].count == 20000);
+    for i in 100 { assert(doc.nodes[toml::find(doc, 0, str("key", i))].integer == i); }
     var wide: u8[>..] = [];
     for i in 3000 { wide.append(str("key", i, "=", i, "\n")); }
     assert(toml::parse_into(wide, doc).len == 0 && doc.nodes[0].count == 3000);

@@ -41,3 +41,12 @@ sanitize:
 	$(GOOSE) tests/parser.goose --standalone --debug --no-bce -o .build/parser-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/parser-sanitized .build/parser-sanitized.c -lm -ldl -lpthread
 	./.build/parser-sanitized
+	$(GOOSE) tests/decoder.goose --standalone --debug --no-bce -o .build/decoder-sanitized.c
+	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/decoder-sanitized .build/decoder-sanitized.c -lm -ldl -lpthread
+	python3 scripts/security-test.py --decoder .build/decoder-sanitized
+
+.PHONY: security
+security:
+	mkdir -p .build
+	$(GOOSE) build tests/decoder.goose -o .build/decoder
+	python3 scripts/security-test.py --decoder .build/decoder

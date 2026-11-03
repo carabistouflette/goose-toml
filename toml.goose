@@ -13,7 +13,7 @@ struct Node {
     key:     Span, text: Span, key_hash: u64 = 0,
     integer: i64                             = 0, number: f64 = 0.0, boolean: bool = false,
 }
-root struct Document { nodes: Node[>..], bytes: u8[>..], index: i64[>..] }
+root struct Document { indexed: i64 = 0, nodes: Node[>..], bytes: u8[>..], index: i64[>..] }
 struct Reader { source: const u8[:], pos: i64 = 0, work: i64 = 0, error: u8[>..] }
 let MAX_INPUT_BYTES = 1048576;
 let MAX_NODES = 65536;
@@ -23,7 +23,7 @@ let MAX_KEY_WORK = 16777216;
 
 // Replaces the destination. A failure leaves a partial document: discard it.
 fn parse_into(source: u8[:], doc: Document&) -> u8[>..] {
-    doc.nodes.clear(); doc.bytes.clear(); doc.index.clear();
+    doc.indexed = 0; doc.nodes.clear(); doc.bytes.clear(); doc.index.clear();
     if source.len > MAX_INPUT_BYTES { return str("toml: input exceeds 1 MiB at byte 0"); }
     if !valid_utf8(source) { return str("toml: invalid UTF-8 at byte 0"); }
     var r = Reader { source: source, error: [] };
@@ -121,20 +121,24 @@ fn lookup(r: Reader&, doc: Document&, parent: i64, s: Span) -> i64 {
     }
 }
 fn index_node(r: Reader&, doc: Document&, id: i64) {
-    // A power-of-two table below 50% load. Rehashing also consumes the work budget.
-    if doc.index.len < doc.nodes.len * 2 {
-        var size = max(16, doc.index.len * 2);
-        while size < doc.nodes.len * 2 { size *= 2; }
+    // Size by named entries, not array elements. Rehash only existing index
+    // entries so a large preceding array does not amplify table growth work.
+    doc.indexed++;
+    if doc.index.len < doc.indexed * 2 {
+        let previous = copy(doc.index);
+        let size = max(16, doc.index.len * 2);
         doc.index.clear();
         for i in size { doc.index.push(-1); }
-        for n, i in doc.nodes {
-            if n.parent >= 0 && doc.nodes[n.parent].kind == Kind.Table {
-                place(r, doc, i);
+        for old in previous {
+            if old >= 0 {
+                place(r, doc, old);
                 if r.error.len > 0 { return; }
             }
         }
-    } else { place(r, doc, id); }
+    }
+    place(r, doc, id);
 }
+
 fn place(r: Reader&, doc: Document&, id: i64) {
     var slot = (doc.nodes[id].key_hash & ((doc.index.len - 1) as u64)) as i64;
     while doc.index[slot] >= 0 {
@@ -244,6 +248,9 @@ recursive fn assignment(r: Reader&, doc: Document&, table: i64) {
     if id >= 0 { value(r, doc, id); }
 }
 recursive fn seal(doc: Document&, id: i64) {
+    // A closed inline subtree cannot be extended. Avoid walking it again
+    // when enclosing inline tables close: every edge is visited at most once.
+    if doc.nodes[id].state == State.Sealed { return; }
     doc.nodes[id].state = State.Sealed;
     var child = doc.nodes[id].first;
     while child >= 0 { seal(doc, child); child = doc.nodes[child].next; }
@@ -281,7 +288,7 @@ recursive fn value(r: Reader&, doc: Document&, id: i64) {
                 r.pos++;
             }
         }
-        expect(r, '}');
+        if !expect(r, '}') { return; }
         seal(doc, id);
     } else { scalar(r, doc, id); }
 }

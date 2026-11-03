@@ -37,7 +37,7 @@ The fields supporting declaration state, hashing, arenas and index are implement
 
 ## Cost and resource limits
 
-Parsing is linear in input size plus key-index probe/comparison work and bounded scalar conversion. Sealing nested inline tables may revisit descendants up to the fixed depth limit of 64. The index uses open addressing below 50% load with full decoded-key equality checks. Deterministic hashes are **not** assumed collision-resistant: a cumulative work budget counts probes, rehash collisions, and compared key bytes, rejecting hostile workloads rather than permitting unbounded quadratic parsing.
+Parsing is linear in input size plus key-index probe/comparison work and bounded scalar conversion. Sealing skips already closed inline subtrees, so total sealing work is linear in nodes. The index uses open addressing at most 50% load with full decoded-key equality checks. It sizes storage by named entries, excluding array elements, and rehashes only indexed entries. Deterministic hashes are **not** assumed collision-resistant: a cumulative work budget counts probes, rehash collisions, and compared key bytes, rejecting hostile workloads rather than permitting unbounded quadratic parsing.
 
 - Input: **1 MiB**, checked before UTF-8 validation.
 - Nodes: **65,536**, including the root and implicit tables.
@@ -45,14 +45,14 @@ Parsing is linear in input size plus key-index probe/comparison work and bounded
 - Bare scalar tokens: **128 bytes**, including numeric and date/time tokens, checked before conversion or a token copy. Strings and keys are bounded by the input cap.
 - Key-index work: **16,777,216 units** per parse. Pathological inputs can exhaust this budget below the other limits.
 
-These limits deliberately reject some otherwise valid TOML. They are fixed constants in this version. Recursion follows the checked logical depth. Arena storage is O(input bytes + nodes + index slots); it can substantially exceed input size, and the input limit is not an exact allocator budget. Reusing a document may retain previously allocated arena capacity. Out-of-memory is governed by Goose's runtime; this API does not promise recovery from allocator failure.
+These limits deliberately reject some otherwise valid TOML. They are fixed constants in this version. Recursion follows the checked logical depth. Arena storage is O(input bytes + nodes + index slots); rehashing temporarily copies the old index, and total storage can substantially exceed input size, and the input limit is not an exact allocator budget. Reusing a document may retain previously allocated arena capacity. Out-of-memory is governed by Goose's runtime; this API does not promise recovery from allocator failure.
 
 ## Development and validation
 
 ```sh
 make setup
 make format check test
-make conformance property sanitize
+make conformance property security sanitize
 make bench BENCH_ITERATIONS=10000
 ```
 
@@ -64,9 +64,11 @@ Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development h
 
 `make property` requires Python 3.11+ and compares 2,000 deterministically generated/mutated documents against `tomllib` on their shared subset, checking decoded types, values, signed zero, rejection, crashes and a per-input timeout. Python's arbitrary-precision integers and overflowing decimal floats are restricted to this library's numeric contract. It supplements the official suite; date/time behavior and explicit nonfinite tokens are outside this harness.
 
-`make sanitize` runs the unit suite with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, and sanitizers in addition to the normal tests.
+`make security` checks 272 hostile/resource documents, including an actual constructed hash-collision attack that must fail specifically through the work budget, deep/broad inline tables, dense node limits, late errors, invalid UTF-8 and arbitrary bytes. The deterministic collision generator is tied explicitly to `GOOSE_REVISION`; changing the compiler requires revalidating this test.
 
-`make bench` uses GCC `-O2` to measure small configs, wide tables, float arrays, and escaped strings. Input construction is outside the timed loop; destination reuse is inside it, and a checksum prevents dead results. These are reproducible workloads, not a throughput or allocation claim.
+`make sanitize` runs the unit suite and hostile-input decoder checks with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, security probes, and sanitizers in addition to the normal tests.
+
+`make bench` uses GCC `-O2` to measure small configs, wide tables, numeric arrays, escaped/long strings, a large array followed by a named key, and deeply nested inline tables around a broad array. Input construction is outside the timed loop; destination reuse is inside it, and a checksum prevents dead results. These are reproducible workloads, not a throughput or allocation claim.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Changes require focused commits, full checks and independent review.
 

@@ -32,4 +32,23 @@ fn main() {
     var strings: u8[>..] = [];
     for i in 100 { format(strings, "key", i, " = \"Goose\\n\\u00e9\\U0001f600\"\n"); }
     measure("escaped strings", strings, max(1, iterations / 100));
+    var integers = str("values = [");
+    for i in 1000 { integers.append("123456,"); }
+    integers.append("]\n");
+    measure("integer array", integers, max(1, iterations / 100));
+    var large = str("value = '");
+    for i in 262144 { large.push('x'); }
+    large.append("'\n");
+    measure("long literal", large, max(1, iterations / 1000));
+    var dense = str("values = [");
+    for i in 60000 { dense.append("1,"); }
+    dense.append("]\ntrailing=1\n");
+    measure("array then key", dense, max(1, iterations / 10000));
+    var nested = str("value=");
+    for i in 60 { nested.append("{x="); }
+    nested.push('[');
+    for i in 60000 { nested.append("1,"); }
+    nested.push(']');
+    for i in 60 { nested.push('}'); }
+    measure("nested inline array", nested, max(1, iterations / 10000));
 }
