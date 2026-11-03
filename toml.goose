@@ -309,6 +309,15 @@ fn string(r: Reader&, out: u8[>..]&, multiline_allowed: bool) {
     let quote = peek(r); r.pos++;
     var multi = false;
     if multiline_allowed && r.pos + 1 < r.source.len && r.source[r.pos] == quote && r.source[r.pos + 1] == quote { multi = true; r.pos += 2; newline(r); }
+    // Copy the ordinary prefix in one span. After its first escape/newline,
+    // use the scalar decoder, avoiding repeated scans in escape-heavy text.
+    let start = r.pos;
+    while r.pos < r.source.len {
+        let c = peek(r);
+        if c == quote || (c == '\\' && quote == '\"') || (c < 32 && c != '\t') || c == 127 { break; }
+        r.pos++;
+    }
+    if r.pos > start { out.append(r.source[start..r.pos]); }
     while r.pos < r.source.len && r.error.len == 0 {
         let c = peek(r);
         if c == quote {

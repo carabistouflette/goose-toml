@@ -68,7 +68,15 @@ Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development h
 
 `make sanitize` runs the unit suite and hostile-input decoder checks with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, security probes, and sanitizers in addition to the normal tests.
 
-`make bench` uses GCC `-O2` to measure small configs, wide tables, numeric arrays, escaped/long strings, a large array followed by a named key, and deeply nested inline tables around a broad array. Input construction is outside the timed loop; destination reuse is inside it, and a checksum prevents dead results. These are reproducible workloads, not a throughput or allocation claim.
+`make bench` uses GCC `-O2` to measure small configs, wide tables, numeric arrays, escaped/long strings, a large array followed by a named key, and deeply nested inline tables around a broad array. String decoding copies an ordinary prefix in one span and falls back to the scalar decoder after the first escape or newline. Input construction is outside the timed loop; destination reuse is inside it, and a checksum prevents dead results. These are reproducible workloads, not a machine-independent throughput or allocation claim.
+
+For a local before/after comparison, build both parser revisions with the **same current benchmark source, pinned compiler, and GCC flags**, then run:
+
+```sh
+python3 scripts/benchmark.py --baseline /path/to/baseline-bench --candidate .build/bench
+```
+
+The harness warms both binaries, pins them to one allowed CPU on Linux, randomizes paired run order, checks workload sizes/iterations/checksums, and records nine raw samples per binary plus medians in `.build/benchmark.json`. These warm destination-reuse measurements do not establish cold latency or allocation counts. Shared-machine scheduling, CPU frequency and other load can still affect results.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Changes require focused commits, full checks and independent review.
 
