@@ -3,7 +3,7 @@
 """Deterministic generated-value and mutation checks, independent of toml-test.
 
 Python 3.11+ tomllib is a secondary oracle for this deliberately shared subset;
-this does not test TOML datetime/leap-second or overflow policy differences.
+this does not test TOML datetimes/leap seconds or explicit nonfinite tokens.
 """
 import argparse
 import json
@@ -91,18 +91,30 @@ def main():
         checked += 1
 
     def value(depth=0):
-        kind = rng.randrange(5 if depth < 3 else 4)
+        kind = rng.randrange(6 if depth < 3 else 4)
         if kind == 0:
             n = rng.randint(-(2**63), 2**63 - 1)
-            return rng.choice([str(n), f"{n:_}"])
+            spellings = [str(n), f"{n:_}"]
+            if n >= 0:
+                spellings.extend([f"+{n}", hex(n), oct(n), bin(n)])
+            return rng.choice(spellings)
         if kind == 1:
             return rng.choice(["true", "false"])
         if kind == 2:
-            return repr(rng.uniform(-1e20, 1e20))
+            return rng.choice([
+                repr(rng.uniform(-1e20, 1e20)),
+                repr(math.ldexp(rng.uniform(-1, 1), rng.randrange(-1074, 1025))),
+                rng.choice(["1.0e-2", "123e-2", "+12e-2", "-12e-2", "5e-324", "-0.0"]),
+            ])
         if kind == 3:
             s = "".join(rng.choices('abc .\t\n\r"\\é😀', k=rng.randrange(30)))
             return json.dumps(s, ensure_ascii=False)
-        return "[" + ", ".join(value(depth + 1) for _ in range(rng.randrange(5))) + "]"
+        if kind == 4:
+            return "[" + ", ".join(value(depth + 1) for _ in range(rng.randrange(5))) + "]"
+        return "{" + ", ".join(
+            json.dumps("field." + str(i)) + " = " + value(depth + 1)
+            for i in range(rng.randrange(5))
+        ) + "}"
 
     alphabet = b"abc0129_+-=.,[]{}# '\"\\\n\r\t\x00\x7f\xff"
     for _ in range(args.cases):
