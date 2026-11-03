@@ -5,14 +5,18 @@ setup:
 check:
 	$(GOOSE) format --check toml.goose examples tests bench
 	$(GOOSE) check tests/parser.goose
+	$(GOOSE) check tests/lifecycle.goose
 	$(GOOSE) check examples/config.goose
 	$(GOOSE) check tests/decoder.goose
 	$(GOOSE) check bench/parse.goose
 test:
 	$(GOOSE) run tests/parser.goose
+	$(GOOSE) run tests/lifecycle.goose
 	mkdir -p .build
 	$(GOOSE) build tests/parser.goose -o .build/parser
 	./.build/parser
+	$(GOOSE) build tests/lifecycle.goose -o .build/lifecycle
+	./.build/lifecycle
 	$(GOOSE) run examples/config.goose
 format:
 	$(GOOSE) format toml.goose examples tests bench
@@ -41,6 +45,9 @@ sanitize:
 	$(GOOSE) tests/parser.goose --standalone --debug --no-bce -o .build/parser-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/parser-sanitized .build/parser-sanitized.c -lm -ldl -lpthread
 	./.build/parser-sanitized
+	$(GOOSE) tests/lifecycle.goose --standalone --debug --no-bce -o .build/lifecycle-sanitized.c
+	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/lifecycle-sanitized .build/lifecycle-sanitized.c -lm -ldl -lpthread
+	./.build/lifecycle-sanitized
 	$(GOOSE) tests/decoder.goose --standalone --debug --no-bce -o .build/decoder-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/decoder-sanitized .build/decoder-sanitized.c -lm -ldl -lpthread
 	python3 scripts/security-test.py --decoder .build/decoder-sanitized
