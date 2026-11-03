@@ -1,11 +1,71 @@
 # goose-toml
 
-A pure Goose TOML 1.0 document parser. Apache-2.0. Experimental API; no release yet.
+A pure [Goose](https://github.com/aardappel/goose) TOML 1.0 document parser. Apache-2.0. Experimental API; no release yet. No runtime dependencies beyond the Goose standard library.
 
-The library owns decoded keys, strings, and validated date/time text. Applications own file and process I/O. The initial API is a document parser; struct mapping and serialization are outside its scope.
+Supports bare, quoted and dotted keys; all four string forms; signed 64-bit integers in decimal/hex/octal/binary; binary64 floats including explicit `inf`/`nan`; booleans; date/time values; mixed and nested arrays; tables; inline tables; and arrays of tables. Targets [TOML 1.0](https://toml.io/en/v1.0.0), with the resource limits below. TOML 1.1 extensions are rejected.
 
-## Development
+```goose
+import toml from "..";  // from an example in this checkout
+import std;
 
-`make setup` builds the exact compiler in `GOOSE_REVISION`. Requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development headers on Linux. Tests additionally use Python 3.11+. Use `make GOOSE=/path/to/goose check test` with an existing compiler.
+fn main() {
+    var doc = toml::Document { .. };
+    let error = toml::parse_into("[server]\nport = 8080\n", doc);
+    if error.len > 0 { print(error); return; }
+    let server = toml::find(doc, 0, "server");
+    let port = toml::find(doc, server, "port");
+    if port >= 0 && doc.nodes[port].kind == toml::Kind.Integer {
+        print(doc.nodes[port].integer);
+    }
+}
+```
 
-Run formatting, checks, in-process and native tests before committing. Changes receive independent correctness and resource-safety review. No benchmark claims without reproducible measurements.
+From another project use `import toml from "../goose-toml";`, adjusting the local path. A published Git repository can be imported at its full commit hash. Applications own file/process I/O. This first API parses a document; struct mapping and serialization are outside its scope.
+
+## API and ownership
+
+- `parse_into(text, doc)` returns an owned error string, empty on success. It replaces the destination, including on failure. On error the document may be partial: discard it. Messages identify a zero-based byte offset and one-based line/byte column, except input-size and UTF-8 preflight failures, which report byte 0.
+- Create the destination as `var doc = toml::Document { .. };`. It is a `root struct` because it owns several independently growable arenas; Goose root structs cannot be returned by value.
+- Root is node `0` on success. Nodes use integer indices, which remain valid during arena growth. `first`, `last`, and `next` use `-1` for no link. `count` is the immediate child count; children retain insertion order. Arrays of tables have ordinary array kind and table children.
+- `find(doc, parent, key)` looks up **one decoded key**, returning `-1` for a missing key or invalid/non-table parent. Dots in `key` are literal; resolve a dotted path one component at a time. Empty quoted keys are supported. Compare `kind` before reading the corresponding scalar field.
+- Kinds: `Table`, `Array`, `String`, `Integer`, `Float`, `Boolean`, `OffsetDateTime`, `LocalDateTime`, `LocalDate`, `LocalTime`. Scalars use `integer`, `number`, `boolean`, or `text(doc, id)` respectively. `key(doc, id)` returns the decoded key of a table child. Array children have no meaningful key.
+- Documents own every key and string/date value; the source may be modified or destroyed after parsing. `key` and `text` return borrowed views into the document, so keep it alive and do not reparse it while retaining those views. They assert that the supplied node index is in range. Reparse invalidates all previous indices and views.
+- All integer forms must fit `i64`. No numeric coercion occurs. Decimal floats use Goose's correctly rounded converter; finite overflow is an error, underflow is allowed (including signed zero). Explicit signed `inf` and `nan` are supported.
+- Date/time text is calendar-validated and retained as written, including arbitrary fractional precision within the scalar limit. No truncation, timezone conversion, or epoch arithmetic occurs. RFC 3339's lexical second `60` is accepted; leap-second occurrence is not checked against a historical calendar. Literal CRLF inside multiline strings is normalized to LF.
+
+The fields supporting declaration state, hashing, arenas and index are implementation details; do not mutate the document. There is no separate immutable wrapper in this experimental API. Helper functions in the source are not stable API.
+
+## Cost and resource limits
+
+Parsing is linear in input size plus key-index probe/comparison work and bounded scalar conversion. The index uses open addressing below 50% load with full decoded-key equality checks. Deterministic hashes are **not** assumed collision-resistant: a cumulative work budget counts probes, rehash collisions, and compared key bytes, rejecting hostile workloads rather than permitting unbounded quadratic parsing.
+
+- Input: **1 MiB**, checked before UTF-8 validation.
+- Nodes: **65,536**, including the root and implicit tables.
+- Logical tree depth: **64**, counting every array/table/value edge; dotted paths also have at most 64 components. Arrays of tables consume an extra edge for their element table.
+- Bare scalar tokens: **128 bytes**, including numeric and date/time tokens, checked before conversion or a token copy. Strings and keys are bounded by the input cap.
+- Key-index work: **16,777,216 units** per parse. Pathological inputs can exhaust this budget below the other limits.
+
+These limits deliberately reject some otherwise valid TOML. They are fixed constants in this version. Recursion follows the checked logical depth. Arena storage is O(input bytes + nodes + index slots); it can substantially exceed input size, and the input limit is not an exact allocator budget. Reusing a document may retain previously allocated arena capacity. Out-of-memory is governed by Goose's runtime; this API does not promise recovery from allocator failure.
+
+## Development and validation
+
+```sh
+make setup
+make format check test
+make conformance
+make bench BENCH_ITERATIONS=10000
+```
+
+Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development headers on Linux. `GOOSE_REVISION` pins the same compiler as `goose-json`; use `make GOOSE=/path/to/goose check test` with an existing compiler. Compatibility with other revisions is not guaranteed.
+
+`make test` exercises public behavior through both Goose's in-process and native execution paths, including malformed input, source ownership, document reuse, table declaration conflicts, Unicode, numeric boundaries, index growth, and exact resource boundaries.
+
+`make conformance` builds the official [toml-test](https://github.com/toml-lang/toml-test) runner at `TOML_TEST_REVISION` (requires Go 1.27+, or Go's toolchain auto-download support). It runs all **208 valid and 509 invalid TOML 1.0 tests** with no skipped cases. The test-only adapter compares decoded values, not just acceptance. The suite does not prove exhaustive compliance; separate regressions cover limits and lexical leap seconds.
+
+`make bench` uses GCC `-O2` to measure small configs, wide tables, float arrays, and escaped strings. Input construction is outside the timed loop; destination reuse is inside it, and a checksum prevents dead results. These are reproducible workloads, not a throughput or allocation claim.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Changes require focused commits, full checks and independent review.
+
+## License
+
+[Apache-2.0](LICENSE). Copyright 2026 goose-toml contributors.

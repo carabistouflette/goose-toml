@@ -287,7 +287,7 @@ recursive fn value(r: Reader&, doc: Document&, id: i64) {
 }
 
 fn hex(c: u8) -> i64 {
-    if c >= '0' && c <= '9' { return (c - '0') as i64; }
+    if c >= '0' && c <= '9' { return c - '0'; }
     if c >= 'a' && c <= 'f' { return (c - 'a') as i64 + 10; }
     if c >= 'A' && c <= 'F' { return (c - 'A') as i64 + 10; }
     return -1;
@@ -407,6 +407,10 @@ fn number(r: Reader&, doc: Document&, id: i64, token: u8[:]) {
         if a < 0 || a >= base || b < 0 || b >= base { fail(r, "misplaced underscore"); return; }
     }
     if base != 10 {
+        for c in clean[2..] {
+            let d = hex(c);
+            if d < 0 || d >= base { fail(r, "invalid radix digit"); return; }
+        }
         let n, ok = parse_int(clean[2..], base);
         if !ok { fail(r, "invalid or overflowing integer"); return; }
         doc.nodes[id].kind = Kind.Integer; doc.nodes[id].integer = n; return;
@@ -442,7 +446,7 @@ fn number(r: Reader&, doc: Document&, id: i64, token: u8[:]) {
 }
 fn decimal(s: u8[:]) -> i64 {
     var n = 0;
-    for c in s { if !digit(c) { return -1; } n = n * 10 + (c - '0') as i64; }
+    for c in s { if !digit(c) { return -1; } n = n * 10 + (c - '0'); }
     return n;
 }
 // Retain arbitrary fractional precision lexically; do not round or apply timezones.
@@ -461,7 +465,7 @@ fn datetime(s: u8[:]) -> Kind, bool {
     }
     if s.len - i < 8 || s[i + 2] != ':' || s[i + 5] != ':' { return Kind.LocalTime, false; }
     let hour = decimal(s[i..i + 2]); let minute = decimal(s[i + 3..i + 5]); let second = decimal(s[i + 6..i + 8]);
-    if hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59 { return Kind.LocalTime, false; }
+    if hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 60 { return Kind.LocalTime, false; }
     i += 8;
     if i < s.len && s[i] == '.' {
         i++;
