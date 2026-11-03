@@ -45,6 +45,8 @@ def collision_keys(count):
 
 
 def main():
+    if not __debug__:
+        raise SystemExit("test assertions require Python without -O/PYTHONOPTIMIZE")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--decoder", type=Path, default=ROOT / ".build/decoder")
     args = parser.parse_args()

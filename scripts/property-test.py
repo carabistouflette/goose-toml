@@ -62,6 +62,8 @@ def supported(value):
 
 
 def main():
+    if not __debug__:
+        raise SystemExit("test assertions require Python without -O/PYTHONOPTIMIZE")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--decoder", type=Path, default=Path(".build/decoder"))
     parser.add_argument("--cases", type=int, default=1000)
