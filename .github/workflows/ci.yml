@@ -16,3 +16,4 @@ jobs:
       - run: make setup
       - run: make check test
       - run: make conformance
+      - run: make property sanitize

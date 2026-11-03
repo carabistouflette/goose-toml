@@ -37,7 +37,7 @@ The fields supporting declaration state, hashing, arenas and index are implement
 
 ## Cost and resource limits
 
-Parsing is linear in input size plus key-index probe/comparison work and bounded scalar conversion. The index uses open addressing below 50% load with full decoded-key equality checks. Deterministic hashes are **not** assumed collision-resistant: a cumulative work budget counts probes, rehash collisions, and compared key bytes, rejecting hostile workloads rather than permitting unbounded quadratic parsing.
+Parsing is linear in input size plus key-index probe/comparison work and bounded scalar conversion. Sealing nested inline tables may revisit descendants up to the fixed depth limit of 64. The index uses open addressing below 50% load with full decoded-key equality checks. Deterministic hashes are **not** assumed collision-resistant: a cumulative work budget counts probes, rehash collisions, and compared key bytes, rejecting hostile workloads rather than permitting unbounded quadratic parsing.
 
 - Input: **1 MiB**, checked before UTF-8 validation.
 - Nodes: **65,536**, including the root and implicit tables.
@@ -52,7 +52,7 @@ These limits deliberately reject some otherwise valid TOML. They are fixed const
 ```sh
 make setup
 make format check test
-make conformance
+make conformance property sanitize
 make bench BENCH_ITERATIONS=10000
 ```
 
@@ -61,6 +61,10 @@ Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development h
 `make test` exercises public behavior through both Goose's in-process and native execution paths, including malformed input, source ownership, document reuse, table declaration conflicts, Unicode, numeric boundaries, index growth, and exact resource boundaries.
 
 `make conformance` builds the official [toml-test](https://github.com/toml-lang/toml-test) runner at `TOML_TEST_REVISION` (requires Go 1.27+, or Go's toolchain auto-download support). It runs all **208 valid and 509 invalid TOML 1.0 tests** with no skipped cases. The test-only adapter compares decoded values, not just acceptance. The suite does not prove exhaustive compliance; separate regressions cover limits and lexical leap seconds.
+
+`make property` requires Python 3.11+ and compares 2,000 deterministically generated/mutated documents against `tomllib` on their shared subset, checking decoded types, values, signed zero, rejection, crashes and a per-input timeout. Python's arbitrary-precision integers are restricted to this library's i64 contract. It supplements the official suite; date/time and overflow-policy differences are outside this harness.
+
+`make sanitize` runs the unit suite with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, and sanitizers in addition to the normal tests.
 
 `make bench` uses GCC `-O2` to measure small configs, wide tables, float arrays, and escaped strings. Input construction is outside the timed loop; destination reuse is inside it, and a checksum prevents dead results. These are reproducible workloads, not a throughput or allocation claim.
 

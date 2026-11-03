@@ -30,3 +30,14 @@ bench:
 	mkdir -p .build
 	$(GOOSE) build bench/parse.goose --cc gcc -O2 -o .build/bench
 	./.build/bench $(BENCH_ITERATIONS)
+
+.PHONY: property sanitize
+property:
+	mkdir -p .build
+	$(GOOSE) build tests/decoder.goose -o .build/decoder
+	python3 scripts/property-test.py --decoder .build/decoder
+sanitize:
+	mkdir -p .build
+	$(GOOSE) tests/parser.goose --standalone --debug --no-bce -o .build/parser-sanitized.c
+	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/parser-sanitized .build/parser-sanitized.c -lm -ldl -lpthread
+	./.build/parser-sanitized
