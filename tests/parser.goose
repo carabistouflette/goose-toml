@@ -61,6 +61,10 @@ fn syntax_tests() {
     integer("v=0xDEAD_beef", 3735928559); integer("v=0o0755", 493); integer("v=0b1101_0010", 210);
     integer("v=1_2_345", 12345);
     floating("v=+1.25", 1.25); floating("v=1_2.3_4e+0_2", 1234.0); floating("v=-2E-2", -0.02);
+    // A negative exponent sign at byte four is not a date separator.
+    floating("v=1.0e-2", 0.01); floating("v=123e-2", 1.23);
+    floating("v=+12e-2", 0.12); floating("v=-12e-2", -0.12);
+    floating("v=1.0E-2", 0.01);
     floating("v=1e-9999", 0.0); floating("v=1.7976931348623157e308", 1.7976931348623157e308);
     floating("v=5e-324", 5e-324);
     floating("v=inf", 1.0 / 0.0); floating("v=+inf", 1.0 / 0.0); floating("v=-inf", -1.0 / 0.0);

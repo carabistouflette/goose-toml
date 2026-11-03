@@ -374,7 +374,7 @@ fn scalar(r: Reader&, doc: Document&, id: i64) {
     }
     let token = r.source[start..r.pos];
     if token == "true" || token == "false" { doc.nodes[id].kind = Kind.Boolean; doc.nodes[id].boolean = token == "true"; return; }
-    if token.len >= 5 && (token[4] == '-' || token[2] == ':') {
+    if (token.len >= 10 && token[4] == '-' && token[7] == '-') || (token.len >= 8 && token[2] == ':' && token[5] == ':') {
         let kind, ok = datetime(token);
         if !ok { fail(r, "invalid date/time"); return; }
         let offset = doc.bytes.len;
