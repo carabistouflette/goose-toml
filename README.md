@@ -62,7 +62,7 @@ Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development h
 
 `make conformance` builds the official [toml-test](https://github.com/toml-lang/toml-test) runner at `TOML_TEST_REVISION` (requires Go 1.27+, or Go's toolchain auto-download support). It runs all **208 valid and 509 invalid TOML 1.0 tests** with no skipped cases. The test-only adapter compares decoded values, not just acceptance. The suite does not prove exhaustive compliance; separate regressions cover limits and lexical leap seconds.
 
-`make property` requires Python 3.11+ and compares 2,000 deterministically generated/mutated documents against `tomllib` on their shared subset, checking decoded types, values, signed zero, rejection, crashes and a per-input timeout. Python's arbitrary-precision integers are restricted to this library's i64 contract. It supplements the official suite; date/time and overflow-policy differences are outside this harness.
+`make property` requires Python 3.11+ and compares 2,000 deterministically generated/mutated documents against `tomllib` on their shared subset, checking decoded types, values, signed zero, rejection, crashes and a per-input timeout. Python's arbitrary-precision integers and overflowing decimal floats are restricted to this library's numeric contract. It supplements the official suite; date/time behavior and explicit nonfinite tokens are outside this harness.
 
 `make sanitize` runs the unit suite with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, and sanitizers in addition to the normal tests.
 

@@ -49,6 +49,11 @@ def supported(value):
     # Python accepts arbitrary-precision integers; goose-toml deliberately uses i64.
     if type(value) is int:
         return -(2**63) <= value <= 2**63 - 1
+    if type(value) is float:
+        # This generator/alphabet cannot produce explicit inf/nan tokens.
+        # Nonfinite Python results therefore represent decimal overflow,
+        # which goose-toml deliberately rejects.
+        return math.isfinite(value)
     if isinstance(value, dict):
         return all(supported(v) for v in value.values())
     if isinstance(value, list):
