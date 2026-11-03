@@ -6,6 +6,7 @@ check:
 	$(GOOSE) format --check toml.goose examples tests bench
 	$(GOOSE) check tests/parser.goose
 	$(GOOSE) check tests/lifecycle.goose
+	$(GOOSE) check tests/fuzz.goose
 	$(GOOSE) check examples/config.goose
 	$(GOOSE) check tests/decoder.goose
 	$(GOOSE) check bench/parse.goose
@@ -57,3 +58,11 @@ security:
 	mkdir -p .build
 	$(GOOSE) build tests/decoder.goose -o .build/decoder
 	python3 scripts/security-test.py --decoder .build/decoder
+
+FUZZ_SECONDS ?= 30
+FUZZ_RUNS ?= 100000
+FUZZ_SEED ?= 20261104
+FUZZ_CC ?= clang
+.PHONY: fuzz
+fuzz:
+	python3 scripts/fuzz.py --goose "$(GOOSE)" --cc "$(FUZZ_CC)" --seconds "$(FUZZ_SECONDS)" --runs "$(FUZZ_RUNS)" --seed "$(FUZZ_SEED)"

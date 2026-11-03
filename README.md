@@ -37,7 +37,7 @@ The fields supporting declaration state, hashing, arenas and index are implement
 
 ## Cost and resource limits
 
-Parsing is linear in input size plus key-index probe/comparison work and bounded scalar conversion. Sealing skips already closed inline subtrees, so total sealing work is linear in nodes. The index uses open addressing at most 50% load with full decoded-key equality checks. It sizes storage by named entries, excluding array elements, and rehashes only indexed entries. Deterministic hashes are **not** assumed collision-resistant: a cumulative work budget counts probes, rehash collisions, and compared key bytes, rejecting hostile workloads rather than permitting unbounded quadratic parsing.
+Parsing is linear in input size plus key-index probe/comparison work and bounded scalar conversion. Sealing skips already closed inline subtrees, so total sealing work is linear in nodes. The index uses open addressing at most 50% load with full decoded-key equality checks. It sizes storage by named entries, excluding array elements, and rehashes only indexed entries. `find` hashes O(key bytes), has expected constant probe cost and worst-case linear cost in named entries; application lookups are separate from the per-parse work budget. Deterministic hashes are **not** assumed collision-resistant: a cumulative work budget counts probes, rehash collisions, and compared key bytes, rejecting hostile workloads rather than permitting unbounded quadratic parsing.
 
 - Input: **1 MiB**, checked before UTF-8 validation.
 - Nodes: **65,536**, including the root and implicit tables.
@@ -53,12 +53,13 @@ These limits deliberately reject some otherwise valid TOML. They are fixed const
 make setup
 make format check test
 make conformance property security sanitize
+make fuzz
 make bench BENCH_ITERATIONS=10000
 ```
 
 Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development headers on Linux. `GOOSE_REVISION` pins the same compiler as `goose-json`; use `make GOOSE=/path/to/goose check test` with an existing compiler. Compatibility with other revisions is not guaranteed.
 
-`make test` exercises public behavior through both Goose's in-process and native execution paths, including malformed input, source ownership, document reuse, table declaration conflicts, Unicode, numeric boundaries, index growth, and exact resource boundaries.
+`make test` exercises public behavior through both Goose's in-process and native execution paths, including malformed input, source ownership, fresh-versus-reused document equivalence, recovery after every error class and both collision-budget failure phases, table declaration conflicts, Unicode, numeric boundaries, index growth, and exact resource boundaries.
 
 `make conformance` builds the official [toml-test](https://github.com/toml-lang/toml-test) runner at `TOML_TEST_REVISION` (requires Go 1.27+, or Go's toolchain auto-download support). It runs all **208 valid and 509 invalid TOML 1.0 tests** with no skipped cases. The test-only adapter compares decoded values, not just acceptance. The suite does not prove exhaustive compliance; separate regressions cover limits and lexical leap seconds.
 
@@ -66,7 +67,11 @@ Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development h
 
 `make security` checks 272 hostile/resource documents, including an actual constructed hash-collision attack that must fail specifically through the work budget, deep/broad inline tables, dense node limits, late errors, invalid UTF-8 and arbitrary bytes. The deterministic collision generator is tied explicitly to `GOOSE_REVISION`; changing the compiler requires revalidating this test.
 
-`make sanitize` runs the unit suite and hostile-input decoder checks with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, security probes, and sanitizers in addition to the normal tests.
+`make sanitize` runs the unit suite and hostile-input decoder checks with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, security probes, sanitizers, and a bounded coverage-guided fuzz campaign in addition to the normal tests.
+
+`make fuzz` additionally requires Clang with libFuzzer/ASan/UBSan runtimes, and the pinned official fixtures downloaded by `make conformance`. It reuses one document across fuzz inputs and checks tree links, depth, scalar child counts, key/text spans, UTF-8 output, and indexed lookups. It seeds from the 717 official TOML 1.0 fixtures plus collision/resource cases. The default campaign stops at 100,000 executions or roughly 30 seconds plus initialization/check overhead; override `FUZZ_RUNS`, `FUZZ_SECONDS`, `FUZZ_SEED`, or `FUZZ_CC` as needed. Logs, writable corpus, and failures stay in `.build/fuzz/`.
+
+The fuzzer's C host bridges Goose's fatal `_Exit` path to `abort()` so libFuzzer can preserve the exact triggering bytes. Before each campaign it intentionally fails a Goose assertion in a separate self-test binary and verifies that the matching input artifact was written. A failed self-test or missing execution summary fails the target. Reproduce a captured input with `.build/fuzz/parser-fuzzer .build/fuzz/artifacts/crash-<hash>` and turn confirmed defects into deterministic regressions. The persistent corpus affects future mutation sequences; the numeric seed alone does not fully reproduce a campaign. This target runs Linux native code with extra checks; it is not a throughput benchmark or exhaustive TOML semantic oracle.
 
 `make bench` uses GCC `-O2` to measure small configs, wide tables, numeric arrays, escaped/long strings, a large array followed by a named key, and deeply nested inline tables around a broad array. String decoding copies an ordinary prefix in one span and falls back to the scalar decoder after the first escape or newline. Input construction is outside the timed loop; destination reuse is inside it, and a checksum prevents dead results. These are reproducible workloads, not a machine-independent throughput or allocation claim.
 
