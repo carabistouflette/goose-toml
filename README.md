@@ -1,6 +1,6 @@
 # goose-toml
 
-A pure [Goose](https://github.com/aardappel/goose) TOML 1.0/1.1 document parser and TOML writer. Apache-2.0. Experimental API; no release yet. No runtime dependencies beyond the Goose standard library. Strict UTF-8 validation and scalar encoding use a pinned, vendored goose-text snapshot (see [vendor/README.md](vendor/README.md)).
+A pure [Goose](https://github.com/aardappel/goose) TOML 1.0/1.1 document parser and TOML writer. Apache-2.0. Experimental alpha API; compatibility is not guaranteed. No runtime dependencies beyond the Goose standard library. Strict UTF-8 validation and scalar encoding use a pinned, vendored goose-text snapshot (see [vendor/README.md](vendor/README.md)).
 
 Supports bare, quoted and dotted keys; all four string forms; signed 64-bit integers in decimal/hex/octal/binary; binary64 floats including explicit `inf`/`nan`; booleans; date/time values; mixed and nested arrays; tables; inline tables; and arrays of tables. Targets [TOML 1.0](https://toml.io/en/v1.0.0), with the resource limits below. Strict TOML 1.0 remains the default. Pass `toml::Version.V1_1` to opt into [TOML 1.1](https://toml.io/en/v1.1.0), including multiline inline tables, trailing inline commas, `\e`/`\xHH` escapes and omitted time seconds. The writer emits TOML 1.0-compatible syntax.
 
@@ -35,8 +35,7 @@ fn main() {
 
 From a nearby project use `import toml from "../goose-toml";`, adjusting the local path. For a remote dependency use
 `import toml from "carabistouflette/goose-toml@<full-published-commit>";`,
-replacing the placeholder with the full commit you have reviewed. There are no
-tagged releases or stability promises yet. Applications own file/process I/O. Supported construction, mutation and serialization are described in [document editing and writing](docs/document.md). Automatic application struct mapping is outside this API.
+replacing the placeholder with the full commit you have reviewed. The experimental alpha does not promise API stability. Pin an immutable reviewed commit. Applications own file/process I/O. Supported construction, mutation and serialization are described in [document editing and writing](docs/document.md). Automatic application struct mapping is outside this API.
 
 ## API and ownership
 
@@ -111,7 +110,7 @@ For a current absolute measurement without a comparison baseline, use
 The measured snapshot, tool versions, raw samples and limitations are recorded in
 [benchmark results](docs/results.md).
 
-Current [cross-language parsing and writing results](docs/comparison-results.md) include raw nine-round reports and limitations.
+Current [expanded parsing and writing results](docs/extended-results.md) include twelve workloads, matched writer profiles, raw nine-round reports and limitations. The [initial eight-workload comparison](docs/comparison-results.md) remains available with its original provenance.
 
 For pinned Rust, Go and C++ feature coverage, see [the feature matrix](docs/comparison-features.md). Reproduce fresh owned-document parsing comparisons with [the comparison harness](bench/compare/README.md). Language-specific struct binding and source-format preservation remain outside the common semantic workflow.
 
@@ -122,3 +121,5 @@ Changes require focused commits, full checks and independent review.
 ## License
 
 [Apache-2.0](LICENSE). Copyright 2026 goose-toml contributors.
+
+Experimental release: [v0.1.0-alpha.1](https://github.com/carabistouflette/goose-toml/releases/tag/v0.1.0-alpha.1). See [CHANGELOG.md](CHANGELOG.md).

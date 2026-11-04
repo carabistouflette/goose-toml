@@ -24,8 +24,8 @@ with no larger or self-hosted runner requirement. Its toolchain cache is separat
 by architecture so x86-64 compiler binaries cannot be restored into the ARM job.
 
 **The native ARM64 gate passed** at source
-[`e8a605be6826f72a1031575c78b34ee1a9155a4b`](https://github.com/carabistouflette/goose-toml/commit/e8a605be6826f72a1031575c78b34ee1a9155a4b):
-[actual CI execution](https://github.com/carabistouflette/goose-toml/actions/runs/41831798239).
+[`7f12af5c7d26d077b531383589949b5c976f5a68`](https://github.com/carabistouflette/goose-toml/commit/7f12af5c7d26d077b531383589949b5c976f5a68):
+[actual CI execution](https://github.com/carabistouflette/goose-toml/actions/runs/41834667409).
 This records execution of the checks below, rather than inferring support from
 a runner label, generated C, or emulator availability.
 The development workstation has QEMU/Clang but no installed ARM64 libc/sysroot or

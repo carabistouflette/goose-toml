@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-The project is experimental and has no tagged release. Security fixes target the
+The project publishes experimental prereleases. Security fixes target the
 latest commit on `main`; there is no support promise for older snapshots. Use an
 immutable reviewed commit and the compiler pinned in `GOOSE_REVISION`.
 

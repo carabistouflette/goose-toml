@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "baseline_writer_source": "65022d8c1db0181c26a3dcc6bbde569c71d65be3",
+  "compiler_pin": "eadca409f68210893f366e60d0c2f0dc29a339be",
+  "flags": "gcc -O2 -g",
+  "input": "original float-array, 1000 values of 1.25",
+  "writes": 1000,
+  "scope": "whole process; input loading/parse, writer loop, output formatting and cleanup included in profile counters",
+  "callgrind_instructions": 1894800714,
+  "hot_functions": [
+    {
+      "name": "gs_float_digits",
+      "instructions": 1126000000
+    },
+    {
+      "name": "gs_big_set",
+      "instructions": 201000004
+    },
+    {
+      "name": "gs_fmt_f64",
+      "instructions": 97000000
+    }
+  ],
+  "profile_binary_sha256": "11d7bf32c1a9b63185b2777c04c2516673d3123a0d120340eb53993c46714e17",
+  "reproduction": [
+    "Build the stated baseline writer with the matching original adapter using the pinned compiler, standalone C and gcc -O2 -g.",
+    "valgrind --tool=callgrind --callgrind-out-file=.build/writer.callgrind BINARY .build/compare/cases/float-array.toml 1000 write",
+    "callgrind_annotate --inclusive=no --threshold=90 .build/writer.callgrind"
+  ],
+  "limitation": "Instruction shares are not CPU-time percentages or throughput measurements; paired native timings are reported separately."
+}
