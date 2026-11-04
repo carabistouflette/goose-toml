@@ -18,8 +18,9 @@ fn main() {
 }
 ```
 
-Only `toml_source::put` and `toml_source::remove` are supported entry points.
-Other declarations are implementation details. Both return `(owned_output,
+The supported entry points are `toml_source::put`, `toml_source::remove`,
+`toml_source::legacy_set` and `toml_source::legacy_remove`.
+Other declarations are implementation details. All return `(owned_output,
 owned_error)`, with an empty error on success and empty output on every error.
 The application owns reading files and atomic publication after success.
 Inputs are borrowed for the duration of the call; no references or source ranges
@@ -53,6 +54,46 @@ and `value` routines. Its private offsets refer to the original bytes, never
 the parsed document's decoded key/text arena. Parser declaration rules and work
 budgets apply unchanged. Fixture tests compare the source index's complete
 semantic node layout and arena with the ordinary parser.
+
+## Companion compatibility profile
+
+`legacy_set(source, decoded_path, raw_value)` and
+`legacy_remove(source, decoded_path)` expose the compatibility profile for
+[goose-toml-edit](https://github.com/carabistouflette/goose-toml-edit).
+They return the same owned `(output, error)` pair and are fixed to strict
+TOML 1.0. They share the scanner, lookup, subtree selection and splice engine
+with `put`/`remove`; the default operations retain their existing policies.
+
+The compatibility reference is companion commit
+[`cedb2c3c98affbeb45bd34bc7a6618f5a9b75ad0`](https://github.com/carabistouflette/goose-toml-edit/commit/cedb2c3c98affbeb45bd34bc7a6618f5a9b75ad0).
+The profile preserves its output and diagnostic bytes, including these rules:
+
+- Validate the path first, replacement fragment second, original source third.
+  Parse only the first fragment value using the literal four-byte `x = `
+  wrapper, after validating UTF-8 across the whole fragment. Only spaces/tabs
+  may follow the value. Trailing comments/newlines or statements return the strict-suffix diagnostic without parsing that suffix.
+  Comments/newlines inside a value remain allowed by the TOML grammar.
+- Paths permit 1..64 decoded components and up to 1 MiB combined key bytes.
+  Traversing through a scalar, array or inline table fails before checking for
+  a child. A genuinely missing prefix short-circuits to missing. Removing an
+  entire array of tables remains supported.
+- Insert at root byte zero or immediately after the closest explicit ancestor
+  header's complete line. Use the first source newline style, or LF. New keys
+  use TOML quoting with uppercase control escapes, including `\u007F` for DEL.
+- Before encoding each inserted key, reserve two quote bytes plus six bytes
+  per decoded byte within the 1 MiB insertion cap, including prior separators.
+  This conservative guard can reject a new key whose actual encoding would
+  fit; it does not apply when replacing/removing an existing assignment.
+- Source/output are capped at 1 MiB each and the replacement at 1 MiB minus
+  four wrapper bytes; an empty replacement is rejected. Existing parser limits
+  also apply. Even a missing-key removal reparses its independent owned copy.
+  Every failure returns empty output and an owned nonempty diagnostic.
+
+The companion obtains the complete result before replacing or clearing its
+caller's output, preserving input/output aliasing. This module performs no I/O.
+The compatibility profile is follow-on work and is **not** included in the
+frozen `v0.1.0-alpha.1` release. Use an immutable reviewed commit that contains
+these entry points; do not assume their presence in that alpha tag.
 
 ## Preservation and current limits
 
@@ -103,7 +144,8 @@ make -C source fuzz
 
 The opt-in target has its own Makefile and tests. Tests include exact source
 comparisons, all ASCII key bytes, source-context cases, 2,405 generated
-semantic/preservation checks against Python `tomllib`, and source-index equality
+semantic/preservation checks against Python `tomllib`, 21 frozen legacy
+output/diagnostic fixtures plus 512 independent insertion byte checks, and source-index equality
 on all pinned TOML 1.0 and 1.1 fixtures. Python comparisons use their shared
 TOML 1.0 subset; explicit tests cover version-specific behavior. Sanitizers
 instrument both editor tests and the independent model adapter. Fuzzing reuses
@@ -112,6 +154,58 @@ capture before its bounded campaign. Its maximum generated input is 1,048,577
 bytes, covering the first size beyond the API cap. Linux GCC/Clang are required
 for these sanitizer/fuzzer targets. Build output and crash artifacts remain in
 `source/.build/`, outside version control.
+
+## Compatibility-profile validation and timing
+
+The new profile has 21 exact legacy output/diagnostic fixtures from clean
+companion `cedb2c3`, plus 512 independent root/header insertion byte checks.
+`tests/legacy-contract.json` retains the original fixture bytes and reference
+revision. The oracle also transports arbitrary path bytes as hex, including
+NUL and paths above the operating system's argument-size limit. JIT, optimized
+native and debug tests cover exact 1 MiB output, sixfold reservation, path and
+combined parser limits, UTF-8/suffix precedence and hostile consumer overloads.
+The existing 2,405 default model checks and 717/720 source-index fixtures remain
+separate acceptance checks. Wrapper output clearing and aliasing must also be
+validated by the companion's own public-API tests before adoption.
+
+Engine `04c8bef` passed two independent code reviews, GCC/Clang ASan/UBSan,
+and 35,688 Clang/libFuzzer executions in a 31-second bounded campaign, including
+the assertion-artifact self-test. An independent
+[5,134-call differential](tests/results/legacy-parity-04c8bef.json) against clean
+`cedb2c3` compared exact status, output, diagnostic bytes and failure emptiness,
+with Python `tomllib` independently checking successful outputs. Its frozen
+candidate checkout, executable and source hashes were verified before and after
+the campaign. This is canonical-engine evidence; companion/consumer adoption
+has separate gates. The earlier `5cca023` evidence does not cover optimization
+`04c8bef`; the reported final differential does.
+
+[Paired default-operation raw samples and provenance](tests/results/default-profile-04c8bef.json)
+compare alpha `b59b25a` with engine `04c8bef`, using the unchanged four-case
+benchmark, pinned Goose `eadca409`, GCC 16.2.1 and `-O2`, on Linux x86-64 CPU 0.
+One warmup per build precedes nine alternating pairs of 1,000 operations.
+All calls create fresh parser state and owned output, including validation.
+The ratios of candidate/baseline medians were **1.005** (put small), **1.085**
+(remove small), **0.983** (put large) and **0.953** (remove large). The small
+removal regression remains; these samples do not establish a universal speedup.
+This was a shared host, with local GCC tests overlapping on CPU 2 during part
+of the series. Source/binary identities and all samples are retained; readable
+compiler identity and fixture-length consistency were verified after timing,
+as disclosed in the report. The earlier pre-optimization series is also
+[retained without dropping regressions](tests/results/default-profile-initial.json).
+
+To repeat from two clean standalone clones at the desired immutable revisions:
+
+```sh
+python3 source/tests/compare_profiles.py /path/to/baseline /path/to/candidate \
+  --goose /path/to/pinned/goose --cpu 0 --rounds 9 --iterations 1000 \
+  --output /tmp/default-profile.json
+```
+
+The current driver additionally checks its own fingerprint, compiler identity
+and fixture lengths during the run. Its earlier measured revision is recorded
+in the report; the subsequent changes tighten provenance only. Performance of
+the actual thin wrapper must be measured independently against its frozen
+legacy implementation before publishing companion performance claims.
 
 ## Recorded complete-operation timings
 
@@ -142,7 +236,7 @@ These cases characterize specific workloads; they do not prove worst-case
 latency or a universal performance ranking. CI runs benchmark smoke execution
 without timing thresholds.
 
-The final local source validation also passed the consumer-overload regression
+The recorded pre-profile local source validation also passed the consumer-overload regression
 in-process and optimized native, all model/fixture checks under the hardened
 parser, GCC/Clang ASan/UBSan, and 84,695 Clang/libFuzzer executions in 31 seconds
 (seed 20261104, bounded by the 30-second budget). The assertion-bridge self-test
