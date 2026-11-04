@@ -48,5 +48,5 @@ cat GOOSE_REVISION
 # Force the freshly provisioned pinned compiler even if GOOSE is set by a caller.
 # test executes the public parser/editor/writer API in-process and through native
 # binaries; conformance independently checks both decoder and encoder versions.
-make GOOSE=.toolchain/goose/build/goose setup check test conformance property scalar security
-printf 'Passed native %s %s: check test conformance property scalar security\n' "$platform_os" "$platform_arch"
+make GOOSE=.toolchain/goose/build/goose setup check test conformance property scalar writer-scalar security
+printf 'Passed native %s %s: check test conformance property scalar writer-scalar security\n' "$platform_os" "$platform_arch"

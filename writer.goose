@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 namespace toml;
 import std;
+import json;
 
 let MAX_OUTPUT_BYTES = 8388608;
 let MAX_WRITE_TEXT_WORK = 8388608;
@@ -32,6 +33,23 @@ fn write_integer(w: Writer&, value: i64) {
     // Near the output cap, check the actual length through the bounded path.
     if MAX_OUTPUT_BYTES - w.output.len >= 20 { format(w.output, value); }
     else { write_bytes(w, str(value)); }
+}
+fn write_finite_float(w: Writer&, number: f64) {
+    // This conservative magnitude window stays inside the pinned standard
+    // formatter's exact Ryu fast path (binary exponents -30 through 46).
+    // Keep the original fallback for extreme values; JSON's general path
+    // performs extra decimal shortening that is unnecessary for TOML.
+    let magnitude = abs(number);
+    if magnitude >= 1e-9 && magnitude <= 1e14 {
+        var value: u8[>..] = [];
+        json::format_number(value, number);
+        write_bytes(w, value);
+    } else {
+        let value = str(number);
+        var marker = false;
+        for c in value { if c == '.' || c == 'e' || c == 'E' { marker = true; } }
+        write_bytes(w, value); if !marker { write_bytes(w, ".0"); }
+    }
 }
 fn checked_span(w: Writer&, doc: const WriteDocument&, span: Span) -> bool {
     if span.start < 0 || span.len < 0 || span.start > doc.bytes.len || span.len > doc.bytes.len - span.start {
@@ -148,10 +166,7 @@ recursive fn write_value(w: Writer&, doc: const WriteDocument&, id: i64, parent:
         else if n.number - n.number != 0.0 { write_bytes(w, if negative { "-inf" } else { "inf" }); }
         else if n.number == 0.0 { write_bytes(w, if negative { "-0.0" } else { "0.0" }); }
         else {
-            let value = str(n.number);
-            var marker = false;
-            for c in value { if c == '.' || c == 'e' || c == 'E' { marker = true; } }
-            write_bytes(w, value); if !marker { write_bytes(w, ".0"); }
+            write_finite_float(w, n.number);
         }
     } else { write_fail(w, "unsupported value kind"); }
 }

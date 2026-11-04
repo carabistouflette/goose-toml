@@ -23,8 +23,11 @@ CI includes a separate native `ubuntu-24.04-arm` job. It is a
 with no larger or self-hosted runner requirement. Its toolchain cache is separated
 by architecture so x86-64 compiler binaries cannot be restored into the ARM job.
 
-**ARM64 execution is pending until that job actually passes.** Adding a runner
-label, generating C, or finding an emulator does not establish platform support.
+**The native ARM64 gate passed** at source
+[`e8a605be6826f72a1031575c78b34ee1a9155a4b`](https://github.com/carabistouflette/goose-toml/commit/e8a605be6826f72a1031575c78b34ee1a9155a4b):
+[actual CI execution](https://github.com/carabistouflette/goose-toml/actions/runs/41831798239).
+This records execution of the checks below, rather than inferring support from
+a runner label, generated C, or emulator availability.
 The development workstation has QEMU/Clang but no installed ARM64 libc/sysroot or
 cross compiler, so it has not produced local ARM64 execution evidence.
 

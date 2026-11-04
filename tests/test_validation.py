@@ -76,5 +76,38 @@ class ScalarBitHarnessTests(unittest.TestCase):
                 self.scalar["check_frame"]("1.0", frame)
 
 
+class WriterBitHarnessTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.writer = runpy.run_path(str(SCRIPT.with_name("writer-scalar-test.py")))
+
+    def test_wrong_value_type_and_zero_sign_fail(self):
+        for bits, frame in [(0x3ff0000000000000, b'T\t"v" = 1'),
+                            (0x8000000000000000, b'T\t"v" = 0.0'),
+                            (0x3ff0000000000000, b'T\t"v" = 2.0'),
+                            (0x7ff8000000000001, b'T\t"v" = inf'),
+                            (0x3ff0000000000000, b'T\t"v" = 1.0\textra')]:
+            with self.subTest(frame=frame), self.assertRaises(self.writer["WriterScalarFailure"]):
+                self.writer["check_frame"](bits, frame)
+        self.writer["check_frame"](0x8000000000000000, b'T\t"v" = -0.0')
+        self.writer["check_frame"](0x7ff8000000000001, b'T\t"v" = -nan')
+
+    def test_process_failures_and_bad_framing_are_not_success(self):
+        for code, output, error in [(1, b'T\t"v" = 1.0\n', b""),
+                                    (-6, b"", b"assert failed"),
+                                    (0, b'T\t"v" = 1.0\n', b"runtime error"),
+                                    (0, b'T\t"v" = 1.0', b""),
+                                    (0, b'T\t"v" = 1.0\nT\t"v" = 1.0\n', b"")]:
+            result = subprocess.CompletedProcess([], code, stdout=output, stderr=error)
+            with self.subTest(code=code, output=output), patch("subprocess.run", return_value=result), \
+                    self.assertRaises(self.writer["WriterScalarFailure"]):
+                self.writer["run_batch"]("unused", [0x3ff0000000000000], 1)
+
+    def test_timeout_is_a_failure(self):
+        with patch("subprocess.run", side_effect=subprocess.TimeoutExpired("unused", 1)), \
+                self.assertRaises(self.writer["WriterScalarFailure"]):
+            self.writer["run_batch"]("unused", [0x3ff0000000000000], 1)
+
+
 if __name__ == "__main__":
     unittest.main()

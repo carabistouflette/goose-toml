@@ -7,6 +7,7 @@ check:
 	$(GOOSE) check tests/spec11.goose
 	$(GOOSE) check tests/document.goose
 	$(GOOSE) check tests/writer.goose
+	$(GOOSE) check tests/writer-scalars.goose
 	$(GOOSE) check tests/mutation.goose
 	$(GOOSE) check tests/utf8.goose
 	$(GOOSE) check tests/parser.goose
@@ -83,6 +84,9 @@ sanitize:
 	$(GOOSE) tests/scalars.goose --standalone --debug --no-bce -o .build/scalars-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/scalars-sanitized .build/scalars-sanitized.c -lm -ldl -lpthread
 	python3 -O scripts/scalar-test.py --runner .build/scalars-sanitized
+	$(GOOSE) tests/writer-scalars.goose --standalone --debug --no-bce -o .build/writer-scalars-sanitized.c
+	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/writer-scalars-sanitized .build/writer-scalars-sanitized.c -lm -ldl -lpthread
+	python3 -O scripts/writer-scalar-test.py --runner .build/writer-scalars-sanitized
 	$(GOOSE) tests/decoder.goose --standalone --debug --no-bce -o .build/decoder-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/decoder-sanitized .build/decoder-sanitized.c -lm -ldl -lpthread
 	python3 scripts/security-test.py --decoder .build/decoder-sanitized
@@ -111,3 +115,9 @@ scalar:
 	mkdir -p .build
 	$(GOOSE) build tests/scalars.goose --cc gcc -O2 -o .build/scalars
 	python3 scripts/scalar-test.py --runner .build/scalars
+
+.PHONY: writer-scalar
+writer-scalar:
+	mkdir -p .build
+	$(GOOSE) build tests/writer-scalars.goose --cc gcc -O2 -o .build/writer-scalars
+	python3 scripts/writer-scalar-test.py --runner .build/writer-scalars

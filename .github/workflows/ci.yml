@@ -17,7 +17,7 @@ jobs:
       - run: make setup
       - run: make check test
       - run: make conformance
-      - run: make property scalar security sanitize
+      - run: make property scalar writer-scalar security sanitize
       - run: make fuzz
   arm64:
     name: Native Linux ARM64

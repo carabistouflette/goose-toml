@@ -71,7 +71,7 @@ These limits deliberately reject some otherwise valid TOML. They are fixed const
 ```sh
 make setup
 make format check test
-make conformance property scalar security sanitize
+make conformance property scalar writer-scalar security sanitize
 make fuzz
 make bench BENCH_ITERATIONS=10000
 ```
@@ -85,6 +85,8 @@ Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development h
 `make property` requires Python 3.11+ and compares 2,000 deterministically generated/mutated documents against `tomllib` on their shared subset, checking decoded types, values, signed zero, rejection, crashes and a per-input timeout. Python's arbitrary-precision integers and overflowing decimal floats are restricted to this library's numeric contract. It supplements the official suite; date/time behavior and explicit nonfinite tokens are outside this Python harness. Separate writer tests cover these kinds and 2,000 model-based editor steps check an independent fixed-slot/array model.
 
 `make scalar` compares 356,572 deterministic numeric/boolean cases against Python's `tomllib`: all length-0..5 tokens over a representative 12-character numeric alphabet, radix and i64 boundaries, tokens around the 128-byte cap, rounding midpoints, extreme exponents and signed zero. A batched public-API adapter reuses the destination across accepted and rejected documents; unexpected diagnostics, crashes, malformed frames and missing/extra responses fail separately from parse errors. Finite numeric results are compared as raw IEEE-754 bytes, including signed zero, without using Goose's float formatter; NaNs allow either sign and any nonzero NaN fraction. The same campaign runs under ASan/UBSan in `make sanitize`.
+
+`make writer-scalar` constructs binary64 values directly from raw bits and independently decodes serialized TOML with Python `tomllib`. It checks **169,854 cases**: 100,000 seeded raw patterns plus 69,854 biased exponent, mantissa, subnormal, decimal-fraction and transition cases. Float kind, finite bits, signed zero and infinities must match exactly; NaNs follow the semantic contract. The adapter never invokes Goose's TOML or decimal parser. Framing, diagnostics, crashes and timeouts fail separately. The same campaign runs under ASan/UBSan and Python `-O` in `make sanitize`.
 
 `make security` checks 274 hostile/resource documents and nine encoder-protocol regression cases, including constructed bucket collisions and full 64-bit hash collisions with long shared key prefixes. These must fail specifically through probe or compared-key-byte work limits. It also checks deep/broad inline tables, dense node limits, late errors, invalid UTF-8 and arbitrary bytes. The deterministic collision generator is tied explicitly to `GOOSE_REVISION`; changing the compiler requires revalidating this test.
 
