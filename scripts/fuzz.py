@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Build and run a bounded Clang/libFuzzer + ASan/UBSan parser campaign.
+"""Build and run a bounded Clang/libFuzzer + ASan/UBSan parser/serializer roundtrip campaign.
 
 Run make setup and make conformance first. Generated code, writable corpus,
 logs, and reproducible failure artifacts remain under .build/fuzz/.
@@ -26,12 +26,12 @@ def main():
     if not 1 <= args.seconds <= 3600 or not 1 <= args.runs <= 100000000 or not 1 <= args.seed < 2**32:
         parser.error("seconds must be 1..3600, runs 1..100000000, seed 1..4294967295")
     suite = ROOT / ".toolchain/toml-test/tests"
-    manifest = suite / "files-toml-1.0.0"
-    if not manifest.is_file():
-        parser.error("pinned official fixtures are missing; run make conformance first")
+    manifests = [suite / "files-toml-1.0.0", suite / "files-toml-1.1.0"]
+    if any(not manifest.is_file() for manifest in manifests):
+        parser.error("pinned TOML 1.0/1.1 fixtures are missing; run make conformance first")
     revision = (ROOT / "TOML_TEST_REVISION").read_text().strip()
     work = ROOT / ".build/fuzz"
-    seeds = work / ("seeds-" + revision)
+    seeds = work / ("seeds-1.0-and-1.1-" + revision)
     corpus = work / "corpus"
     artifacts = work / "artifacts"
     for directory in (seeds, corpus, artifacts):
@@ -40,11 +40,12 @@ def main():
     def seed(data):
         (seeds / hashlib.sha256(data).hexdigest()).write_bytes(data)
 
-    official = 0
-    for name in manifest.read_text().splitlines():
-        if name.endswith(".toml"):
-            seed((suite / name).read_bytes())
-            official += 1
+    official_names = sorted({name for manifest in manifests
+                             for name in manifest.read_text().splitlines()
+                             if name.endswith(".toml")})
+    for name in official_names:
+        seed((suite / name).read_bytes())
+    official = len(official_names)
     # Add limit/error paths and genuine hash collisions that ordinary mutations
     # would be unlikely to construct. Reuse the pinned-hash security generator.
     security = runpy.run_path(str(ROOT / "scripts/security-test.py"))
@@ -101,7 +102,7 @@ def main():
                "-max_len=" + str(limit + 1), "-max_total_time=" + str(args.seconds),
                "-runs=" + str(args.runs), "-seed=" + str(args.seed), "-timeout=5",
                "-rss_limit_mb=1024", "-artifact_prefix=" + str(artifacts) + "/"]
-    print(f"Fuzzing with {official} official fixtures and resource/collision seeds", flush=True)
+    print(f"Fuzzing both TOML versions and strict-1.0 roundtrips with {official} union official fixtures and resource/collision seeds", flush=True)
     print("Campaign log: " + str(work / "run.log"), flush=True)
     with (work / "run.log").open("wb") as log:
         result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,

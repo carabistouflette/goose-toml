@@ -34,17 +34,29 @@ recursive fn encode(doc: toml::Document&, id: i64, out: u8[>..]&) {
     } else {
         var value = str(toml::text(doc, id));
         for &c in value { if c == 't' || c == ' ' { c = 'T'; } else if c == 'z' { c = 'Z'; } }
-        if n.kind == toml::Kind.OffsetDateTime { tag(out, "datetime", value); }
-        else if n.kind == toml::Kind.LocalDateTime { tag(out, "datetime-local", value); }
-        else if n.kind == toml::Kind.LocalDate { tag(out, "date-local", value); }
-        else { tag(out, "time-local", value); }
+        let name = if n.kind == toml::Kind.OffsetDateTime { "datetime" }
+            else if n.kind == toml::Kind.LocalDateTime { "datetime-local" }
+            else if n.kind == toml::Kind.LocalDate { "date-local" } else { "time-local" };
+        // toml-test's tagged protocol uses RFC3339 time text even for TOML1.1
+        // inputs whose missing seconds are retained lexically by the library.
+        let seconds = if n.kind == toml::Kind.LocalDate { -1 } else if n.kind == toml::Kind.LocalTime { 5 } else { 16 };
+        if seconds >= 0 && (value.len == seconds || value[seconds] != ':') {
+            let complete = str(value[..seconds], ":00", value[seconds..]);
+            tag(out, name, complete);
+        } else { tag(out, name, value); }
     }
 }
 fn main() {
     var source: u8[>..] = [];
     read_stdin(source);
+    let argv = args();
+    var version = toml::Version.V1_0;
+    if argv.len > 1 {
+        if argv.len != 2 || argv[1] != "--toml=1.1" { write_stderr("decoder: expected --toml=1.1\n"); exit(2); }
+        version = toml::Version.V1_1;
+    }
     var doc = toml::Document { .. };
-    let error = toml::parse_into(source, doc);
+    let error = toml::parse_into(source, doc, version);
     if error.len > 0 { write_stderr(error); write_stderr("\n"); exit(1); }
     var out: u8[>..] = [];
     encode(doc, 0, out);
