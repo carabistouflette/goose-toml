@@ -56,8 +56,9 @@ including 234 property calls each. The different compiler binary used for that
 adapter correctness gate is disclosed in its report; paired timing binaries
 were built with one identical compiler binary instead.
 
-**Hosted x86/ARM checks have not run for this unreleased experiment.** Local
-checks are not a substitute for exact-head hosted validation before adoption.
+**Hosted x86/ARM status is tracked separately on any proposed PR.** This
+dataset records local evidence only; local checks are not a substitute for
+exact-head hosted validation before adoption.
 
 ## Measurement protocol and limitations
 
@@ -102,8 +103,8 @@ JSON layout is compacted; samples/values are unchanged. Each file retains the
 SHA-256 of its original local artifact. Generated C, executables, toolchains and
 raw logs remain in ignored `.build/`, outside this results directory.
 
-[Interactive comparison](comparison.html) shows all refined fixture groups,
-public calls and the original default benchmark, including control/outlier data.
+[Interactive comparison](comparison.html) includes all refined groups,
+public calls and the original benchmark, including controls and outlier data.
 
 ## Refined source fixtures: all observations
 
@@ -179,6 +180,17 @@ is not proof that every workload is regression-free.
 
 All refined public-call batches meet the duration minimum. Results apply to
 these six complete calls on this machine, not to arbitrary TOML inputs.
+
+The public unchanged-binary control uses the identical fixed case/count/batch
+configuration. Its [derived config](public-control-config.json) is exactly the
+original `public-batched-calibration.json` object with two changes: add
+`source_config_sha256 = SHA256(original calibration bytes)` and replace
+`script_sha256 = SHA256(control producer source)`. Serialize with Python
+`json.dumps(config, indent=2)` followed by one newline. The retained producer
+source is in the control report. The derived raw-config hash was verified
+against the control report's `config_sha256`; all case/count/batch entries match
+the original. Normalized published JSON does not have the original byte hash;
+the original artifact hash and this derivation are retained explicitly.
 
 ## Existing four-case default benchmark
 

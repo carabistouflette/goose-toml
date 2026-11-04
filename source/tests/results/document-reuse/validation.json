@@ -5,7 +5,7 @@
   "measurement_baseline": "ff13455e3e969f5fa1e3bd3362b1f98cac64a581",
   "measurement_candidate": "b1c31f7f8af62b2da8945ceef189d7daa7cbc813",
   "published_pins_changed": false,
-  "hosted_checks": "not run for this unreleased experiment",
+  "hosted_checks": "not recorded in local dataset; require exact-head PR validation before adoption",
   "provenance": {
     "commit": "a79cf60ff6ba86dd887dd5749f5b312ca0ef48b4",
     "dirty": "",
