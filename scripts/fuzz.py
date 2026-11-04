@@ -54,6 +54,10 @@ def main():
     lines = [(json.dumps(key) + "=1\n").encode("ascii") for key in keys]
     seed(b"".join(lines[:200]))
     seed(b"".join(lines))
+    full_keys = security["full_collision_keys"](500)
+    full_lines = [(json.dumps(key) + f"={i}\n").encode("ascii") for i, key in enumerate(full_keys)]
+    seed(b"".join(full_lines[:100]))
+    seed(b"".join(full_lines))
     limit = security["MAX_INPUT_BYTES"]
     nodes = security["MAX_NODES"]
     seed(b"v='" + b"x" * (limit - 4) + b"'")

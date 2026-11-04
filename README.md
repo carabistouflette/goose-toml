@@ -69,7 +69,7 @@ These limits deliberately reject some otherwise valid TOML. They are fixed const
 ```sh
 make setup
 make format check test
-make conformance property security sanitize
+make conformance property scalar security sanitize
 make fuzz
 make bench BENCH_ITERATIONS=10000
 ```
@@ -82,9 +82,11 @@ Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development h
 
 `make property` requires Python 3.11+ and compares 2,000 deterministically generated/mutated documents against `tomllib` on their shared subset, checking decoded types, values, signed zero, rejection, crashes and a per-input timeout. Python's arbitrary-precision integers and overflowing decimal floats are restricted to this library's numeric contract. It supplements the official suite; date/time behavior and explicit nonfinite tokens are outside this harness.
 
-`make security` checks 272 hostile/resource documents, including an actual constructed hash-collision attack that must fail specifically through the work budget, deep/broad inline tables, dense node limits, late errors, invalid UTF-8 and arbitrary bytes. The deterministic collision generator is tied explicitly to `GOOSE_REVISION`; changing the compiler requires revalidating this test.
+`make scalar` compares 356,572 deterministic numeric/boolean cases against Python's `tomllib`: exhaustive short grammar, radix and i64 boundaries, tokens around the 128-byte cap, rounding midpoints, extreme exponents and signed zero. A batched public-API adapter reuses the destination across accepted and rejected documents; unexpected diagnostics, crashes, malformed frames and missing/extra responses fail separately from parse errors. The same campaign runs under ASan/UBSan in `make sanitize`.
 
-`make sanitize` runs the unit suite and hostile-input decoder checks with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, security probes, sanitizers, and a bounded coverage-guided fuzz campaign in addition to the normal tests.
+`make security` checks 274 hostile/resource documents, including constructed bucket collisions and full 64-bit hash collisions with long shared key prefixes. These must fail specifically through probe or compared-key-byte work limits. It also checks deep/broad inline tables, dense node limits, late errors, invalid UTF-8 and arbitrary bytes. The deterministic collision generator is tied explicitly to `GOOSE_REVISION`; changing the compiler requires revalidating this test.
+
+`make sanitize` runs the unit suite and hostile-input decoder checks with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, scalar grammar/rounding checks, security probes, sanitizers, and a bounded coverage-guided fuzz campaign in addition to the normal tests.
 
 `make fuzz` additionally requires Clang with libFuzzer/ASan/UBSan runtimes, and the pinned official fixtures downloaded by `make conformance`. It reuses one document across fuzz inputs and checks tree links, depth, scalar child counts, key/text spans, UTF-8 output, and indexed lookups. It seeds from the 717 official TOML 1.0 fixtures plus collision/resource cases. The default campaign stops at 100,000 executions or roughly 30 seconds plus initialization/check overhead; override `FUZZ_RUNS`, `FUZZ_SECONDS`, `FUZZ_SEED`, or `FUZZ_CC` as needed. Logs, writable corpus, and failures stay in `.build/fuzz/`.
 

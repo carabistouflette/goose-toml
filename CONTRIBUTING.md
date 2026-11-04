@@ -8,7 +8,7 @@ Pin a reviewed full upstream compiler commit in `GOOSE_REVISION`. Compiler chang
 
 
 For behavior or vendored-source changes, also run `make conformance property
-security sanitize fuzz`. Optional fuzz campaigns need Clang and its sanitizer
+scalar security sanitize fuzz`. Optional fuzz campaigns need Clang and its sanitizer
 runtimes; see the README. Preserve immutable vendor provenance and licenses.
 Measure performance changes with the same workload source, pinned compiler and
 C compiler flags; retain raw samples and report any regressions and limitations.

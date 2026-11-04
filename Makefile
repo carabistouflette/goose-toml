@@ -6,6 +6,7 @@ check:
 	$(GOOSE) format --check toml.goose vendor/text.goose examples tests bench
 	$(GOOSE) check tests/utf8.goose
 	$(GOOSE) check tests/parser.goose
+	$(GOOSE) check tests/scalars.goose
 	$(GOOSE) check tests/lifecycle.goose
 	$(GOOSE) check tests/fuzz.goose
 	$(GOOSE) check examples/config.goose
@@ -55,6 +56,9 @@ sanitize:
 	$(GOOSE) tests/lifecycle.goose --standalone --debug --no-bce -o .build/lifecycle-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/lifecycle-sanitized .build/lifecycle-sanitized.c -lm -ldl -lpthread
 	./.build/lifecycle-sanitized
+	$(GOOSE) tests/scalars.goose --standalone --debug --no-bce -o .build/scalars-sanitized.c
+	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/scalars-sanitized .build/scalars-sanitized.c -lm -ldl -lpthread
+	python3 -O scripts/scalar-test.py --runner .build/scalars-sanitized
 	$(GOOSE) tests/decoder.goose --standalone --debug --no-bce -o .build/decoder-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/decoder-sanitized .build/decoder-sanitized.c -lm -ldl -lpthread
 	python3 scripts/security-test.py --decoder .build/decoder-sanitized
@@ -72,3 +76,9 @@ FUZZ_CC ?= clang
 .PHONY: fuzz
 fuzz:
 	python3 scripts/fuzz.py --goose "$(GOOSE)" --cc "$(FUZZ_CC)" --seconds "$(FUZZ_SECONDS)" --runs "$(FUZZ_RUNS)" --seed "$(FUZZ_SEED)"
+
+.PHONY: scalar
+scalar:
+	mkdir -p .build
+	$(GOOSE) build tests/scalars.goose --cc gcc -O2 -o .build/scalars
+	python3 scripts/scalar-test.py --runner .build/scalars

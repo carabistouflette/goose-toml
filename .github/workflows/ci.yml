@@ -17,5 +17,5 @@ jobs:
       - run: make setup
       - run: make check test
       - run: make conformance
-      - run: make property security sanitize
+      - run: make property scalar security sanitize
       - run: make fuzz
