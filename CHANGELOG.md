@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.1.0-alpha.2 — 2026-11-04
+
+- Added supported `toml_source::legacy_set` and `legacy_remove` entry points for
+  the companion editor's fixed-TOML-1.0 compatibility contract, using the same
+  parser-driven source-edit engine as `put` and `remove`.
+- Preserved existing source-editor defaults, signatures and limits. Core parser,
+  semantic document, writer and vendored text files are unchanged from alpha.1.
+- Verified exact legacy output and diagnostics against the clean companion
+  baseline across 5,134 calls, alongside default/legacy tests, source-index
+  fixtures, GCC/Clang sanitizers, fuzzing and native x86-64/ARM64 CI.
+
+Paired default-operation measurements retained an approximately 8.5% small-removal
+regression in the repeat series. Raw samples, provenance and shared-host
+limitations are documented in [the source editor](source/README.md). These
+measurements are workload-specific, not a universal performance guarantee.
+
 ## v0.1.0-alpha.1 — 2026-11-04
 
 First experimental source release under Apache-2.0. APIs may change; use the
