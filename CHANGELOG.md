@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.1.0-alpha.3 — 2026-11-04
+
+- Reused the private source Document for terminal output validation after all
+  source-node reads and copying finish. Public default/legacy contracts, limits,
+  diagnostics, owned results and the default missing-removal fast path remain
+  unchanged; core parser, document, writer and text files are unchanged.
+- Added lifetime/storage-reset regressions and retained exact legacy parity,
+  released-adapter alias checks, GCC/Clang sanitizer, fuzz and x86-64/ARM64
+  validation evidence.
+
+The instrumented fixture's total runtime-region count fell from 27 to 24.
+These are fixture-specific runtime-region counts, not
+per-call heap-allocation or universal RSS claims. Selected wide workloads repeat
+timing gains; tiny/comment-heavy cases are mixed. A 9.3% large-removal outlier
+failed to reproduce in the final check and remains recorded. See the
+[complete report and raw controls](source/tests/results/document-reuse/README.md)
+for provenance and limitations. Companion and application adoption require
+separate immutable-pin validation.
+
 ## v0.1.0-alpha.2 — 2026-11-04
 
 - Added supported `toml_source::legacy_set` and `legacy_remove` entry points for
