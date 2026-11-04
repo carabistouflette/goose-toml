@@ -112,3 +112,40 @@ capture before its bounded campaign. Its maximum generated input is 1,048,577
 bytes, covering the first size beyond the API cap. Linux GCC/Clang are required
 for these sanitizer/fuzzer targets. Build output and crash artifacts remain in
 `source/.build/`, outside version control.
+
+## Recorded complete-operation timings
+
+[Raw samples and provenance](results/2026-11-04-linux-x86_64.json) were measured
+from clean source commit `c9359f380f420ac7c055d9caad1ef20a20c9dccd` after the
+parser consumer-overload hardening in parent
+`c32c7dab44883f8fb5a5a984bf6f3c4c49119d79`. The checkout used an external
+matching compiler through `GOOSE`; no toolchain symlink or tracked edits were
+present. The driver fingerprints sources before compilation and verifies them
+again before and after timing. The report includes compiler/hardware/flags,
+source and binary hashes, every fixture and seven raw samples after one warmup.
+
+Command: `make -C source bench CC=gcc BENCH_ITERATIONS=100`, on Linux x86-64,
+Intel Core Ultra 7 258V, GCC 16.2.1, `-O2`, CPU affinity 0. These are complete
+fresh operations, including all parsing, copying, allocation and validation;
+input construction occurs outside the measured loops. Other processes may run
+on the development machine; no exclusive-host or cross-library claim is made.
+
+| Operation | Input bytes | Median ns/operation |
+| --- | ---: | ---: |
+| put_small | 68 | 2617.6 |
+| remove_small | 68 | 1174.1 |
+| put_large | 289072 | 1773086.4 |
+| remove_large | 289072 | 1595069.2 |
+
+The large fixture contains 256 KiB of commentary and 1,000 dependency entries.
+These cases characterize specific workloads; they do not prove worst-case
+latency or a universal performance ranking. CI runs benchmark smoke execution
+without timing thresholds.
+
+The final local source validation also passed the consumer-overload regression
+in-process and optimized native, all model/fixture checks under the hardened
+parser, GCC/Clang ASan/UBSan, and 84,695 Clang/libFuzzer executions in 31 seconds
+(seed 20261104, bounded by the 30-second budget). The assertion-bridge self-test
+verified exact crash-artifact capture. That execution count is a recorded
+campaign, not an exhaustive input claim. No source I/O or manifest publication
+was performed by the module.
