@@ -71,6 +71,8 @@ The original float-array profile spent about 75% of whole-process instructions i
 
 Small changes elsewhere remain subject to shared-host noise. This optimization does not establish that the writer is faster for all inputs.
 
+The alpha also includes later consumer-overload hardening, including direct pinned-runtime formatting and a narrower fast-path window. The tables above remain measurements of the stated 7f12af5 snapshot, not fresh measurements of those later changes.
+
 ## Reproduce
 
 ```sh

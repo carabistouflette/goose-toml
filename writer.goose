@@ -5,6 +5,11 @@ import json;
 
 let MAX_OUTPUT_BYTES = 8388608;
 let MAX_WRITE_TEXT_WORK = 8388608;
+// These are the same pinned-runtime routines used by builtin formatting.
+// Fixed local buffers below provide their proven maximum output capacity;
+// calling the runtime directly avoids global consumer formatting overloads.
+extern fn runtime_format_integer(destination: u8&, value: i64) -> i64 = "gs_fmt_i64";
+extern fn runtime_format_float(destination: u8&, value: f64) -> i64 = "gs_fmt_f64";
 // Borrow fixed views of scratch allocated once in serialize, keeping recursive
 // calls compact. Document views are read-only; the backing arrays never resize.
 struct WriteName { id: i64 = -1, hash: u64 = 0 }
@@ -29,23 +34,28 @@ fn write_byte(w: Writer&, value: u8) {
 }
 fn write_integer(w: Writer&, value: i64) {
     if w.error.len > 0 { return; }
-    // Every i64 fits in 20 decimal bytes, including the sign of MIN_I64.
-    // Near the output cap, check the actual length through the bounded path.
-    if MAX_OUTPUT_BYTES - w.output.len >= 20 { format(w.output, value); }
-    else { write_bytes(w, str(value)); }
+    var text: u8[20] = [0; 20];
+    let len = toml::runtime_format_integer(text[0], value);
+    if len <= 0 || len > text.len { write_fail(w, "invalid runtime integer formatting"); return; }
+    write_bytes(w, text[..len]);
 }
 fn write_finite_float(w: Writer&, number: f64) {
     // This conservative magnitude window stays inside the pinned standard
-    // formatter's exact Ryu fast path (binary exponents -30 through 46).
+    // formatter's exact Ryu fast path (binary exponents -14 through 46).
+    // Its fixed-decimal layout here never calls global integer formatting.
     // Keep the original fallback for extreme values; JSON's general path
     // performs extra decimal shortening that is unnecessary for TOML.
-    let magnitude = abs(number);
-    if magnitude >= 1e-9 && magnitude <= 1e14 {
+    let magnitude = if number < 0.0 { -number } else { number };
+    if magnitude >= 1e-4 && magnitude <= 1e14 {
         var value: u8[>..] = [];
         json::format_number(value, number);
         write_bytes(w, value);
     } else {
-        let value = str(number);
+        // Finite binary64 text is at most 24 bytes in the pinned formatter.
+        var text: u8[32] = [0; 32];
+        let len = toml::runtime_format_float(text[0], number);
+        if len <= 0 || len > text.len { write_fail(w, "invalid runtime float formatting"); return; }
+        let value = text[..len];
         var marker = false;
         for c in value { if c == '.' || c == 'e' || c == 'E' { marker = true; } }
         write_bytes(w, value); if !marker { write_bytes(w, ".0"); }
