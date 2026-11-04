@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: Apache-2.0
+[package]
+name = "goose-toml-compare"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+toml = "=1.2.0"
+
+# Cargo ignores SemVer build metadata in requirements. The committed lockfile
+# and the orchestrator's exact cargo metadata check enforce +spec-1.1.0.

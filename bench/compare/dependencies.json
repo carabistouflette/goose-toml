@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "repository_license": "Apache-2.0",
+  "dependencies": {
+    "rust_toml": {
+      "version": "1.2.0+spec-1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://github.com/toml-rs/toml",
+      "version_source": "https://crates.io/api/v1/crates/toml/1.2.0%2Bspec-1.1.0",
+      "archive_sha256": "c5ffcdf8f50436dbbfd675c1fe1b8e0854f42b7defea8584bdebe1aee900e561",
+      "license_source": "https://github.com/toml-rs/toml/blob/main/crates/toml/Cargo.toml",
+      "lockfile": "bench/compare/rust/Cargo.lock"
+    },
+    "go_burntsushi_toml": {
+      "version": "v1.6.0",
+      "commit": "52534926c55b4cd85b05aee90569dd0668b8cf30",
+      "license": "MIT",
+      "source": "https://github.com/BurntSushi/toml/tree/v1.6.0",
+      "version_source": "https://proxy.golang.org/github.com/!burnt!sushi/toml/@v/v1.6.0.info",
+      "license_source": "https://github.com/BurntSushi/toml/blob/v1.6.0/COPYING",
+      "lockfile": "bench/compare/go/go.sum"
+    },
+    "cpp_tomlplusplus": {
+      "version": "3.4.0",
+      "commit": "30172438cee64926dc41fdd9c11fb3ba5b2ba9de",
+      "license": "MIT",
+      "source": "https://github.com/marzer/tomlplusplus/tree/30172438cee64926dc41fdd9c11fb3ba5b2ba9de",
+      "license_source": "https://github.com/marzer/tomlplusplus/blob/30172438cee64926dc41fdd9c11fb3ba5b2ba9de/LICENSE"
+    }
+  },
+  "notice": "Comparison adapters are original Apache-2.0 code. Dependencies are downloaded into ignored toolchain/build directories or external language caches; no dependency implementation or license text is incorporated into the library. Cargo transitive versions, checksums, license expressions, and source URLs are recorded by the build in the report."
+}

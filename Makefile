@@ -63,7 +63,7 @@ bench:
 
 .PHONY: property sanitize
 property:
-	python3 -m unittest discover -s tests -p test_validation.py
+	python3 -m unittest discover -s tests -p 'test_*.py'
 	mkdir -p .build
 	$(GOOSE) build tests/decoder.goose -o .build/decoder
 	python3 scripts/property-test.py --decoder .build/decoder
