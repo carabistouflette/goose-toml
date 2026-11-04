@@ -17,7 +17,10 @@ from pathlib import Path
 def untag(value):
     if isinstance(value, list):
         return [untag(v) for v in value]
-    if isinstance(value, dict) and set(value) == {"type", "value"}:
+    # A TOML table can itself have fields named type and value. Only tagged
+    # scalar leaves have a raw string in the JSON type slot; table fields are
+    # represented by tagged objects/arrays instead.
+    if isinstance(value, dict) and set(value) == {"type", "value"} and isinstance(value["type"], str):
         kind, text = value["type"], value["value"]
         if kind == "integer":
             return int(text)
@@ -84,9 +87,14 @@ def main():
             expected = None
         result = subprocess.run([decoder], input=data, capture_output=True, timeout=3)
         assert result.returncode in (0, 1), ("decoder crashed", data, result.stderr)
+        assert not any(marker in result.stderr for marker in (
+            b"AddressSanitizer", b"UndefinedBehaviorSanitizer", b"LeakSanitizer", b"runtime error:"
+        )), ("runtime/sanitizer diagnostic", data, result.stderr)
         if result.returncode == 1:
+            assert not result.stdout and result.stderr.startswith(b"toml:"), ("non-parser rejection", data, result.stderr)
             assert expected is None, ("unexpected rejection", data, result.stderr)
         else:
+            assert not result.stderr, ("unexpected successful-parse diagnostics", data, result.stderr)
             assert expected is not None, ("unexpected acceptance", data, result.stdout)
             decoded = untag(json.loads(result.stdout))
             assert equal(expected, decoded), ("value mismatch", data, expected, decoded)
@@ -114,13 +122,13 @@ def main():
         if kind == 4:
             return "[" + ", ".join(value(depth + 1) for _ in range(rng.randrange(5))) + "]"
         return "{" + ", ".join(
-            json.dumps("field." + str(i)) + " = " + value(depth + 1)
+            json.dumps(["type", "value"][i] if i < 2 else "field." + str(i)) + " = " + value(depth + 1)
             for i in range(rng.randrange(5))
         ) + "}"
 
     alphabet = b"abc0129_+-=.,[]{}# '\"\\\n\r\t\x00\x7f\xff"
     for _ in range(args.cases):
-        lines = [f'{json.dumps("key." + str(i))} = {value()}' for i in range(rng.randrange(1, 10))]
+        lines = [f'{json.dumps(["type", "value"][i] if i < 2 else "key." + str(i))} = {value()}' for i in range(rng.randrange(1, 10))]
         data = ("\n".join(lines) + "\n").encode()
         check(data)
         mutated = bytearray(data)
