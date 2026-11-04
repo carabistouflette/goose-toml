@@ -22,7 +22,7 @@ fn main() {
     let warmups, w_ok = parse_int(argv[7]);
     assert(p_ok && n_ok && t_ok && i_ok && w_ok);
     assert(padding >= 0 && padding <= 1000000 && nodes >= 1 && nodes <= 10000);
-    assert(target >= -1 && target < nodes && iterations >= 1 && iterations <= 10000);
+    assert(target >= -1 && target < nodes && iterations >= 1 && iterations <= 100000);
     assert(warmups >= 0 && warmups <= 10000);
     let legacy = argv[1] == "legacy"; let removing = argv[2] == "remove";
     var source: u8[>..] = []; var expected: u8[>..] = [];

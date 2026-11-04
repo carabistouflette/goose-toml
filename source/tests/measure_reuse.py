@@ -62,7 +62,7 @@ def main():
     compiler = args.goose.resolve()
     report = {'started_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
               'platform': platform.platform(), 'cpu': args.cpu, 'rounds': args.rounds,
-              'seed': 20261104, 'additional_warmups': 8, 'minimum_batch_ns': 10000000,
+              'seed': 20261104, 'additional_warmups': 8, 'minimum_batch_ns': 10000000, 'target_batch_ns': 30000000,
               'unchanged_binary_control': roots['baseline'] == roots['candidate'],
               'cpu_model': next(s.split(':', 1)[1].strip() for s in Path('/proc/cpuinfo').read_text().splitlines()
                                 if s.startswith('model name')),
@@ -107,9 +107,9 @@ def main():
             while True:
                 samples = {name: run(name, case, count) for name in roots}
                 calibration.append({'case': case, 'iterations': count, 'samples': samples})
-                if min(row['ns'] for row in samples.values()) >= 10000000 or count == 10000:
+                if min(row['ns'] for row in samples.values()) >= report['target_batch_ns'] or count == 100000:
                     break
-                count = min(count * 2, 10000)
+                count = min(count * 2, 100000)
         frozen = []
         for case in CASES:
             selected = next(row for row in reversed(calibration) if tuple(row['case']) == case)
@@ -122,7 +122,7 @@ def main():
         config = json.loads(args.config.read_text())
         assert [tuple(row['case']) for row in config['cases']] == CASES
         for field in ('script_sha256', 'compiler_sha256', 'goose_version', 'goose_revision',
-                      'cc', 'flags', 'additional_warmups', 'minimum_batch_ns', 'seed', 'cpu', 'cpu_model', 'platform'):
+                      'cc', 'flags', 'additional_warmups', 'minimum_batch_ns', 'target_batch_ns', 'seed', 'cpu', 'cpu_model', 'platform'):
             assert config[field] == report[field], f'frozen calibration setting changed: {field}'
         assert before['baseline'] == config['snapshots']['baseline']
         expected = config['snapshots']['baseline'] if report['unchanged_binary_control'] else config['snapshots']['candidate']
@@ -136,7 +136,7 @@ def main():
             order = list(config['cases']); rng.shuffle(order)
             for item in order:
                 case = tuple(item['case']); count = item['iterations']; case_id = CASES.index(case)
-                assert isinstance(count, int) and 1 <= count <= 10000
+                assert isinstance(count, int) and 1 <= count <= 100000
                 for name in (list(roots) if (round_id + case_id) % 2 == 0 else list(reversed(roots))):
                     report['samples'].append({'round': round_id, 'runner': name, 'case': case, **run(name, case, count)})
         for row in report['samples']:
