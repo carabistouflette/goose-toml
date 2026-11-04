@@ -4,15 +4,88 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"os"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
 )
 
-func visit(value any, stats *[12]int64) {
+func temporal(value time.Time) []any {
+	kind := "offset-datetime"
+	var offset any
+	year, month, day := value.Date()
+	hour, minute, second := value.Clock()
+	nanos := value.Nanosecond()
+	switch value.Location().String() {
+	case "datetime-local":
+		kind = "local-datetime"
+	case "date-local":
+		kind = "local-date"
+		hour, minute, second, nanos = 0, 0, 0, 0
+	case "time-local":
+		kind = "local-time"
+		year, month, day = 0, 0, 0
+	default:
+		_, seconds := value.Zone()
+		if seconds%60 != 0 {
+			panic("offset is not an integral minute")
+		}
+		offset = seconds / 60
+	}
+	return []any{kind, year, int(month), day, hour, minute, second, nanos, offset}
+}
+
+func temporalKind(value time.Time) int {
+	switch value.Location().String() {
+	case "datetime-local":
+		return 1
+	case "date-local":
+		return 2
+	case "time-local":
+		return 3
+	default:
+		return 0
+	}
+}
+
+func semantic(value any) any {
+	switch value := value.(type) {
+	case time.Time:
+		return map[string]any{"$toml_temporal": temporal(value)}
+	case float64:
+		number := strconv.FormatFloat(value, 'g', -1, 64)
+		if !strings.ContainsAny(number, ".eE") {
+			number += ".0"
+		}
+		return json.Number(number)
+	case map[string]any:
+		out := make(map[string]any, len(value))
+		for key, child := range value {
+			out[key] = semantic(child)
+		}
+		return out
+	case []any:
+		out := make([]any, len(value))
+		for i, child := range value {
+			out[i] = semantic(child)
+		}
+		return out
+	case []map[string]any:
+		out := make([]any, len(value))
+		for i, child := range value {
+			out[i] = semantic(child)
+		}
+		return out
+	default:
+		return value
+	}
+}
+
+func visit(value any, stats *[18]int64) {
 	stats[0]++
 	switch value := value.(type) {
 	case map[string]any:
@@ -39,12 +112,21 @@ func visit(value any, stats *[12]int64) {
 		stats[9] += value
 	case float64:
 		stats[5]++
-		stats[10] += int64(value * 1000)
+		bits := math.Float64bits(value)
+		stats[16] += int64(uint32(bits) ^ uint32(bits>>32))
+		if math.Abs(value) <= 1000000 {
+			stats[10] += int64(value * 1000)
+		}
+		if math.Abs(value) > 1000000 || bits == (uint64(1)<<63) || (value != 0 && math.Abs(value) < 2.2250738585072014e-308) {
+			stats[17]++
+		}
 	case bool:
 		stats[6]++
 		if value {
 			stats[11]++
 		}
+	case time.Time:
+		stats[12+temporalKind(value)]++
 	default:
 		panic(fmt.Sprintf("unsupported corpus type %T", value))
 	}
@@ -79,7 +161,7 @@ func main() {
 		if _, err := toml.Decode(source, &doc); err != nil {
 			panic(err)
 		}
-		if err := json.NewEncoder(os.Stdout).Encode(doc); err != nil {
+		if err := json.NewEncoder(os.Stdout).Encode(semantic(doc)); err != nil {
 			panic(err)
 		}
 		return
@@ -132,7 +214,7 @@ func main() {
 		}
 		return
 	}
-	var total [12]int64
+	var total [18]int64
 	var roots int64
 	start := time.Now()
 	for i := int64(0); i < iterations; i++ {
@@ -143,7 +225,7 @@ func main() {
 		}
 		roots += int64(len(doc))
 		if mode == "full" {
-			var stats [12]int64
+			var stats [18]int64
 			visit(doc, &stats)
 			for j, value := range stats {
 				total[j] += value
@@ -152,14 +234,25 @@ func main() {
 		runtime.KeepAlive(doc)
 	}
 	elapsed := time.Since(start).Nanoseconds()
+	count := 12
+	for _, value := range total[12:16] {
+		if value != 0 {
+			count = 16
+			break
+		}
+	}
+	if total[17] != 0 {
+		count = 17
+		total[10] = 0
+	}
 	result := struct {
-		Iterations  int64     `json:"iterations"`
-		InputBytes  int       `json:"input_bytes"`
-		Fingerprint string    `json:"input_fnv64"`
-		Elapsed     int64     `json:"elapsed_ns"`
-		Roots       int64     `json:"root_total"`
-		Stats       [12]int64 `json:"stats_total"`
-	}{iterations, len(bytes), strconv.FormatUint(fingerprint, 10), elapsed, roots, total}
+		Iterations  int64   `json:"iterations"`
+		InputBytes  int     `json:"input_bytes"`
+		Fingerprint string  `json:"input_fnv64"`
+		Elapsed     int64   `json:"elapsed_ns"`
+		Roots       int64   `json:"root_total"`
+		Stats       []int64 `json:"stats_total"`
+	}{iterations, len(bytes), strconv.FormatUint(fingerprint, 10), elapsed, roots, total[:count]}
 	if err := json.NewEncoder(os.Stdout).Encode(result); err != nil {
 		panic(err)
 	}

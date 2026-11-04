@@ -1,6 +1,19 @@
 // SPDX-License-Identifier: Apache-2.0
 use std::{env, fs, hint::black_box, time::Instant};
-type Stats = [i64; 12];
+type Stats = [i64; 18];
+fn datetime_kind(value: &toml::value::Datetime) -> usize {
+    match (
+        value.date.is_some(),
+        value.time.is_some(),
+        value.offset.is_some(),
+    ) {
+        (true, true, true) => 0,
+        (true, true, false) => 1,
+        (true, false, false) => 2,
+        (false, true, false) => 3,
+        _ => panic!("invalid datetime kind"),
+    }
+}
 fn visit(value: &toml::Value, stats: &mut Stats) {
     stats[0] += 1;
     match value {
@@ -27,13 +40,20 @@ fn visit(value: &toml::Value, stats: &mut Stats) {
         }
         toml::Value::Float(float) => {
             stats[5] += 1;
-            stats[10] += (float * 1000.0) as i64;
+            let bits = float.to_bits();
+            stats[16] += ((bits as u32) ^ ((bits >> 32) as u32)) as i64;
+            if float.abs() <= 1_000_000.0 {
+                stats[10] += (float * 1000.0) as i64;
+            }
+            if float.abs() > 1_000_000.0 || bits == (1u64 << 63) || float.is_subnormal() {
+                stats[17] += 1;
+            }
         }
         toml::Value::Boolean(boolean) => {
             stats[6] += 1;
             stats[11] += i64::from(*boolean);
         }
-        toml::Value::Datetime(_) => panic!("datetime is outside this corpus checksum schema"),
+        toml::Value::Datetime(value) => stats[12 + datetime_kind(value)] += 1,
     }
 }
 fn quote(value: &str, out: &mut String) {
@@ -79,7 +99,31 @@ fn encode(value: &toml::Value, out: &mut String) {
         toml::Value::Integer(integer) => out.push_str(&integer.to_string()),
         toml::Value::Float(float) => out.push_str(&format!("{float:?}")),
         toml::Value::Boolean(boolean) => out.push_str(if *boolean { "true" } else { "false" }),
-        toml::Value::Datetime(_) => panic!("unexpected datetime"),
+        toml::Value::Datetime(value) => {
+            let kind = [
+                "offset-datetime",
+                "local-datetime",
+                "local-date",
+                "local-time",
+            ][datetime_kind(value)];
+            let (year, month, day) = value
+                .date
+                .map_or((0, 0, 0), |date| (date.year, date.month, date.day));
+            let (hour, minute, second, nanos) = value.time.map_or((0, 0, 0, 0), |time| {
+                (
+                    time.hour,
+                    time.minute,
+                    time.second.unwrap_or(0),
+                    time.nanosecond.unwrap_or(0),
+                )
+            });
+            let offset = match value.offset {
+                Some(toml::value::Offset::Z) => "0".to_owned(),
+                Some(toml::value::Offset::Custom { minutes }) => minutes.to_string(),
+                None => "null".to_owned(),
+            };
+            out.push_str(&format!("{{\"$toml_temporal\":[\"{kind}\",{year},{month},{day},{hour},{minute},{second},{nanos},{offset}]}}"));
+        }
     }
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -133,7 +177,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{{\"iterations\":{iterations},\"input_bytes\":{},\"input_fnv64\":\"{fingerprint}\",\"elapsed_ns\":{elapsed},\"serialized_bytes\":{serialized_bytes},\"output_bytes_total\":{bytes_total},\"output_edge_total\":{edges_total}}}", source.len());
         return Ok(());
     }
-    let mut total = [0i64; 12];
+    let mut total = [0i64; 18];
     let mut root_total = 0u64;
     let start = Instant::now();
     for _ in 0..iterations {
@@ -144,7 +188,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if mode == "full" {
             // Moving the table into Value does not clone or reparse it.
             let value = toml::Value::Table(table);
-            let mut stats = [0; 12];
+            let mut stats = [0; 18];
             visit(&value, &mut stats);
             for (sum, count) in total.iter_mut().zip(stats) {
                 *sum += count;
@@ -152,6 +196,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     let elapsed = start.elapsed().as_nanos();
-    println!("{{\"iterations\":{iterations},\"input_bytes\":{},\"input_fnv64\":\"{fingerprint}\",\"elapsed_ns\":{elapsed},\"root_total\":{root_total},\"stats_total\":{:?}}}", source.len(), total);
+    let count = if total[17] != 0 {
+        total[10] = 0;
+        17
+    } else if total[12..16].iter().any(|&value| value != 0) {
+        16
+    } else {
+        12
+    };
+    println!("{{\"iterations\":{iterations},\"input_bytes\":{},\"input_fnv64\":\"{fingerprint}\",\"elapsed_ns\":{elapsed},\"root_total\":{root_total},\"stats_total\":{:?}}}", source.len(), &total[..count]);
     Ok(())
 }

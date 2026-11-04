@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 """Regression checks for comparison framing and effective compiler provenance."""
 import importlib.util
+import datetime as dt
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -37,6 +38,25 @@ class ComparisonGuards(unittest.TestCase):
                           command.replace("opt-level=3", "opt-level=1"), "sccache " + command]:
                 with self.subTest(command=value), self.assertRaises(ValueError):
                     verify(value)
+
+    def test_temporal_kinds_offsets_and_reserved_key(self):
+        date = dt.date(2026, 11, 4)
+        local = dt.datetime(2026, 11, 4)
+        self.assertFalse(comparison.typed_equal(comparison.semantic(date), comparison.semantic(local)))
+        utc = local.replace(tzinfo=dt.timezone.utc)
+        shifted = dt.datetime(2026, 11, 4, 1, tzinfo=dt.timezone(dt.timedelta(hours=1)))
+        self.assertEqual(utc, shifted)  # Same instant still has different wall/offset semantics.
+        self.assertFalse(comparison.typed_equal(comparison.semantic(utc), comparison.semantic(shifted)))
+        with self.assertRaises(ValueError):
+            comparison.semantic({"$toml_temporal": ["local-date", 2026, 11, 4]})
+
+    def test_wide_float_checksum_and_zero_sign(self):
+        self.assertFalse(comparison.typed_equal(-0.0, 0.0))
+        stats = comparison.stats_of({"v": [-0.0, 1e300, 5e-324]})
+        self.assertEqual(len(stats), 17)
+        self.assertEqual(stats[5], 3)
+        self.assertEqual(stats[10], 0)
+        self.assertNotEqual(stats[16], 0)
 
 
 if __name__ == "__main__":

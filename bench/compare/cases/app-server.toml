@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: Apache-2.0
+# Original application fixture: a small service with workers, TLS and upstreams.
+name = "harbor-api"
+environment = "staging"
+version = "2.8.1"
+features = ["search", "audit", "unicode-labels"]
+banner = "Serving cafés and neighborhoods ☕"
+
+[server]
+listen = "127.0.0.1"
+port = 8080
+workers = 8
+request_timeout_ms = 1500
+max_body_bytes = 1048576
+keep_alive = true
+public_url = "https://api.example.test/v2"
+compression_ratio = 1.25
+allowed_origins = ["https://app.example.test", "https://admin.example.test"]
+
+[server.tls]
+enabled = true
+certificate = "/etc/harbor/tls/server.crt"
+private_key = "/etc/harbor/tls/server.key"
+minimum_version = "1.3"
+
+[database]
+driver = "postgres"
+host = "db.example.test"
+port = 5432
+name = "harbor_staging"
+pool = { minimum = 2, maximum = 24, idle_timeout_ms = 30000 }
+retry_delays_ms = [50, 100, 250, 500]
+
+[logging]
+level = "info"
+format = "json"
+redact = ["authorization", "cookie", "api_key"]
+sample_rate = 0.5
+message = "Request\ncompleted\t✓"
+
+[metrics]
+enabled = true
+path = "/metrics"
+histogram_buckets = [0.25, 0.5, 1.0, 2.5]
+
+[[upstreams]]
+name = "catalog"
+url = "https://catalog.example.test"
+weight = 3
+headers = { "X-Client" = "harbor-api", "X-Region" = "eu-west" }
+
+[[upstreams]]
+name = "search"
+url = "https://search.example.test"
+weight = 1
+headers = { "X-Client" = "harbor-api", "X-Region" = "eu-central" }
+
+[[workers]]
+queue = "email"
+concurrency = 4
+enabled = true
+
+[[workers]]
+queue = "reports"
+concurrency = 2
+enabled = false

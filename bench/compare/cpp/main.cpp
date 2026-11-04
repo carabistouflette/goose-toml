@@ -2,6 +2,8 @@
 #include <toml++/toml.hpp>
 #include <array>
 #include <chrono>
+#include <cmath>
+#include <cstring>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
@@ -10,7 +12,7 @@
 #include <stdexcept>
 #include <string>
 
-using Stats = std::array<std::int64_t, 12>;
+using Stats = std::array<std::int64_t, 18>;
 void visit(const toml::node& node, Stats& stats) {
     ++stats[0];
     if (auto table = node.as_table()) {
@@ -22,9 +24,57 @@ void visit(const toml::node& node, Stats& stats) {
         ++stats[2]; for (const auto& child : *array) visit(child, stats);
     } else if (auto value = node.as_string()) { ++stats[3]; stats[8] += value->get().size(); }
     else if (auto value = node.as_integer()) { ++stats[4]; stats[9] += value->get(); }
-    else if (auto value = node.as_floating_point()) { ++stats[5]; stats[10] += static_cast<std::int64_t>(value->get() * 1000.0); }
+    else if (auto value = node.as_floating_point()) {
+        ++stats[5]; const double number = value->get(); std::uint64_t bits; std::memcpy(&bits, &number, sizeof(bits));
+        stats[16] += static_cast<std::uint32_t>(bits) ^ static_cast<std::uint32_t>(bits >> 32);
+        if (std::abs(number) <= 1000000.0) stats[10] += static_cast<std::int64_t>(number * 1000.0);
+        if (std::abs(number) > 1000000.0 || bits == (std::uint64_t{1} << 63) || std::fpclassify(number) == FP_SUBNORMAL) ++stats[17];
+    }
     else if (auto value = node.as_boolean()) { ++stats[6]; stats[11] += value->get(); }
-    else throw std::runtime_error("datetime is outside this corpus checksum schema");
+    else if (auto value = node.as_date_time()) { ++stats[value->get().offset ? 12 : 13]; }
+    else if (node.is_date()) ++stats[14];
+    else if (node.is_time()) ++stats[15];
+    else throw std::runtime_error("unsupported node kind");
+}
+void quote(std::string_view value, std::ostream& out) {
+    out << '"';
+    for (unsigned char byte : value) {
+        if (byte == '"') out << "\\\"";
+        else if (byte == '\\') out << "\\\\";
+        else if (byte == '\n') out << "\\n";
+        else if (byte == '\r') out << "\\r";
+        else if (byte == '\t') out << "\\t";
+        else if (byte < 32) { const char* hex = "0123456789abcdef"; out << "\\u00" << hex[byte >> 4] << hex[byte & 15]; }
+        else out << static_cast<char>(byte);
+    }
+    out << '"';
+}
+void encode(const toml::node& node, std::ostream& out) {
+    if (auto table = node.as_table()) {
+        out << '{'; bool first = true;
+        for (const auto& [key, value] : *table) { if (!first) out << ','; first = false; quote(key.str(), out); out << ':'; encode(value, out); }
+        out << '}';
+    } else if (auto array = node.as_array()) {
+        out << '['; bool first = true;
+        for (const auto& value : *array) { if (!first) out << ','; first = false; encode(value, out); }
+        out << ']';
+    } else if (node.is_date_time() || node.is_date() || node.is_time()) {
+        toml::date date{0, 0, 0}; toml::time time{0, 0, 0, 0};
+        const char* kind = "local-date"; std::string offset = "null";
+        if (auto value = node.as_date_time()) {
+            date = value->get().date; time = value->get().time;
+            if (value->get().offset) { kind = "offset-datetime"; offset = std::to_string(value->get().offset->minutes); }
+            else kind = "local-datetime";
+        } else if (auto value = node.as_date()) date = value->get();
+        else { kind = "local-time"; time = node.as_time()->get(); }
+        out << "{\"$toml_temporal\":[\"" << kind << "\"," << date.year << ',' << int(date.month) << ',' << int(date.day)
+            << ',' << int(time.hour) << ',' << int(time.minute) << ',' << int(time.second) << ',' << time.nanosecond << ',' << offset << "]}";
+    } else if (node.is_floating_point()) {
+        if (node.as_floating_point()->get() == 0.0 && std::signbit(node.as_floating_point()->get())) { out << "-0.0"; return; }
+        std::ostringstream buffer; buffer << toml::json_formatter(node);
+        const auto number = buffer.str(); out << number;
+        if (number.find_first_of(".eE") == std::string::npos) out << ".0";
+    } else out << toml::json_formatter(node);
 }
 int main(int argc, char** argv) {
     try {
@@ -41,7 +91,7 @@ int main(int argc, char** argv) {
         for (unsigned char byte : source) fingerprint = (fingerprint ^ byte) * 1099511628211ULL;
         if (mode == "decode") {
             const auto document = toml::parse(std::string_view(source));
-            std::cout << toml::json_formatter(document) << '\n'; return 0;
+            encode(document, std::cout); std::cout << '\n'; return 0;
         }
         if (mode == "write" || mode == "write-decode") {
             const auto document = toml::parse(std::string_view(source));
@@ -88,7 +138,9 @@ int main(int argc, char** argv) {
         std::cout << "{\"iterations\":" << iterations << ",\"input_bytes\":" << source.size()
                   << ",\"input_fnv64\":\"" << fingerprint << "\",\"elapsed_ns\":" << elapsed
                   << ",\"root_total\":" << roots << ",\"stats_total\":[";
-        for (std::size_t j = 0; j < total.size(); ++j) { if (j) std::cout << ','; std::cout << total[j]; }
+        const std::size_t count = total[17] ? 17 : total[12] || total[13] || total[14] || total[15] ? 16 : 12;
+        if (total[17]) total[10] = 0;
+        for (std::size_t j = 0; j < count; ++j) { if (j) std::cout << ','; std::cout << total[j]; }
         std::cout << "]}\n";
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

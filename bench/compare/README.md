@@ -37,6 +37,7 @@ python3 scripts/compare.py --cpu 1 --no-build --mode root --output .build/compar
 python3 scripts/compare.py --cpu 1 --no-build --goose-reuse --output .build/compare/with-reuse-report.json
 python3 scripts/compare.py --cpu 1 --no-build --mode write --output .build/compare/write-report.json
 python3 scripts/compare.py --cpu 1 --generate-only
+python3 scripts/compare.py --cpu 3 --corpus extended --mode write --iterations 1000 --rounds 1 --output .build/compare/extended-smoke.json
 ```
 
 `--no-build` requires source and binary hashes to match `.build/compare/build.json`.
@@ -53,14 +54,58 @@ semantic node visit and scope cleanup. Its twelve additive checksum fields are
 node/table/array/string/integer/float/bool counts, UTF-8 key and string byte
 lengths, integer sum, sum of floats multiplied by 1000 and truncated, and true
 count. String contents are checked in the independent preflight rather than
-hashed inside the timing. Only exactly representable `1.25` floats occur in this
-corpus. The checksum is a workload guard, not a collision-resistant tree hash.
+hashed inside the timing. The original eight cases use only exactly representable
+`1.25` floats. The checksum is a workload guard, not a collision-resistant tree hash.
 Goose visits its flat node buffer while competitors visit their tree/map DOMs.
 `root` excludes the structural visit; its results must be labeled separately.
 Optional `--goose-reuse` measures a reused destination through the same checksum
 path and records it separately; its medians are excluded from the fresh-DOM
 comparison table. The equivalent Goose runner modes are `full-reuse` and
 `root-reuse`.
+
+The default `--corpus original` keeps the original eight inputs and their
+twelve-field response schema. Opt-in `--corpus extended` appends four original
+workloads: an application/server configuration, a build/project configuration,
+a scheduling document with all four datetime kinds, and a finite float range.
+The two realistic configurations are readable fixtures in `bench/compare/cases`;
+the scheduling and float documents are generated once alongside the shared
+inputs. All inputs use TOML 1.0 syntax and stay within the Goose limits.
+
+Datetime inputs use ordinary years, minute offsets, no leap seconds and at most
+six fractional digits. This microsecond subset fits Python `tomllib` exactly;
+the harness makes no seven-to-nine-digit precision claim. The decoder adapter
+represents temporal values as `{"$toml_temporal": [kind, year, month, day,
+hour, minute, second, nanosecond, offset_minutes]}`. Absent date/time fields are
+zero, and local kinds have a null offset. Preflight checks the exact kind, wall
+components, nanoseconds and offset; it does not collapse values to strings or
+compare only UTC instants. `Z` and `+00:00` represent the same zero offset.
+Integral-valued JSON floats retain their float type, and every float comparison
+uses exact binary64 bits, including the sign of zero.
+
+Extended runs explicitly set `TZ=UTC` for every runner unless `--timezone` is
+provided, and record the setting. They also run untimed datetime diagnostics
+under UTC and Europe/Paris. The pinned Go decoder stores local datetime kinds
+as `time.Time` with named sentinel locations initialized from the current host
+offset. The adapter recognizes those kinds without assigning them an offset.
+Its default `Marshal` converts those sentinel locations to UTC, which can shift
+local wall values on a non-UTC host. Diagnostics report failures honestly; a
+selected timezone whose writer changes values fails writer preflight and is
+never timed as valid output. The benchmark does not modify the decoded DOM to
+repair library behavior. The original corpus inherits the host timezone unless
+`--timezone` is supplied.
+
+Datetime documents use stats schema 2: the original twelve fields followed by
+offset/local datetime, local date and local time counts. Wide-float documents
+use schema 3: those sixteen fields followed by the sum of XORs of each float's
+high and low 32-bit IEEE halves. The scaled float sum is explicitly disabled
+(zero) in schema 3, so large floats are never converted to i64. Schema 3 applies
+when a value has magnitude above one million, is subnormal or is negative zero;
+the float fixture covers decimal fractions, normal/subnormal values, signed
+zero, and finite exponents from `1e-300` through `1e300` and beyond into the
+subnormal range. Its fingerprint is a workload guard; exact bit preservation
+is checked independently. Original non-temporal inputs keep twelve fields,
+and root mode always emits twelve zero stats. Per-case schema/field metadata
+and the union field lists are recorded in extended reports.
 
 Every iteration creates a fresh semantic document. Goose uses scope-managed
 data stacks, whose backing pages may stay warm; Rust and C++ use standard owned
@@ -115,8 +160,9 @@ version requirements. Go uses BurntSushi/toml `v1.6.0` and locked module sums.
 C++ uses `toml::parse(std::string_view)` from toml++ `3.4.0` at the full commit
 above, compiled with GCC `-O2`, matching Goose's GCC `-O2`. Default parser caches,
 table/index strategies, recursion limits and datetime precision stay enabled.
-The shared corpus uses TOML 1.0 constructs and no datetimes; it establishes no
-datetime throughput or precision claim. Rust supports TOML 1.1, while Goose's
+The original corpus uses TOML 1.0 constructs and no datetimes; it establishes no
+datetime throughput or precision claim. The extended corpus uses the documented
+TOML 1.0 datetime subset above. Rust supports TOML 1.1, while Goose's
 runner uses the library's strict default TOML 1.0 API.
 
 Before timing, all parsers attempt the original depth-60 nested inline workload.

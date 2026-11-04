@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: Apache-2.0
+# Original project fixture: packaging, targets, dependencies and release policy.
+[project]
+name = "harbor-tools"
+version = "1.4.0"
+description = "Command line tools for reproducible builds"
+authors = ["Build Team <build@example.test>"]
+license = "Apache-2.0"
+keywords = ["build", "release", "automation"]
+readme = "README.md"
+include = ["src/**", "assets/**", "LICENSE"]
+exclude = ["tmp/**", "**/*.bak"]
+
+[project.scripts]
+harbor = "harbor.cli:main"
+harbor-check = "harbor.check:main"
+
+[dependencies]
+cli = { version = "2.1", features = ["color", "completion"] }
+http = { version = "1.8", default_features = false, features = ["tls"] }
+json = "3.2"
+local-config = { path = "../config", optional = true }
+
+[features]
+default = ["network"]
+network = ["http"]
+development = ["local-config"]
+
+[profile.release]
+opt_level = 3
+debug = false
+lto = false
+codegen_units = 16
+
+[profile.test]
+opt_level = 1
+debug = true
+timeout_seconds = 120
+
+[tool.format]
+line_length = 100
+indent = 4
+extensions = ["toml", "json", "yaml"]
+
+[tool.lint]
+deny = ["unused-import", "unsafe-path"]
+allow = ["generated-code"]
+confidence = 0.75
+
+[tool.release]
+branch = "main"
+tag_template = "v{version}"
+artifacts = ["dist/*.tar.gz", "dist/*.zip"]
+notes = """
+Builds must pass unit tests, integration tests,
+and reproducibility checks before release.
+"""
+
+[[targets]]
+name = "linux-x86_64"
+triple = "x86_64-unknown-linux-gnu"
+enabled = true
+environment = { CC = "gcc", CFLAGS = "-O2" }
+
+[[targets]]
+name = "linux-aarch64"
+triple = "aarch64-unknown-linux-gnu"
+enabled = true
+environment = { CC = "aarch64-linux-gnu-gcc", CFLAGS = "-O2" }
+
+[[targets]]
+name = "macos-arm64"
+triple = "aarch64-apple-darwin"
+enabled = false
+environment = { CC = "clang", CFLAGS = "-O2" }

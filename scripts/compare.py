@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 """Pinned fresh owned DOM parsing and writing comparisons; see bench/compare/README.md."""
 import argparse
+import datetime as dt
 import functools
 import hashlib
 import json
@@ -11,6 +12,7 @@ import platform
 import random
 import shlex
 import statistics
+import struct
 import subprocess
 import sys
 import time
@@ -25,6 +27,9 @@ RUST_PIN = "1.2.0+spec-1.1.0"
 NAMES = ("goose", "rust", "go", "cpp")
 STATS = ("nodes", "tables", "arrays", "strings", "integers", "floats", "booleans",
          "key_utf8_bytes", "string_utf8_bytes", "integer_sum", "float_times_1000_sum", "true_count")
+TEMPORAL_KINDS = ("offset-datetime", "local-datetime", "local-date", "local-time")
+EXTENDED_STATS = STATS + ("offset_datetimes", "local_datetimes", "local_dates", "local_times")
+WIDE_FLOAT_STATS = EXTENDED_STATS + ("float_ieee64_halves_xor_sum",)
 CARGO_OVERRIDES = {
     "CARGO_ENCODED_RUSTFLAGS": "", "CARGO_PROFILE_RELEASE_LTO": "false",
     "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3", "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "16",
@@ -238,8 +243,40 @@ def build(args):
     return metadata
 
 
+def temporal(value):
+    if isinstance(value, dt.datetime):
+        kind = "offset-datetime" if value.tzinfo is not None else "local-datetime"
+        offset = int(value.utcoffset().total_seconds()) // 60 if value.tzinfo is not None else None
+        parts = [value.year, value.month, value.day, value.hour, value.minute, value.second, value.microsecond * 1000]
+    elif isinstance(value, dt.date):
+        kind, offset = "local-date", None
+        parts = [value.year, value.month, value.day, 0, 0, 0, 0]
+    elif isinstance(value, dt.time):
+        kind, offset = "local-time", None
+        parts = [0, 0, 0, value.hour, value.minute, value.second, value.microsecond * 1000]
+    else:
+        raise ValueError("unsupported temporal value")
+    return {"$toml_temporal": [kind, *parts, offset]}
+
+
+def semantic(value):
+    if isinstance(value, (dt.date, dt.time)):
+        return temporal(value)
+    if isinstance(value, dict):
+        if "$toml_temporal" in value:
+            raise ValueError("benchmark fixture uses the reserved temporal protocol key")
+        return {key: semantic(child) for key, child in value.items()}
+    if isinstance(value, list):
+        return [semantic(child) for child in value]
+    return value
+
+
+def semantic_hash(value):
+    return hashlib.sha256(json.dumps(semantic(value), sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+
+
 def stats_of(value):
-    stats = [0] * 12
+    stats = [0] * 18
 
     def visit(value):
         stats[0] += 1
@@ -263,11 +300,21 @@ def stats_of(value):
             stats[9] += value
         elif isinstance(value, float):
             stats[5] += 1
-            stats[10] += int(value * 1000)
+            bits = struct.unpack("!Q", struct.pack("!d", value))[0]
+            stats[16] += (bits & 0xffffffff) ^ (bits >> 32)
+            if abs(value) <= 1000000:
+                stats[10] += int(value * 1000)
+            if abs(value) > 1000000 or bits == 1 << 63 or (value != 0 and abs(value) < 2.2250738585072014e-308):
+                stats[17] += 1
+        elif isinstance(value, (dt.date, dt.time)):
+            stats[12 + TEMPORAL_KINDS.index(temporal(value)["$toml_temporal"][0])] += 1
         else:
             raise ValueError("unsupported corpus value")
     visit(value)
-    return stats
+    if stats[17]:
+        stats[10] = 0
+        return stats[:17]
+    return stats[:16] if any(stats[12:16]) else stats[:12]
 
 
 def typed_equal(first, second):
@@ -277,10 +324,12 @@ def typed_equal(first, second):
         return first.keys() == second.keys() and all(typed_equal(first[key], second[key]) for key in first)
     if isinstance(first, list):
         return len(first) == len(second) and all(typed_equal(a, b) for a, b in zip(first, second))
+    if isinstance(first, float):
+        return struct.pack("!d", first) == struct.pack("!d", second)
     return first == second
 
 
-def generate_cases(iterations):
+def generate_cases(iterations, corpus="original"):
     nested = lambda depth: "value=" + "{x=" * depth + "[" + "1," * 60000 + "]" + "}" * depth
     definitions = [
         ("small-config", "title = 'Goose'\n[server]\nport = 8080\nenabled = true\n", 1),
@@ -292,6 +341,26 @@ def generate_cases(iterations):
         ("array-then-key", "values = [" + "1," * 60000 + "]\ntrailing=1\n", 10000),
         ("nested-inline-array", nested(60), 10000),
     ]
+    if corpus == "extended":
+        for name in ("app-server", "build-project"):
+            definitions.append((name, (ADAPTERS / "cases" / (name + ".toml")).read_text(), 100))
+        source = '# SPDX-License-Identifier: Apache-2.0\n# Original scheduling fixture; at most six fractional digits.\nname = "regional-maintenance"\nrecorded = 2026-11-04T13:10:09Z\ncalendar_day = 2024-02-29\n'
+        offsets = ("Z", "+05:30", "-07:00", "+01:00")
+        fractions = (".123456", ".000001", ".999999", "")
+        for index in range(96):
+            day, hour = index % 28 + 1, index % 24
+            fraction = fractions[index % len(fractions)]
+            source += (f'\n[[maintenance]]\nid = "job-{index:03d}"\nenabled = {str(index % 3 != 0).lower()}\n'
+                       f'starts_at = 2026-11-{day:02d}T{hour:02d}:32:17{fraction}{offsets[index % len(offsets)]}\n'
+                       f'local_deadline = 2026-11-{day:02d}T{hour:02d}:45:29{fraction}\n'
+                       f'business_date = 2024-02-{index % 29 + 1:02d}\n'
+                       f'local_start = {hour:02d}:15:41{fraction}\n')
+        definitions.append(("datetime-heavy", source, 100))
+        floats = ("0.0", "-0.0", "0.1", "-0.1", "0.2", "-0.25", "1.2345678901234567", "-9.876543210987654", "3.141592653589793", "2.718281828459045",
+                  "1e-300", "-1e-300", "1e-200", "-1e-100", "1e-20", "-1e-10", "1e10", "-1e20", "1e100", "-1e200", "1e300", "-1e300",
+                  "2.2250738585072014e-308", "-2.2250738585072014e-308", "5e-324", "-5e-324", "1e-320", "-1e-310")
+        source = '# SPDX-License-Identifier: Apache-2.0\n# Original finite float range fixture, including subnormals and signed zero.\nvalues = [\n' + ",\n".join("  " + value for value in floats * 8) + ",\n]\n"
+        definitions.append(("finite-float-range", source, 100))
     cases = []
     for name, source, divisor in definitions:
         path = BUILD / "cases" / (name + ".toml")
@@ -307,9 +376,15 @@ def generate_cases(iterations):
             raise ValueError("corpus exceeds Goose node limit")
         cases.append({"name": name, "file": str(path.relative_to(ROOT)), "input_bytes": len(data),
                       "sha256": digest(path), "input_fnv64": fingerprint(data),
-                      "decoded_value_sha256": hashlib.sha256(json.dumps(decoded, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest(),
+                      "decoded_value_sha256": semantic_hash(decoded),
                       "iterations": max(1, iterations // divisor), "root_count": len(decoded),
                       "stats": stats, "inline_depth": 60 if name == "nested-inline-array" else None})
+        if len(stats) == 16:
+            cases[-1].update(stats_schema=2, stats_fields=EXTENDED_STATS,
+                             datetime_policy="all four kinds; years 2024/2026; 0 or 6 fractional digits; exact minute offsets; no leap seconds")
+        elif len(stats) == 17:
+            cases[-1].update(stats_schema=3, stats_fields=WIDE_FLOAT_STATS,
+                             float_policy="finite binary64 values, normal/subnormal, positive/negative, signed zero; exact bits checked outside timing; scaled sum disabled")
     return cases
 
 
@@ -325,8 +400,8 @@ def invoke(name, case, iterations, mode, env):
     if digest(path) != case["sha256"]:
         raise ValueError("input changed during runner execution")
     if mode == "write-decode":
-        expected = tomllib.loads(path.read_text())
-        decoded = tomllib.loads(result.stdout)
+        expected = semantic(tomllib.loads(path.read_text()))
+        decoded = semantic(tomllib.loads(result.stdout))
         if not typed_equal(expected, decoded):
             raise ValueError(name + " serialized TOML changes decoded values/types for " + case["name"])
         output = result.stdout.encode("utf-8")
@@ -334,7 +409,7 @@ def invoke(name, case, iterations, mode, env):
                 "first_byte": output[0] if output else 0, "last_byte": output[-1] if output else 0}
     value = strict_json(result.stdout)
     if mode == "decode":
-        expected = tomllib.loads(path.read_text())
+        expected = semantic(tomllib.loads(path.read_text()))
         if not typed_equal(expected, value):
             raise ValueError(name + " decoded values/types differ from independent Python tomllib for " + case["name"])
         return None
@@ -367,7 +442,7 @@ def invoke(name, case, iterations, mode, env):
 
 def preflight(cases, env, *, writer=False):
     probes = []
-    nested = cases[-1]
+    nested = next(case for case in cases if case["name"] == "nested-inline-array")
     for name in NAMES:
         try:
             invoke(name, nested, 1, "decode", env)
@@ -390,7 +465,7 @@ def preflight(cases, env, *, writer=False):
         nested.update(name="nested-inline-array-depth30", file=str(path.relative_to(ROOT)),
                       sha256=digest(path), input_bytes=path.stat().st_size,
                       input_fnv64=fingerprint(path.read_bytes()), stats=stats_of(decoded), inline_depth=30,
-                      decoded_value_sha256=hashlib.sha256(json.dumps(decoded, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest(),
+                      decoded_value_sha256=semantic_hash(decoded),
                       replaced_case=original)
         print("Depth 60 was rejected; all runners will use the explicitly reported depth 30 variant.", flush=True)
     for case in cases:
@@ -405,6 +480,24 @@ def preflight(cases, env, *, writer=False):
     return probes
 
 
+def datetime_environment_checks(cases, env):
+    case = next(case for case in cases if case["name"] == "datetime-heavy")
+    checks = []
+    for timezone in ("UTC", "Europe/Paris"):
+        variant = {**env, "TZ": timezone}
+        for name in NAMES:
+            result = {"timezone": timezone, "runner": name}
+            for mode, field in (("decode", "parse_semantics"), ("write-decode", "writer_semantics")):
+                try:
+                    invoke(name, case, 1, mode, variant)
+                    result[field] = "preserved"
+                except (ValueError, subprocess.CalledProcessError) as error:
+                    result[field] = "not-preserved"
+                    result[field + "_error"] = str(error).replace(str(ROOT), "<repository>")[:500]
+            checks.append(result)
+    return checks
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--iterations", type=int, default=100000,
@@ -413,6 +506,9 @@ def main():
     parser.add_argument("--cpu", type=int, help="allowed CPU; default minimum allowed, no exclusivity assumed")
     parser.add_argument("--seed", type=int, default=20261104)
     parser.add_argument("--mode", choices=("full", "root", "write"), default="full")
+    parser.add_argument("--corpus", choices=("original", "extended"), default="original",
+                        help="original eight inputs, or those plus app/server, project and datetime fixtures")
+    parser.add_argument("--timezone", help="TZ for all runners; extended corpus defaults to UTC, original inherits host")
     parser.add_argument("--goose", type=Path, default=Path(".toolchain/goose/build/goose"))
     parser.add_argument("--tomlplusplus", type=Path, default=Path(".toolchain/tomlplusplus"))
     parser.add_argument("--output", type=Path, default=Path(".build/compare/report.json"))
@@ -438,9 +534,9 @@ def main():
     except ValueError:
         parser.error("published reports must stay under .build/compare")
     if args.generate_only:
-        cases = generate_cases(args.iterations)
+        cases = generate_cases(args.iterations, args.corpus)
         write_json(BUILD / "cases/manifest.json", {"schema": 1, "cases": cases, "stats_fields": STATS})
-        print("Generated eight cases and SHA-256 manifest in .build/compare/cases")
+        print(f"Generated {len(cases)} cases and SHA-256 manifest in .build/compare/cases")
         return
     metadata = json.loads((BUILD / "build.json").read_text()) if args.no_build else build(args)
     if metadata["source_sha256"] != source_hashes():
@@ -450,15 +546,24 @@ def main():
     if args.build_only:
         print("Built and recorded all runners in .build/compare/build.json")
         return
-    cases = generate_cases(args.iterations)
+    cases = generate_cases(args.iterations, args.corpus)
     env = fresh_env()
+    if args.timezone is not None or args.corpus == "extended":
+        env["TZ"] = args.timezone if args.timezone is not None else "UTC"
     measured_names = NAMES + (("goose_reuse",) if args.goose_reuse else ())
     print("Checking every decoded value against Python tomllib, then validating full structural checksums.", flush=True)
     if args.mode == "write":
         print("Also independently decoding every serializer's actual TOML output and checking output consumption.", flush=True)
     depth_probes = preflight(cases, env, writer=args.mode == "write")
-    manifest = {"schema": 1, "source": "bench/parse.goose", "stats_fields": STATS,
-                "cases": cases, "depth_probes": depth_probes}
+    datetime_checks = datetime_environment_checks(cases, env) if args.corpus == "extended" else None
+    manifest = {"schema": 1, "source": "bench/parse.goose" if args.corpus == "original" else "bench/parse.goose plus original extended fixtures/generators in bench/compare and scripts/compare.py", "stats_fields": STATS,
+                "cases": cases, "depth_probes": depth_probes, "corpus": args.corpus}
+    if args.corpus == "extended":
+        manifest.update(extended_stats_fields=EXTENDED_STATS,
+                        wide_float_stats_fields=WIDE_FLOAT_STATS,
+                        datetime_protocol={"tag": "$toml_temporal", "fields": ["kind", "year", "month", "day", "hour", "minute", "second", "nanosecond", "offset_minutes"],
+                                           "precision": "microseconds (six digits); nanosecond fields must be multiples of 1000",
+                                           "offset_policy": "retain local wall components and explicit numeric offsets; do not normalize to UTC; Z and +00:00 are equivalent"})
     write_json(BUILD / "cases/manifest.json", manifest)
     print("Warming all runners on all cases.", flush=True)
     for case in cases:
@@ -509,6 +614,8 @@ def main():
                        else "fresh owned DOM parse + full structural checksum visit + scope cleanup" if args.mode == "full"
                        else "fresh owned DOM parse + immediate root count + scope cleanup (no structural visit)",
         "mode": args.mode, "rounds": args.rounds, "seed": args.seed,
+        "corpus": args.corpus, "runner_timezone": env.get("TZ", "inherited system timezone"),
+        "datetime_environment_checks": datetime_checks,
         "platform": platform.platform(), "cpu_model": cpu_model, "cpu_affinity": [cpu],
         "allowed_cpu_affinity_before_pinning": allowed, "shared_machine": True,
         "independent_preflight": "Every decoded value and type compared with Python " + platform.python_version() + " tomllib before timing",
@@ -522,9 +629,9 @@ def main():
             "CPU affinity does not grant exclusivity; other host work, frequency changes and short samples can dominate. No portable performance winner is inferred.",
             "Goose uses compiler-managed data stacks with scope cleanup and retained backing pages; Rust/C++ use their standard owned containers/allocators; Go uses a fresh map and enabled amortized GC. No forced allocator clearing, page trimming, or GC collection.",
             "Go GC work during the loop is included; collection of unreachable objects after the timed loop is not forced. This is not allocation-normalized or memory-usage measurement.",
-            "Full mode includes a semantic node visit and key/string byte-length counts, integer/boolean values and floats scaled by 1000; it does not hash every string byte. Decoded content is independently checked before timing.",
+            "Full mode includes a semantic node visit and key/string byte-length counts and integer/boolean values. Original float stats use a scaled sum; schema 3 wide floats disable that sum and use an IEEE fingerprint. No string content hash is timed. Decoded content is independently checked before timing.",
             "In full parsing mode Goose visits its flat node buffer; Rust/C++/Go visit trees/maps. The cost reflects each DOM representation. Root mode is available separately.",
-            "Default parser limits, table/index strategies, caches, numeric conversion and datetime representations/precision stay enabled. Corpus uses only tables, arrays, UTF-8 strings, bools, i64-range integers and exactly representable 1.25 floats; no datetime cost or precision comparison is claimed.",
+            "Default parser limits, table/index strategies, caches, numeric conversion and datetime representations/precision stay enabled. " + ("Original corpus uses tables, arrays, UTF-8 strings, bools, i64-range integers and exactly representable 1.25 floats; it has no datetime workload." if args.corpus == "original" else "Extended corpus adds realistic mixed configurations, finite wide-range floats and a documented microsecond datetime subset."),
             "Rust toml supports TOML 1.1; these shared inputs use TOML 1.0 constructs. Goose parses in its strict default TOML 1.0 mode.",
         ],
     }
@@ -537,6 +644,16 @@ def main():
             "Default serializers choose different whitespace, ordering, quoting, inline tables/headers and line wrapping. Per-language output byte sizes and SHA-256 are recorded in each case's serialized_outputs. Equal decoded values do not mean identical formatting work or bytes.",
             "Default public APIs have different validation, scratch allocation, copying and numeric formatting costs. Those costs remain included; no common formatting policy or validation level is forced, and no universal serializer winner is implied.",
             "Each writer consumes output byte length plus first/last bytes through a consumption barrier or non-inlined Go call and KeepAlive. Full output contents are validated independently before timing; no full-output hash or decode is timed.",
+        ])
+    if args.corpus == "extended":
+        report["limitations"].extend([
+            "Extended corpus contains original app/server and build/project configurations and a datetime-heavy scheduling document with all four TOML datetime kinds. Original eight workload bytes and default corpus stay unchanged.",
+            "A separate finite-float-range workload covers positive/negative decimal fractions, signed zero, normal/subnormal values and exponents through 1e300. Independent preflight compares exact binary64 bits for both parse and writer output, including signed zero.",
+            "Datetime preflight uses a typed component tag, not JSON strings or instant equality: kind, local wall components, nanoseconds and explicit offset minutes must match. Local date/time values have no implied offset. Integral-valued floats keep their float kind in the JSON adapter.",
+            "Datetime inputs use ordinary years, no leap seconds and at most six fractional digits. Python tomllib preserves this microsecond subset; adapters expose nanosecond fields, but this run makes no claim about seven-to-nine-digit or longer fractions.",
+            "Extended runs default all runners to TZ=UTC, recorded explicitly. Separate UTC and Europe/Paris diagnostics check native parser/writer semantics without repairing documents. Pinned BurntSushi uses host-offset sentinel locations for local kinds; its default Marshal can shift local wall values when converting those locations to UTC. Failed timezone diagnostics are reported, not timed as valid outputs.",
+            "Full-visit stats append offset/local datetime, local date and local time counts only for documents containing temporal values (stats schema 2, 16 fields). Original non-temporal documents retain schema 1 with 12 fields; root mode always returns twelve zero fields. Datetime components are independently checked outside timing.",
+            "Wide float stats use schema 3 (17 fields): scaled float sum is explicitly zero/disabled; an additive fingerprint sums XOR of the high/low 32-bit IEEE halves for every float. No wide float is converted to i64. The fingerprint is a workload guard rather than a collision-resistant hash; independent preflight checks exact bits. Schema 3 is selected for large-magnitude, subnormal or negative-zero values.",
         ])
     if source_hashes() != metadata["source_sha256"]:
         raise ValueError("sources changed during measurement; raw partial samples retained, rebuild before publishing")
