@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: Apache-2.0
+import toml from "../..";
+import toml.source.editor;
+import std;
+import os;
+fn nibble(c: u8) -> u8 {
+    if c >= '0' && c <= '9' { return c - '0'; }
+    assert(c >= 'a' && c <= 'f'); return c - 'a' + 10;
+}
+fn unhex(input: const u8[:]) -> u8[>..] {
+    assert(input.len % 2 == 0);
+    var bytes: u8[>..] = []; var at = 0;
+    while at < input.len { bytes.push(nibble(input[at]) * 16 + nibble(input[at + 1])); at += 2; }
+    return bytes;
+}
+fn main() {
+    var line: u8[>..] = [];
+    loop {
+        line.clear(); if !read_line(line) { break; }
+        let fields = split(line, '\t'); assert(fields.len == 5);
+        let input = unhex(fields[1]); let table = unhex(fields[2]); let key = unhex(fields[3]); let value = unhex(fields[4]);
+        let path: (const u8[:])[2] = [table, key];
+        var output: u8[>..] = []; var error: u8[>..] = [];
+        if fields[0] == "P" { let text, err = toml_source::put(input, path, value); output.append(text); error.append(err); }
+        else { assert(fields[0] == "R"); let text, err = toml_source::remove(input, path); output.append(text); error.append(err); }
+        assert(error.len == 0 || output.len == 0);
+        var hex: u8[>..] = []; let digits = "0123456789abcdef";
+        for byte in output { hex.push(digits[byte >> 4]); hex.push(digits[byte & 15]); }
+        print(if error.len > 0 { "E" } else { "O" }, "\t", hex);
+    }
+}
