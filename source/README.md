@@ -20,7 +20,7 @@ fn main() {
 
 The supported entry points are `toml_source::put`, `toml_source::remove`,
 `toml_source::legacy_set` and `toml_source::legacy_remove`.
-Other declarations are implementation details. Both return `(owned_output,
+Other declarations are implementation details. All return `(owned_output,
 owned_error)`, with an empty error on success and empty output on every error.
 The application owns reading files and atomic publication after success.
 Inputs are borrowed for the duration of the call; no references or source ranges
@@ -70,8 +70,8 @@ The profile preserves its output and diagnostic bytes, including these rules:
 
 - Validate the path first, replacement fragment second, original source third.
   Parse only the first fragment value using the literal four-byte `x = `
-  wrapper; only spaces/tabs may follow it. Trailing comments/newlines or
-  statements return the strict-suffix diagnostic without parsing that suffix.
+  wrapper, after validating UTF-8 across the whole fragment. Only spaces/tabs
+  may follow the value. Trailing comments/newlines or statements return the strict-suffix diagnostic without parsing that suffix.
   Comments/newlines inside a value remain allowed by the TOML grammar.
 - Paths permit 1..64 decoded components and up to 1 MiB combined key bytes.
   Traversing through a scalar, array or inline table fails before checking for

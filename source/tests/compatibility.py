@@ -12,6 +12,8 @@ def run(executable):
     assert fixture['legacy_revision'] == 'cedb2c3c98affbeb45bd34bc7a6618f5a9b75ad0'
     cases = []
     for case in fixture['cases']:
+        assert case['status'] in (0, 1)
+        assert bool(case['status']) == bool(case['error']), case['case']
         decode = lambda name: base64.b64decode(case[name + '_b64'], validate=True)
         cases.append((case['case'], case['mode'], decode('source'), [p.encode() for p in case['path']],
                       decode('value'), decode('output'), case['error'].encode()))
