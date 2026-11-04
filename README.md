@@ -4,6 +4,19 @@ A pure [Goose](https://github.com/aardappel/goose) TOML 1.0 document parser. Apa
 
 Supports bare, quoted and dotted keys; all four string forms; signed 64-bit integers in decimal/hex/octal/binary; binary64 floats including explicit `inf`/`nan`; booleans; date/time values; mixed and nested arrays; tables; inline tables; and arrays of tables. Targets [TOML 1.0](https://toml.io/en/v1.0.0), with the resource limits below. TOML 1.1 extensions are rejected.
 
+## Quick start
+
+```sh
+git clone https://github.com/carabistouflette/goose-toml.git
+cd goose-toml
+make setup check test
+.toolchain/goose/build/goose run examples/config.goose
+```
+
+This builds the pinned compiler and runs the included example from a standalone
+clone. See [platforms and prerequisites](docs/platforms.md) before setup.
+The example in `examples/config.goose` uses:
+
 ```goose
 import toml from "..";  // from an example in this checkout
 import std;
@@ -20,7 +33,10 @@ fn main() {
 }
 ```
 
-From another project use `import toml from "../goose-toml";`, adjusting the local path. A published Git repository can be imported at its full commit hash. Applications own file/process I/O. This first API parses a document; struct mapping and serialization are outside its scope.
+From a nearby project use `import toml from "../goose-toml";`, adjusting the local path. For a remote dependency use
+`import toml from "carabistouflette/goose-toml@<full-published-commit>";`,
+replacing the placeholder with the full commit you have reviewed. There are no
+tagged releases or stability promises yet. Applications own file/process I/O. This first API parses a document; struct mapping and serialization are outside its scope.
 
 ## API and ownership
 
@@ -46,7 +62,7 @@ Parsing is linear in input size plus key-index probe/comparison work and bounded
 - Bare scalar tokens: **128 bytes**, including numeric and date/time tokens, checked before conversion or a token copy. Strings and keys are bounded by the input cap.
 - Key-index work: **16,777,216 units** per parse. Pathological inputs can exhaust this budget below the other limits.
 
-These limits deliberately reject some otherwise valid TOML. They are fixed constants in this version. Recursion follows the checked logical depth. Arena storage is O(input bytes + nodes + index slots); rehashing temporarily copies the old index, and total storage can substantially exceed input size, and the input limit is not an exact allocator budget. Reusing a document may retain previously allocated arena capacity. Out-of-memory is governed by Goose's runtime; this API does not promise recovery from allocator failure.
+These limits deliberately reject some otherwise valid TOML. They are fixed constants in this version. Recursion follows the checked logical depth. Arena storage is O(input bytes + nodes + index slots); rehashing temporarily copies the old index, and total storage can substantially exceed input size. The input limit is not an exact allocator budget. Reusing a document may retain previously allocated arena capacity. Out-of-memory is governed by Goose's runtime; this API does not promise recovery from allocator failure.
 
 ## Development and validation
 
@@ -84,7 +100,14 @@ python3 scripts/benchmark.py --baseline /path/to/baseline-bench --candidate .bui
 
 The harness warms both binaries, pins them to one allowed CPU on Linux, randomizes paired run order, checks workload sizes/iterations/checksums, and records nine raw samples per binary plus medians in `.build/benchmark.json`. These warm destination-reuse measurements do not establish cold latency or allocation counts. Shared-machine scheduling, CPU frequency and other load can still affect results.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Changes require focused commits, full checks and independent review.
+For a current absolute measurement without a comparison baseline, use
+`python3 scripts/benchmark.py --candidate .build/bench --output .build/benchmark.json`.
+The measured snapshot, tool versions, raw samples and limitations are recorded in
+[benchmark results](docs/results.md).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md),
+[platform support](docs/platforms.md), and [third-party notices](THIRD_PARTY_NOTICES.md).
+Changes require focused commits, full checks and independent review.
 
 ## License
 

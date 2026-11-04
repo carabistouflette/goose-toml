@@ -1,0 +1,185 @@
+{
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu_affinity": 0,
+  "repeats": 9,
+  "binaries": {
+    "candidate": ".build/publication-bench"
+  },
+  "binary_sha256": {
+    "candidate": "4f55937e3d5388864be4308864b2a4ca9fd9cf18cdc698ac7df498a861836c07"
+  },
+  "workloads": {
+    "small config": {
+      "iterations": 100000,
+      "input_bytes": 52,
+      "checksum": 500000,
+      "candidate_ns_per_parse": 498.32762,
+      "samples_ns_per_parse": {
+        "candidate": [
+          519.23951,
+          488.29489,
+          462.60244,
+          480.39476,
+          505.54866,
+          500.74421,
+          507.12633,
+          498.32762,
+          477.26125
+        ]
+      }
+    },
+    "wide table": {
+      "iterations": 1000,
+      "input_bytes": 12780,
+      "checksum": 1001000,
+      "candidate_ns_per_parse": 171290.939,
+      "samples_ns_per_parse": {
+        "candidate": [
+          168653.353,
+          168294.487,
+          168887.56,
+          175012.828,
+          202252.797,
+          178732.763,
+          175084.897,
+          167444.727,
+          171290.939
+        ]
+      }
+    },
+    "float array": {
+      "iterations": 1000,
+      "input_bytes": 5012,
+      "checksum": 1002000,
+      "candidate_ns_per_parse": 67276.755,
+      "samples_ns_per_parse": {
+        "candidate": [
+          66095.015,
+          65105.086,
+          67855.564,
+          67609.752,
+          69381.187,
+          67144.169,
+          67770.869,
+          64816.429,
+          67276.755
+        ]
+      }
+    },
+    "escaped strings": {
+      "iterations": 1000,
+      "input_bytes": 3390,
+      "checksum": 101000,
+      "candidate_ns_per_parse": 19709.945,
+      "samples_ns_per_parse": {
+        "candidate": [
+          19384.087,
+          19709.945,
+          19374.204,
+          20219.349,
+          19996.171,
+          20145.488,
+          20991.923,
+          19082.893,
+          19152.844
+        ]
+      }
+    },
+    "integer array": {
+      "iterations": 1000,
+      "input_bytes": 7012,
+      "checksum": 1002000,
+      "candidate_ns_per_parse": 89100.635,
+      "samples_ns_per_parse": {
+        "candidate": [
+          88725.67,
+          87061.244,
+          88446.775,
+          91170.088,
+          90395.434,
+          91138.538,
+          89100.635,
+          89551.753,
+          87200.947
+        ]
+      }
+    },
+    "long literal": {
+      "iterations": 100,
+      "input_bytes": 262155,
+      "checksum": 200,
+      "candidate_ns_per_parse": 470310.35,
+      "samples_ns_per_parse": {
+        "candidate": [
+          470310.35,
+          448846.33,
+          467992.31,
+          479423.98,
+          480312.23,
+          484684.91,
+          485872.73,
+          467170.87,
+          464144.78
+        ]
+      }
+    },
+    "array then key": {
+      "iterations": 10,
+      "input_bytes": 120023,
+      "checksum": 600030,
+      "candidate_ns_per_parse": 3465678.8,
+      "samples_ns_per_parse": {
+        "candidate": [
+          3375337.2,
+          3334343.9,
+          3465678.8,
+          3513345.5,
+          3456340.6,
+          3572072.4,
+          3582310.1,
+          3504372.4,
+          3463655.9
+        ]
+      }
+    },
+    "nested inline array": {
+      "iterations": 10,
+      "input_bytes": 120248,
+      "checksum": 600620,
+      "candidate_ns_per_parse": 4137296.5,
+      "samples_ns_per_parse": {
+        "candidate": [
+          4065366.6,
+          3991633.6,
+          4127532.9,
+          4466796.8,
+          4068774.2,
+          4158377.1,
+          4168750.6,
+          4153457.7,
+          4137296.5
+        ]
+      }
+    }
+  },
+  "provenance": {
+    "measured_utc_date": "2026-11-04",
+    "parser_source_commit": "9e8e4bcfbd227ed206cf59594d0ce329d5ebfb86",
+    "goose_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+    "vendored_text_revision": "09d5f0c39e50d3270189bd0c6798cd10ab2f0c0d",
+    "goose_version": "goose eadca40 (runtime 3025e5810379)",
+    "c_compiler": "gcc (GCC) 16.2.1 20260810",
+    "python_version": "3.14.9",
+    "cpu_model": "Intel(R) Core(TM) Ultra 7 258V",
+    "machine_context": "Shared developer workstation; other processes and CPU frequency may affect measurements.",
+    "build_command": ".toolchain/goose/build/goose build bench/parse.goose --cc gcc -O2 -o .build/publication-bench",
+    "measurement_command": "python3 scripts/benchmark.py --candidate .build/publication-bench --iterations 100000 --repeats 9 --output .build/publication-results.json",
+    "input_sha256": {
+      "toml.goose": "b4aa0d80d6643ad89c80b4ad50e672a159af5104698676bcd69a221fe5882c34",
+      "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+      "bench/parse.goose": "8bd003117d9d29c8e8d2a2e31422a5bb958f5be1f8242649ff69882e1ded531a",
+      "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+    },
+    "benchmark_script_sha256": "3f40a04bd95575537cf9bf053afcd03b5acb07d80be26eeb8a9138c7415bd8cd"
+  }
+}
