@@ -130,4 +130,4 @@ Changes require focused commits, full checks and independent review.
 
 [Apache-2.0](LICENSE). Copyright 2026 goose-toml contributors.
 
-Latest experimental release: [v0.1.0-alpha.2](https://github.com/carabistouflette/goose-toml/releases/tag/v0.1.0-alpha.2). See [CHANGELOG.md](CHANGELOG.md).
+Experimental releases: [GitHub releases](https://github.com/carabistouflette/goose-toml/releases). See [CHANGELOG.md](CHANGELOG.md).
