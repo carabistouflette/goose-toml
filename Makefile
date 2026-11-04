@@ -3,7 +3,8 @@ GOOSE ?= .toolchain/goose/build/goose
 setup:
 	./scripts/setup-goose.sh
 check:
-	$(GOOSE) format --check toml.goose examples tests bench
+	$(GOOSE) format --check toml.goose vendor/text.goose examples tests bench
+	$(GOOSE) check tests/utf8.goose
 	$(GOOSE) check tests/parser.goose
 	$(GOOSE) check tests/lifecycle.goose
 	$(GOOSE) check tests/fuzz.goose
@@ -11,6 +12,10 @@ check:
 	$(GOOSE) check tests/decoder.goose
 	$(GOOSE) check bench/parse.goose
 test:
+	$(GOOSE) run tests/utf8.goose
+	mkdir -p .build
+	$(GOOSE) build tests/utf8.goose -o .build/utf8
+	./.build/utf8
 	$(GOOSE) run tests/parser.goose
 	$(GOOSE) run tests/lifecycle.goose
 	mkdir -p .build
@@ -20,7 +25,7 @@ test:
 	./.build/lifecycle
 	$(GOOSE) run examples/config.goose
 format:
-	$(GOOSE) format toml.goose examples tests bench
+	$(GOOSE) format toml.goose vendor/text.goose examples tests bench
 
 .PHONY: conformance
 conformance:

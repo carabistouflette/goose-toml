@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 namespace toml;
 import std;
+import vendor.text;
 
 enum Kind { Table, Array, String, Integer, Float, Boolean, OffsetDateTime, LocalDateTime, LocalDate, LocalTime }
 // Declaration state is distinct from value kind. Inline tables are sealed recursively.
@@ -299,12 +300,6 @@ fn hex(c: u8) -> i64 {
     if c >= 'A' && c <= 'F' { return (c - 'A') as i64 + 10; }
     return -1;
 }
-fn utf8(out: u8[>..]&, code: i64) {
-    if code < 128 { out.push(code as u8); }
-    else if code < 2048 { out.push((192 | (code >> 6)) as u8); out.push((128 | (code & 63)) as u8); }
-    else if code < 65536 { out.push((224 | (code >> 12)) as u8); out.push((128 | ((code >> 6) & 63)) as u8); out.push((128 | (code & 63)) as u8); }
-    else { out.push((240 | (code >> 18)) as u8); out.push((128 | ((code >> 12) & 63)) as u8); out.push((128 | ((code >> 6) & 63)) as u8); out.push((128 | (code & 63)) as u8); }
-}
 fn string(r: Reader&, out: u8[>..]&, multiline_allowed: bool) {
     let quote = peek(r); r.pos++;
     var multi = false;
@@ -363,7 +358,7 @@ fn string(r: Reader&, out: u8[>..]&, multiline_allowed: bool) {
                 code = code * 16 + d; r.pos++;
             }
             if code > 1114111 || (code >= 55296 && code <= 57343) { fail(r, "invalid Unicode scalar"); return; }
-            utf8(out, code);
+            assert(toml_text::append_utf8(out, code));
         } else { fail(r, "invalid escape"); return; }
     }
     fail(r, "unterminated string");
@@ -497,33 +492,6 @@ fn datetime(s: u8[:]) -> Kind, bool {
     return Kind.OffsetDateTime, oh >= 0 && oh <= 23 && om >= 0 && om <= 59;
 }
 
-fn valid_utf8(text: u8[:]) -> bool {
-    var i = 0;
-    // Scan an ASCII prefix in safe eight-byte chunks, then use the scalar
-    // validator for the remainder. No word casts or alignment assumptions.
-    while text.len - i >= 8 && (text[i] | text[i + 1] | text[i + 2] | text[i + 3] |
-            text[i + 4] | text[i + 5] | text[i + 6] | text[i + 7]) < 0x80 { i += 8; }
-    while i < text.len {
-        let c = text[i];
-        i++;
-        if c < 0x80 { continue; }
-        var count = 0;
-        var lo: u8 = 0x80;
-        var hi: u8 = 0xbf;
-        if c >= 0xc2 && c <= 0xdf { count = 1; }
-        else if c >= 0xe0 && c <= 0xef {
-            count = 2;
-            if c == 0xe0 { lo = 0xa0; }
-            if c == 0xed { hi = 0x9f; }
-        } else if c >= 0xf0 && c <= 0xf4 {
-            count = 3;
-            if c == 0xf0 { lo = 0x90; }
-            if c == 0xf4 { hi = 0x8f; }
-        } else { return false; }
-        if count > text.len - i { return false; }
-        if text[i] < lo || text[i] > hi { return false; }
-        for j in 1..count { if text[i + j] < 0x80 || text[i + j] > 0xbf { return false; } }
-        i += count;
-    }
-    return true;
-}
+// Supported compatibility entry point; accepts Unicode scalars including NUL.
+// TOML syntax applies its own control-character restrictions after preflight.
+fn valid_utf8(source: u8[:]) -> bool { toml_text::valid_utf8(source) }

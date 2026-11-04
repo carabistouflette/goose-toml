@@ -1,6 +1,6 @@
 # goose-toml
 
-A pure [Goose](https://github.com/aardappel/goose) TOML 1.0 document parser. Apache-2.0. Experimental API; no release yet. No runtime dependencies beyond the Goose standard library.
+A pure [Goose](https://github.com/aardappel/goose) TOML 1.0 document parser. Apache-2.0. Experimental API; no release yet. No runtime dependencies beyond the Goose standard library. Strict UTF-8 validation and scalar encoding use a pinned, vendored goose-text snapshot (see [vendor/README.md](vendor/README.md)).
 
 Supports bare, quoted and dotted keys; all four string forms; signed 64-bit integers in decimal/hex/octal/binary; binary64 floats including explicit `inf`/`nan`; booleans; date/time values; mixed and nested arrays; tables; inline tables; and arrays of tables. Targets [TOML 1.0](https://toml.io/en/v1.0.0), with the resource limits below. TOML 1.1 extensions are rejected.
 
@@ -24,6 +24,7 @@ From another project use `import toml from "../goose-toml";`, adjusting the loca
 
 ## API and ownership
 
+- `valid_utf8(bytes)` is a supported allocation-free strict UTF-8 check. It accepts Unicode scalars including NUL, BOM and noncharacters; TOML syntax restrictions apply separately during parsing.
 - `parse_into(text, doc)` returns an owned error string, empty on success. It replaces the destination, including on failure. On error the document may be partial: discard it. Messages identify a zero-based byte offset and one-based line/byte column, except input-size and UTF-8 preflight failures, which report byte 0.
 - Create the destination as `var doc = toml::Document { .. };`. It is a `root struct` because it owns several independently growable arenas; Goose root structs cannot be returned by value.
 - Root is node `0` on success. Nodes use integer indices, which remain valid during arena growth. `first`, `last`, and `next` use `-1` for no link. `count` is the immediate child count; children retain insertion order. Arrays of tables have ordinary array kind and table children.
