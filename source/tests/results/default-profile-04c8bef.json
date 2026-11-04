@@ -1,0 +1,558 @@
+{
+  "started_utc": "2026-11-04T19:00:46Z",
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu": 0,
+  "cpu_model": "Intel(R) Core(TM) Ultra 7 258V",
+  "rounds": 9,
+  "iterations": 1000,
+  "warmup_processes_per_build": 1,
+  "flags": "goose build source/bench.goose --cc CC -O2",
+  "cc": "gcc (GCC) 16.2.1 20260810",
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "builds": {
+    "baseline": {
+      "sha": "b59b25a7694ef1d30283ecaa41237af7220d4908",
+      "dirty": "",
+      "source_sha256": {
+        "source/bench.goose": "021608bd0dba00c009bb49ace00440aec1c8894d5cb02c1455ea97f2ca35fbf6",
+        "source/editor.goose": "de6330db8c78c5fd7c81dc145f4b2dae88dbcad000a7eded80a90835daee93de",
+        "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+        "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+        "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+        "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+        "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+      },
+      "binary_sha256": "1916ae6a62e0fbab563c2c566797fd9a950c270d3e0885761f67a4f5a55ed104"
+    },
+    "candidate": {
+      "sha": "04c8befbb353da3e90ecaacf20a5977b85d7fe00",
+      "dirty": "",
+      "source_sha256": {
+        "source/bench.goose": "021608bd0dba00c009bb49ace00440aec1c8894d5cb02c1455ea97f2ca35fbf6",
+        "source/editor.goose": "7664b58ea6901c422a95d676ecc7c4bc50613754db5d76580b37bd6a13f791a9",
+        "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+        "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+        "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+        "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+        "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+      },
+      "binary_sha256": "ec56ce4f307bfbb8be8d88b015b1e3ed7a9f8af2be945f58c69ea23ea33d4a58"
+    }
+  },
+  "samples": [
+    {
+      "round": 0,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 2422603,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1117932,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1820742655,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1750172429,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 0,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 2011739,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1252732,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1789624812,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1630873259,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 1,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 2101203,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1166539,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1739629373,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1616256411,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 1,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 1868582,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1143168,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1805153264,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1663523212,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 2,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 2025207,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1123558,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1857368075,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1655483431,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 2,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 2113259,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1212517,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1810857184,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1678209645,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 3,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 2129785,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1467649,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 2014709515,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1704852585,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 3,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 2100598,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1079665,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1744874614,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1615791333,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 4,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 2091581,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1069821,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 2535757577,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 3331895549,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 4,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 4993808,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1189403,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 2527460608,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1610340045,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 5,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 2071991,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1088182,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1775571276,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1638552760,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 5,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 4746122,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 2158281,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 3404570399,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1576770476,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 6,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 1844169,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1086018,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1747186479,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1695314508,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 6,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 1968490,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1115129,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1781505806,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1613636272,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 7,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 1982279,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1245361,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1741766818,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1568670589,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 7,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 1915233,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1096845,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1669346380,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1765019176,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 8,
+      "build": "baseline",
+      "cases": {
+        "put_small": {
+          "ns": 2097601,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1191237,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1850524660,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1727409557,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    },
+    {
+      "round": 8,
+      "build": "candidate",
+      "cases": {
+        "put_small": {
+          "ns": 2551930,
+          "input_bytes": 68,
+          "output_bytes": 89
+        },
+        "remove_small": {
+          "ns": 1220847,
+          "input_bytes": 68,
+          "output_bytes": 52
+        },
+        "put_large": {
+          "ns": 1806144769,
+          "input_bytes": 289072,
+          "output_bytes": 289093
+        },
+        "remove_large": {
+          "ns": 1529656051,
+          "input_bytes": 289072,
+          "output_bytes": 289055
+        }
+      }
+    }
+  ],
+  "scope": "Complete fresh owned edits on a shared host; alternating process order; no exclusive isolation claim.",
+  "median_ns_per_op": {
+    "baseline": {
+      "put_small": 2091.581,
+      "remove_small": 1117.932,
+      "put_large": 1820742.655,
+      "remove_large": 1695314.508
+    },
+    "candidate": {
+      "put_small": 2101.203,
+      "remove_small": 1212.517,
+      "put_large": 1789624.812,
+      "remove_large": 1616256.411
+    }
+  },
+  "candidate_over_baseline": {
+    "put_small": 1.0046003477751997,
+    "remove_small": 1.0846071138495008,
+    "put_large": 0.982909257980777,
+    "remove_large": 0.9533667076952781
+  },
+  "completed_utc": "2026-11-04T19:02:08Z",
+  "measurement_script_sha256": "5f5bda2f9733e8aa1f472cc81a9310e426a3b289b73061d6245aea8ebdb42a3d",
+  "measurement_script_commit": "50d0a3be2fd4c3f62a5871e7b2cf4cb8fade3d8f",
+  "post_run_verified_compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "goose_version": "goose eadca40 (runtime 3025e5810379)",
+  "goose_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+  "post_run_verified_fixture_lengths": {
+    "put_small": [
+      68,
+      89
+    ],
+    "remove_small": [
+      68,
+      52
+    ],
+    "put_large": [
+      289072,
+      289093
+    ],
+    "remove_large": [
+      289072,
+      289055
+    ]
+  },
+  "provenance_note": "Script hash/version, readable compiler identity, and post-run compiler/fixture checks were added after timing from retained source, binaries and samples; timing samples are unmodified. Concurrent local GCC tests ran on CPU2 during part of this shared-host series."
+}

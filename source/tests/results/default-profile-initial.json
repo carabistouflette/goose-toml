@@ -1,0 +1,244 @@
+{
+  "started_utc": "2026-11-04T18:55:30Z",
+  "cpu": 0,
+  "rounds": 9,
+  "iterations": 1000,
+  "flags": "goose build source/bench.goose --cc gcc -O2",
+  "shared_host": true,
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cc": "gcc (GCC) 16.2.1 20260810",
+  "builds": {
+    "baseline": {
+      "sha": "b59b25a7694ef1d30283ecaa41237af7220d4908",
+      "dirty": "",
+      "hashes": {
+        "source/bench.goose": "021608bd0dba00c009bb49ace00440aec1c8894d5cb02c1455ea97f2ca35fbf6",
+        "source/editor.goose": "de6330db8c78c5fd7c81dc145f4b2dae88dbcad000a7eded80a90835daee93de",
+        "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+        "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+        "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+        "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+        "source/.build/default-bench": "1916ae6a62e0fbab563c2c566797fd9a950c270d3e0885761f67a4f5a55ed104"
+      }
+    },
+    "validation": {
+      "sha": "e45cf26e4627bf4269fdb2fc77188bffc187ce10",
+      "dirty": "",
+      "hashes": {
+        "source/bench.goose": "021608bd0dba00c009bb49ace00440aec1c8894d5cb02c1455ea97f2ca35fbf6",
+        "source/editor.goose": "ea72836a4521b0a7a28841ec2a7e87284d6b3cdaaf6cd6b0d1e77d2e79dc2bfc",
+        "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+        "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+        "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+        "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+        "source/.build/default-bench": "45163c008001815514aa2251d473a4b933637309540a24871a88065a6ce78e99"
+      }
+    }
+  },
+  "samples": [
+    {
+      "round": 0,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 1875.236,
+        "remove_small": 1120.876,
+        "put_large": 1699238.509,
+        "remove_large": 1576233.037
+      }
+    },
+    {
+      "round": 0,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 2091.397,
+        "remove_small": 1207.508,
+        "put_large": 1801432.645,
+        "remove_large": 1641215.774
+      }
+    },
+    {
+      "round": 1,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 2146.949,
+        "remove_small": 1182.64,
+        "put_large": 1756189.941,
+        "remove_large": 1678194.617
+      }
+    },
+    {
+      "round": 1,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 1917.951,
+        "remove_small": 1076.831,
+        "put_large": 1756770.205,
+        "remove_large": 1653654.301
+      }
+    },
+    {
+      "round": 2,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 2004.903,
+        "remove_small": 1166.905,
+        "put_large": 1750362.671,
+        "remove_large": 1552645.226
+      }
+    },
+    {
+      "round": 2,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 1939.431,
+        "remove_small": 1150.374,
+        "put_large": 1781700.194,
+        "remove_large": 1640053.706
+      }
+    },
+    {
+      "round": 3,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 2078.317,
+        "remove_small": 1157.369,
+        "put_large": 1704699.282,
+        "remove_large": 1627504.831
+      }
+    },
+    {
+      "round": 3,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 1886.82,
+        "remove_small": 1059.328,
+        "put_large": 1725352.208,
+        "remove_large": 1581027.614
+      }
+    },
+    {
+      "round": 4,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 2053.139,
+        "remove_small": 1115.604,
+        "put_large": 1686322.248,
+        "remove_large": 1552232.723
+      }
+    },
+    {
+      "round": 4,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 1987.561,
+        "remove_small": 1131.151,
+        "put_large": 1698430.525,
+        "remove_large": 1607278.307
+      }
+    },
+    {
+      "round": 5,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 1895.53,
+        "remove_small": 1101.799,
+        "put_large": 1684836.41,
+        "remove_large": 1593177.345
+      }
+    },
+    {
+      "round": 5,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 1833.045,
+        "remove_small": 1069.217,
+        "put_large": 1687930.569,
+        "remove_large": 1535350.388
+      }
+    },
+    {
+      "round": 6,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 1845.842,
+        "remove_small": 1099.63,
+        "put_large": 1683161.054,
+        "remove_large": 1578697.818
+      }
+    },
+    {
+      "round": 6,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 1901.514,
+        "remove_small": 1056.686,
+        "put_large": 1709421.824,
+        "remove_large": 1553230.196
+      }
+    },
+    {
+      "round": 7,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 1938.981,
+        "remove_small": 1133.5,
+        "put_large": 1705418.813,
+        "remove_large": 1593808.591
+      }
+    },
+    {
+      "round": 7,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 1976.537,
+        "remove_small": 1050.844,
+        "put_large": 1710283.828,
+        "remove_large": 1538296.357
+      }
+    },
+    {
+      "round": 8,
+      "build": "baseline",
+      "ns_per_op": {
+        "put_small": 1863.324,
+        "remove_small": 1056.474,
+        "put_large": 1685029.431,
+        "remove_large": 1569929.79
+      }
+    },
+    {
+      "round": 8,
+      "build": "validation",
+      "ns_per_op": {
+        "put_small": 1916.5,
+        "remove_small": 1165.925,
+        "put_large": 1662397.153,
+        "remove_large": 1538277.064
+      }
+    }
+  ],
+  "median_ns_per_op": {
+    "baseline": {
+      "put_small": 1886.82,
+      "remove_small": 1076.831,
+      "put_large": 1699238.509,
+      "remove_large": 1569929.79
+    },
+    "validation": {
+      "put_small": 1939.431,
+      "remove_small": 1150.374,
+      "put_large": 1705418.813,
+      "remove_large": 1607278.307
+    }
+  },
+  "ratios": {
+    "put_small": 1.0278834229020257,
+    "remove_small": 1.0682957678595806,
+    "put_large": 1.0036371021297281,
+    "remove_large": 1.0237899282107386
+  },
+  "completed_utc": "2026-11-04T18:56:37Z",
+  "measurement_driver": "import hashlib,json,os,platform,random,statistics,subprocess,time\nfrom pathlib import Path\nroot=Path(__file__).resolve().parent\npaths={name:root/f'compatibility-{name}' for name in ['baseline','validation']}\nreport={'started_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'cpu':0,'rounds':9,'iterations':1000,'flags':'goose build source/bench.goose --cc gcc -O2','shared_host':True,'platform':platform.platform(),'cc':subprocess.check_output(['gcc','--version'],text=True).splitlines()[0],'builds':{},'samples':[]}\nfor name,path in paths.items():\n report['builds'][name]={'sha':subprocess.check_output(['git','-C',str(path),'rev-parse','HEAD'],text=True).strip(),'dirty':subprocess.check_output(['git','-C',str(path),'status','--porcelain'],text=True).strip(),'hashes':{f:hashlib.sha256((path/f).read_bytes()).hexdigest() for f in ['source/bench.goose','source/editor.goose','toml.goose','document.goose','writer.goose','vendor/text.goose','source/.build/default-bench']}}\nos.sched_setaffinity(0,{0})\ndef sample(name):\n out=subprocess.check_output([str(paths[name]/'source/.build/default-bench'),'1000'],text=True,timeout=60)\n rows=[line.split('\\t') for line in out.splitlines()]\n assert [r[0] for r in rows]==['put_small','remove_small','put_large','remove_large','checksum']\n assert int(rows[-1][1])==sum(int(r[2])*int(r[4]) for r in rows[:-1])\n return {r[0]:int(r[1])/int(r[2]) for r in rows[:-1]}\nfor name in paths: sample(name)\nfor i in range(9):\n order=list(paths) if i%2==0 else list(reversed(paths))\n for name in order:report['samples'].append({'round':i,'build':name,'ns_per_op':sample(name)})\nreport['median_ns_per_op']={name:{case:statistics.median(row['ns_per_op'][case] for row in report['samples'] if row['build']==name) for case in ['put_small','remove_small','put_large','remove_large']} for name in paths}\nreport['ratios']={case:report['median_ns_per_op']['validation'][case]/report['median_ns_per_op']['baseline'][case] for case in report['median_ns_per_op']['baseline']}\nreport['completed_utc']=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())\nfor name,path in paths.items():\n assert subprocess.check_output(['git','-C',str(path),'status','--porcelain'],text=True).strip()==report['builds'][name]['dirty']\n for f,digest in report['builds'][name]['hashes'].items():assert hashlib.sha256((path/f).read_bytes()).hexdigest()==digest\n(root/'compatibility-default-performance.json').write_text(json.dumps(report,indent=2)+'\\n')\nprint(json.dumps({'medians':report['median_ns_per_op'],'ratios':report['ratios']},indent=2))\n",
+  "measurement_script_sha256": "d3f15b7d85eb451fc8aa734ca6ae312ea0c99dc5c78fbc2575adce66a44b6ee7",
+  "provenance_note": "Preliminary pre-optimization series. Original driver retained verbatim; run from root .build directory. Compiler revision recorded by GOOSE_REVISION file; compiler binary hash was not captured in this preliminary series. All samples retained unchanged. Shared host, no exclusive isolation."
+}

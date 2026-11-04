@@ -1,0 +1,48 @@
+{
+  "legacy": {
+    "legacy_revision": "cedb2c3c98affbeb45bd34bc7a6618f5a9b75ad0",
+    "source_dirty": false,
+    "compiler_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+    "compiler_sha256": "d6992f984453e28b1e9fc2540236063c0c9db67634a99b57a9a46ea58704c313",
+    "editor_sha256": "1c91847f3e2543f4b8b928f53ca4f1c8ab2a40e5cdad431fe1f42d0d2cd4362d",
+    "driver_source_sha256": "d6fde502bec97a4151d34527bafa5fbf7b20abfd888d2ecf0d4ea7c58ca4ab0d",
+    "driver_binary_sha256": "ce153a8971ad5a32dd1811d29e49c338d970b98d61d96428c98f9f8edd77a884",
+    "vendor_manifest_sha256": "49ab6337595574a4fc3ed98a2302df0e7b75ae50e012cfad4529ba867652440e",
+    "flags": "goose build -O2; pinned compiler; CPU4"
+  },
+  "canonical": {
+    "commit": "04c8befbb353da3e90ecaacf20a5977b85d7fe00",
+    "dirty": "",
+    "compiler_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+    "flags": "goose build tests/oracle.goose --cc cc -O2",
+    "hashes": {
+      "source/editor.goose": "7664b58ea6901c422a95d676ecc7c4bc50613754db5d76580b37bd6a13f791a9",
+      "source/tests/oracle.goose": "ed2b0501a38257be8c0511c56fbd4ddee94451256da7e0b7f7df66018c002710",
+      "source/.build/oracle": "4f7c1340e4ad07ac2eeb1874165936d8f0e5b5415f214799bd11a0783ecb4087",
+      "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+      "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+      "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+      "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d"
+    },
+    "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be"
+  },
+  "fixture_sha256": "f137e22aec1276deb6728fd261d77ece3f76c5eac1de6d7cb0dde804b9f50fbd",
+  "harness_commit": "55cbcf199537933863d2dd95ce692b62a1f98f24",
+  "command": "taskset -c 4 python3 scripts/property-test.py --runner .build/consolidation-legacy-driver --canonical-oracle ../goose-toml/.build/compatibility-04c8bef/source/.build/oracle --cases 5000",
+  "campaign": {
+    "calls": 5134,
+    "generated_cases": 5000,
+    "seed": 20261104,
+    "result": "pass",
+    "log_sha256": "fb4673087ac3f82a1040768dcda5a2ba19f50b665651ce0210d7dc0826c64a91"
+  },
+  "snapshot_verification": "HEAD, clean tracked state and every declared source/binary hash independently verified before and after campaign; declared source hashes also match committed Git blobs. Baseline binary hash matches preserved clean cedb2c3 provenance. No vendor adoption.",
+  "companion_validation": {
+    "make_format_check_test_property": "pass; 494 public driver calls plus direct JIT/O2/debug alias and boundary tests",
+    "gcc_asan_ubsan": "pass; overload/boundary/alias tests plus 234 public driver calls",
+    "clang_asan_ubsan": "pass; overload/boundary/alias tests plus 234 public driver calls",
+    "independent_harness_reviews": "two reviewers found no blocking findings; final alias/cap/evidence recheck found no findings",
+    "production_and_vendor_diff": "none"
+  },
+  "transcription_note": "Structured companion evidence copied from commit 6f8deae77aa107061a36485ede1f4c67de7e3d37. Captured stdout omitted to avoid publishing local workspace paths; counts, results, executable/source identities and original log hash are unchanged."
+}

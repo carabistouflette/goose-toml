@@ -46,7 +46,11 @@ def main():
               'rounds': args.rounds, 'iterations': args.iterations, 'warmup_processes_per_build': 1,
               'flags': 'goose build source/bench.goose --cc CC -O2',
               'cc': subprocess.check_output([args.cc, '--version'], text=True).splitlines()[0],
-              'compiler_sha256': digest(goose), 'builds': {}, 'samples': [],
+              'compiler_sha256': digest(goose),
+              'goose_version': subprocess.check_output([str(goose), '--version'], text=True).strip(),
+              'measurement_script_sha256': digest(Path(__file__)),
+              'goose_revision': (paths['candidate'] / 'GOOSE_REVISION').read_text().strip(),
+              'builds': {}, 'samples': [],
               'scope': 'Complete fresh owned edits on a shared host; alternating process order; no exclusive isolation claim.'}
     for name, path in paths.items():
         before = snapshot(path)
@@ -61,6 +65,8 @@ def main():
     assert report['builds']['baseline']['source_sha256']['source/bench.goose'] == report['builds']['candidate']['source_sha256']['source/bench.goose']
     assert report['builds']['baseline']['source_sha256']['GOOSE_REVISION'] == report['builds']['candidate']['source_sha256']['GOOSE_REVISION']
 
+    lengths = {}
+
     def sample(name):
         binary = paths[name] / 'source/.build/profile-bench'
         output = subprocess.check_output([str(binary), str(args.iterations)], text=True, timeout=120)
@@ -68,6 +74,10 @@ def main():
         assert [row[0] for row in rows] == CASES + ['checksum']
         assert all(int(row[2]) == args.iterations and int(row[1]) >= 0 for row in rows[:-1])
         assert int(rows[-1][1]) == sum(int(row[2]) * int(row[4]) for row in rows[:-1])
+        for row in rows[:-1]:
+            current = int(row[3]), int(row[4])
+            assert row[0] not in lengths or lengths[row[0]] == current, 'fixture lengths changed'
+            lengths[row[0]] = current
         return {row[0]: {'ns': int(row[1]), 'input_bytes': int(row[3]), 'output_bytes': int(row[4])}
                 for row in rows[:-1]}
 
@@ -86,6 +96,7 @@ def main():
     for name, path in paths.items():
         assert snapshot(path) == {key: report['builds'][name][key] for key in ('sha', 'dirty', 'source_sha256')}
         assert digest(path / 'source/.build/profile-bench') == report['builds'][name]['binary_sha256']
+    assert digest(goose) == report['compiler_sha256'], 'compiler changed during measurement'
     args.output.write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report['candidate_over_baseline'], indent=2))
 
