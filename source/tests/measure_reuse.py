@@ -62,7 +62,7 @@ def main():
     compiler = args.goose.resolve()
     report = {'started_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
               'platform': platform.platform(), 'cpu': args.cpu, 'rounds': args.rounds,
-              'seed': 20261104, 'additional_warmups': 8,
+              'seed': 20261104, 'additional_warmups': 8, 'minimum_batch_ns': 10000000,
               'unchanged_binary_control': roots['baseline'] == roots['candidate'],
               'cpu_model': next(s.split(':', 1)[1].strip() for s in Path('/proc/cpuinfo').read_text().splitlines()
                                 if s.startswith('model name')),
@@ -121,7 +121,9 @@ def main():
     else:
         config = json.loads(args.config.read_text())
         assert [tuple(row['case']) for row in config['cases']] == CASES
-        assert config['script_sha256'] == report['script_sha256']
+        for field in ('script_sha256', 'compiler_sha256', 'goose_version', 'goose_revision',
+                      'cc', 'flags', 'additional_warmups', 'minimum_batch_ns', 'seed', 'cpu', 'cpu_model', 'platform'):
+            assert config[field] == report[field], f'frozen calibration setting changed: {field}'
         assert before['baseline'] == config['snapshots']['baseline']
         expected = config['snapshots']['baseline'] if report['unchanged_binary_control'] else config['snapshots']['candidate']
         assert before['candidate'] == expected, 'snapshot differs from frozen calibration'
@@ -132,18 +134,22 @@ def main():
         rng = random.Random(20261104)
         for round_id in range(args.rounds):
             order = list(config['cases']); rng.shuffle(order)
-            for case_id, item in enumerate(order):
-                case = tuple(item['case']); count = item['iterations']
+            for item in order:
+                case = tuple(item['case']); count = item['iterations']; case_id = CASES.index(case)
                 assert isinstance(count, int) and 1 <= count <= 10000
                 for name in (list(roots) if (round_id + case_id) % 2 == 0 else list(reversed(roots))):
                     report['samples'].append({'round': round_id, 'runner': name, 'case': case, **run(name, case, count)})
+        for row in report['samples']:
+            row['minimum_met'] = row['ns'] >= config['minimum_batch_ns']
         report['ratios_of_medians'] = []
         for item in config['cases']:
             case = tuple(item['case'])
             medians = {name: statistics.median(row['ns'] / row['iterations'] for row in report['samples']
                                               if row['runner'] == name and tuple(row['case']) == case) for name in roots}
             report['ratios_of_medians'].append({'case': case, 'ns_per_op': medians,
-                                                'candidate_over_baseline': medians['candidate'] / medians['baseline']})
+                                                'candidate_over_baseline': medians['candidate'] / medians['baseline'],
+                                                'eligible_for_timing_claim': bool(item['minimum_met']) and all(
+                                                    row['minimum_met'] for row in report['samples'] if tuple(row['case']) == case)})
     assert {name: snapshot(root) for name, root in roots.items()} == before
     assert {name: digest(binary) for name, binary in binaries.items()} == report['binary_sha256']
     assert digest(compiler) == report['compiler_sha256']
