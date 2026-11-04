@@ -78,16 +78,16 @@ fn child(doc: toml::Document&, parent: i64, name: const u8[:]) -> i64 {
     }
     return -1;
 }
-fn resolve(doc: toml::Document&, path: const u8[:][:], profile: Profile) -> i64, u8[>..] {
+fn resolve(doc: toml::Document&, path: const u8[:][:], profile: Profile) -> i64, const u8[:] {
     var id = 0;
     for part in path {
-        if id < 0 { return -1, []; }
+        if id < 0 { return -1, ""; }
         if legacy(profile) && (doc.nodes[id].kind != toml::Kind.Table || doc.nodes[id].state == toml::State.Sealed) {
-            return -1, owned("toml-edit: cannot traverse an array, scalar or inline table");
+            return -1, "toml-edit: cannot traverse an array, scalar or inline table";
         }
         id = child(doc, id, part);
     }
-    return id, [];
+    return id, "";
 }
 fn check_value(value: const u8[:], version: toml::Version, profile: Profile) -> u8[>..] {
     if legacy(profile) {
