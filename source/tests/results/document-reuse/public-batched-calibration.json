@@ -1,0 +1,1381 @@
+{
+  "started_utc": "2026-11-04T20:16:03Z",
+  "cpu": 6,
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu_model": "Intel(R) Core(TM) Ultra 7 258V",
+  "protocol": "aggregated_batches_v2",
+  "target_batch_ns": 30000000,
+  "minimum_batch_ns": 10000000,
+  "seed": 20261104,
+  "manifest_sha256": "9fef29e55a631b8d00de346cb6a13d2df7ac095d7368b896243730fa620845e6",
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "provenance": {
+    "released_wrapper": "ae32f13d69b69c9604a44d7acd71d2f966daef35",
+    "candidate_commit": "a79cf60ff6ba86dd887dd5749f5b312ca0ef48b4",
+    "intentional_overlay_manifest_mismatch": true,
+    "no_timings_run": true,
+    "compiler": "$WORKSPACE/libraries/goose-toml/.toolchain/goose/build/goose",
+    "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+    "compiler_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+    "gcc_version": "gcc (GCC) 16.2.1 20260810",
+    "harness_sha256": "4cae70b7c1486cc5f88cdab52f8cf267a6970cbe8a72ff52f802aaada62a75f6",
+    "wrapper_source_sha256": "4516ff7e266f4fa5e6d0c4ee3db0bd3089b8c9be4cfdc932d2d6c3385bf04791",
+    "manifest_sha256": "289fac429db541e3ff688d82c86dacfea55864f8d3eee78110c5c43db344b1f6",
+    "original_editor_sha256": "7664b58ea6901c422a95d676ecc7c4bc50613754db5d76580b37bd6a13f791a9",
+    "candidate_editor_sha256": "1fa20fcb1bb3c7ad1751788ae34d6c91dd348397e8871283da6c687c222b59c1",
+    "runners": {
+      "baseline": {
+        "source": "$WORKSPACE/libraries/goose-toml-edit/.build/reuse-bench-baseline-ae32",
+        "binary": "$WORKSPACE/libraries/goose-toml-edit/.build/reuse-bench-baseline-ae32/.build/bench-released-ae32",
+        "binary_sha256": "f7154f10bed74227e27ee8a695cd84bc5c16a1042b5e56b73154931b6b5d5634",
+        "source_files_sha256": {
+          ".github/workflows/ci.yml": "b21b96a4c14b9acae2efd3e3c727194c88cd85e3ef2836c86b2e98e2f56c19a0",
+          ".gitignore": "1209ea25e255b24d5fc0e78c50c61037d78cc4f7c7e65cc4a22bd23a4cd2eec5",
+          "CONTRIBUTING.md": "40131d5c643f79e4c3a798668bc8c56e7c1ae3efd8051a599f27f9ee00e559f3",
+          "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15",
+          "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "Makefile": "8dc9ebc8d4c29fe10d34b32866917ea74ccd8f1b11f4ac034a413cdcdde6b5ff",
+          "README.md": "2556ee21a616c4e164ac4b774e1903e69c3da0f6720b36f1e451246458c2e41a",
+          "SECURITY.md": "e1bb21a20f562c6bc2cadad8f7bc2cb13d89dc2285c5c203117d0b2639eb2a70",
+          "THIRD_PARTY_NOTICES.md": "729dd0cabbd19c02f6d69271e718bca60a1784b3bcaa3e7efbfb5db4bbc92666",
+          "bench/compare.py": "31bd20804d63e70960546e23ee7925b76fed7e9f5b05766ba30ed15007b08ce2",
+          "bench/edit.goose": "4cae70b7c1486cc5f88cdab52f8cf267a6970cbe8a72ff52f802aaada62a75f6",
+          "bench/measure.py": "a04df072e6df0a162c68d48fdf8eeaa19f40a8e14944900c63fb2b349112e5f2",
+          "bench/results/2026-11-04/README.md": "6473c4f72e3165adbb23270283e96470e36d35e8113c1a0350686185f6b1ac89",
+          "bench/results/2026-11-04/inspection.json": "a0f612813ce052b9483c651e65a4eb4a1341f00d03b327161a25e412b918ef69",
+          "bench/results/canonical-adapter/README.md": "918653e20df54d8035c8686d841fa008f981d700018dc2af5c0c7f445346598d",
+          "bench/results/canonical-adapter/comparison.png": "0911361442ffc3f1c600631224a2b3eaaa4fa2481f2e0bee52b3b2fba9b2eae1",
+          "bench/results/canonical-adapter/confirmation.json": "357f144f14b6fefe9809151fd8d390941462caa45e51214aa7383bbc0bf31e77",
+          "bench/results/canonical-adapter/initial-30.json": "e03cf0513d3c38d4c6a7143300e9d3cd8518d04f371fb02771b69442b020bc7b",
+          "docs/results/adapter-de7dfe0-validation.json": "f495e3a8f7c4fc4ad646303bc693f612a35a1941be22f69b92ba32266d5d69f7",
+          "docs/results/canonical-04c8bef-parity.json": "dffc67a511efc2f7530f7ea7246d98e74bb4e704f357c74df13dbfaa3e510164",
+          "docs/results/canonical-5cca023-parity.json": "27ea1284a45decbd524b657b5b9628bc6c37cce492a66048148875ef05c65760",
+          "docs/validation.md": "8e19186149d9c0ced8631d13ea76a349de1ec599f1e23a590cd42b5b52041bef",
+          "examples/dependency.goose": "7148fbddd33c2f49e4ef4ba97d1ee9792405b47a26f9eb2d85400277ec926bb8",
+          "scripts/check-vendor.py": "c9da91c27c5c6daf943ccdbbfbbb102dc7cd9907f75f6098d93462fc465a7fd4",
+          "scripts/property-test.py": "6bdc1af568433814fbdcf6e190f88769ee03eaddb75532f7de2cf10d92a0c7d3",
+          "scripts/setup-goose.sh": "a258081d49cd91986ebbc17a5b2bec7b0acbde54821416143bbac7feec6977e2",
+          "tests/boundaries.goose": "f07aca3accffbb39e4e84c099fb2b69d5dd4461b0bbfeccd2e4848fa5fb812d6",
+          "tests/driver.goose": "d6fde502bec97a4151d34527bafa5fbf7b20abfd888d2ecf0d4ea7c58ca4ab0d",
+          "tests/editor.goose": "8c0791b95d69436b0ca0f09b2c3beb9bb695e47b91e747387e81ac4c9a4259be",
+          "tests/fixtures/README.md": "aad72834e294b8cd6ac735074f7afc4fcbfe87618a9682c591c0adb27e207d4b",
+          "tests/fixtures/legacy-cedb2c3.json": "f137e22aec1276deb6728fd261d77ece3f76c5eac1de6d7cb0dde804b9f50fbd",
+          "tests/overloads.goose": "e3a722ce01267a2310c56b0e890a4572b3de6660a84837e61952c429910b8845",
+          "tests/test_vendor.py": "7a4af318e6496ea338d53f89e93282ace948dc938ed7113813e119af076e8ac8",
+          "toml_edit.goose": "4516ff7e266f4fa5e6d0c4ee3db0bd3089b8c9be4cfdc932d2d6c3385bf04791",
+          "vendor/goose-toml/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "vendor/goose-toml/document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+          "vendor/goose-toml/source/README.md": "16a6f2f1ea2aad78c6bcaa89b561e13b31b62fe6896cf57dc44718e263acbb77",
+          "vendor/goose-toml/source/editor.goose": "7664b58ea6901c422a95d676ecc7c4bc50613754db5d76580b37bd6a13f791a9",
+          "vendor/goose-toml/toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+          "vendor/goose-toml/vendor/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "vendor/goose-toml/vendor/README.md": "782a7738d022eb0ab0bdef10373c2c3728422a648737c58d5f00eec8dca179b8",
+          "vendor/goose-toml/vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+          "vendor/goose-toml/writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+          "vendor/manifest.json": "289fac429db541e3ff688d82c86dacfea55864f8d3eee78110c5c43db344b1f6"
+        },
+        "source_fingerprint_sha256": "344741bd47c997f09e2121369340a3f5f64094f66f52e5846194d56a255f7ec7",
+        "build_cwd": "$WORKSPACE/libraries/goose-toml-edit/.build/reuse-bench-baseline-ae32",
+        "build_command": [
+          "taskset",
+          "-c",
+          "2",
+          "$WORKSPACE/libraries/goose-toml/.toolchain/goose/build/goose",
+          "build",
+          "bench/edit.goose",
+          "--cc",
+          "gcc",
+          "-O2",
+          "-o",
+          ".build/bench-released-ae32"
+        ]
+      },
+      "candidate": {
+        "source": "$WORKSPACE/libraries/goose-toml-edit/.build/reuse-alias-a79cf60-nzj70wcv",
+        "binary": "$WORKSPACE/libraries/goose-toml-edit/.build/reuse-alias-a79cf60-nzj70wcv/.build/bench-reuse-a79cf60",
+        "binary_sha256": "2e9c18cdfbce648ca42bbe897c7f3b60202de11ed2bc033f494acafbdbd6480b",
+        "source_files_sha256": {
+          ".github/workflows/ci.yml": "b21b96a4c14b9acae2efd3e3c727194c88cd85e3ef2836c86b2e98e2f56c19a0",
+          ".gitignore": "1209ea25e255b24d5fc0e78c50c61037d78cc4f7c7e65cc4a22bd23a4cd2eec5",
+          "CONTRIBUTING.md": "40131d5c643f79e4c3a798668bc8c56e7c1ae3efd8051a599f27f9ee00e559f3",
+          "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15",
+          "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "Makefile": "8dc9ebc8d4c29fe10d34b32866917ea74ccd8f1b11f4ac034a413cdcdde6b5ff",
+          "README.md": "2556ee21a616c4e164ac4b774e1903e69c3da0f6720b36f1e451246458c2e41a",
+          "SECURITY.md": "e1bb21a20f562c6bc2cadad8f7bc2cb13d89dc2285c5c203117d0b2639eb2a70",
+          "THIRD_PARTY_NOTICES.md": "729dd0cabbd19c02f6d69271e718bca60a1784b3bcaa3e7efbfb5db4bbc92666",
+          "bench/compare.py": "31bd20804d63e70960546e23ee7925b76fed7e9f5b05766ba30ed15007b08ce2",
+          "bench/edit.goose": "4cae70b7c1486cc5f88cdab52f8cf267a6970cbe8a72ff52f802aaada62a75f6",
+          "bench/measure.py": "a04df072e6df0a162c68d48fdf8eeaa19f40a8e14944900c63fb2b349112e5f2",
+          "bench/results/2026-11-04/README.md": "6473c4f72e3165adbb23270283e96470e36d35e8113c1a0350686185f6b1ac89",
+          "bench/results/2026-11-04/inspection.json": "a0f612813ce052b9483c651e65a4eb4a1341f00d03b327161a25e412b918ef69",
+          "bench/results/canonical-adapter/README.md": "918653e20df54d8035c8686d841fa008f981d700018dc2af5c0c7f445346598d",
+          "bench/results/canonical-adapter/comparison.png": "0911361442ffc3f1c600631224a2b3eaaa4fa2481f2e0bee52b3b2fba9b2eae1",
+          "bench/results/canonical-adapter/confirmation.json": "357f144f14b6fefe9809151fd8d390941462caa45e51214aa7383bbc0bf31e77",
+          "bench/results/canonical-adapter/initial-30.json": "e03cf0513d3c38d4c6a7143300e9d3cd8518d04f371fb02771b69442b020bc7b",
+          "docs/results/adapter-de7dfe0-validation.json": "f495e3a8f7c4fc4ad646303bc693f612a35a1941be22f69b92ba32266d5d69f7",
+          "docs/results/canonical-04c8bef-parity.json": "dffc67a511efc2f7530f7ea7246d98e74bb4e704f357c74df13dbfaa3e510164",
+          "docs/results/canonical-5cca023-parity.json": "27ea1284a45decbd524b657b5b9628bc6c37cce492a66048148875ef05c65760",
+          "docs/validation.md": "8e19186149d9c0ced8631d13ea76a349de1ec599f1e23a590cd42b5b52041bef",
+          "examples/dependency.goose": "7148fbddd33c2f49e4ef4ba97d1ee9792405b47a26f9eb2d85400277ec926bb8",
+          "scripts/check-vendor.py": "c9da91c27c5c6daf943ccdbbfbbb102dc7cd9907f75f6098d93462fc465a7fd4",
+          "scripts/property-test.py": "6bdc1af568433814fbdcf6e190f88769ee03eaddb75532f7de2cf10d92a0c7d3",
+          "scripts/setup-goose.sh": "a258081d49cd91986ebbc17a5b2bec7b0acbde54821416143bbac7feec6977e2",
+          "tests/boundaries.goose": "f07aca3accffbb39e4e84c099fb2b69d5dd4461b0bbfeccd2e4848fa5fb812d6",
+          "tests/driver.goose": "d6fde502bec97a4151d34527bafa5fbf7b20abfd888d2ecf0d4ea7c58ca4ab0d",
+          "tests/editor.goose": "8c0791b95d69436b0ca0f09b2c3beb9bb695e47b91e747387e81ac4c9a4259be",
+          "tests/fixtures/README.md": "aad72834e294b8cd6ac735074f7afc4fcbfe87618a9682c591c0adb27e207d4b",
+          "tests/fixtures/legacy-cedb2c3.json": "f137e22aec1276deb6728fd261d77ece3f76c5eac1de6d7cb0dde804b9f50fbd",
+          "tests/overloads.goose": "e3a722ce01267a2310c56b0e890a4572b3de6660a84837e61952c429910b8845",
+          "tests/test_vendor.py": "7a4af318e6496ea338d53f89e93282ace948dc938ed7113813e119af076e8ac8",
+          "toml_edit.goose": "4516ff7e266f4fa5e6d0c4ee3db0bd3089b8c9be4cfdc932d2d6c3385bf04791",
+          "vendor/goose-toml/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "vendor/goose-toml/document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+          "vendor/goose-toml/source/README.md": "16a6f2f1ea2aad78c6bcaa89b561e13b31b62fe6896cf57dc44718e263acbb77",
+          "vendor/goose-toml/source/editor.goose": "1fa20fcb1bb3c7ad1751788ae34d6c91dd348397e8871283da6c687c222b59c1",
+          "vendor/goose-toml/toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+          "vendor/goose-toml/vendor/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "vendor/goose-toml/vendor/README.md": "782a7738d022eb0ab0bdef10373c2c3728422a648737c58d5f00eec8dca179b8",
+          "vendor/goose-toml/vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+          "vendor/goose-toml/writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+          "vendor/manifest.json": "289fac429db541e3ff688d82c86dacfea55864f8d3eee78110c5c43db344b1f6"
+        },
+        "source_fingerprint_sha256": "f4aa9f7783513e3d71b94a790291d98a81fda23dd6347bcd83d9ff18059f169d",
+        "build_cwd": "$WORKSPACE/libraries/goose-toml-edit/.build/reuse-alias-a79cf60-nzj70wcv",
+        "build_command": [
+          "taskset",
+          "-c",
+          "2",
+          "$WORKSPACE/libraries/goose-toml/.toolchain/goose/build/goose",
+          "build",
+          "bench/edit.goose",
+          "--cc",
+          "gcc",
+          "-O2",
+          "-o",
+          ".build/bench-reuse-a79cf60"
+        ]
+      }
+    },
+    "freeze": "Both exported sources and benchmark binaries frozen; sanitizer jobs use other output files. No production checkout/pin edits."
+  },
+  "script_sha256": "843a79efaaeb6fbbd5fc23afcd863e125b08cb0267d31f7766528aed8746fd08",
+  "scope": "Six unchanged public-call workloads; intentional editor-only overlay of ae32; shared host; exact output handled by separate parity/alias suites, checksum checks here; fixture construction outside runner timer.",
+  "calibration_samples": [
+    {
+      "case": "set",
+      "iterations": 1000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 2668139,
+          "iterations": 1000,
+          "checksum": 129000,
+          "minimum_met": false,
+          "calls_per_batch": 1000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 2668139,
+              "iterations": 1000,
+              "checksum": 129000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 2546473,
+          "iterations": 1000,
+          "checksum": 129000,
+          "minimum_met": false,
+          "calls_per_batch": 1000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 2546473,
+              "iterations": 1000,
+              "checksum": 129000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "set",
+      "iterations": 2000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4437199,
+          "iterations": 2000,
+          "checksum": 258000,
+          "minimum_met": false,
+          "calls_per_batch": 2000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 4437199,
+              "iterations": 2000,
+              "checksum": 258000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 4141937,
+          "iterations": 2000,
+          "checksum": 258000,
+          "minimum_met": false,
+          "calls_per_batch": 2000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 4141937,
+              "iterations": 2000,
+              "checksum": 258000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "set",
+      "iterations": 4000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 8313567,
+          "iterations": 4000,
+          "checksum": 516000,
+          "minimum_met": false,
+          "calls_per_batch": 4000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 8313567,
+              "iterations": 4000,
+              "checksum": 516000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 7481125,
+          "iterations": 4000,
+          "checksum": 516000,
+          "minimum_met": false,
+          "calls_per_batch": 4000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 7481125,
+              "iterations": 4000,
+              "checksum": 516000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "set",
+      "iterations": 8000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 13571827,
+          "iterations": 8000,
+          "checksum": 1032000,
+          "minimum_met": true,
+          "calls_per_batch": 8000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 13571827,
+              "iterations": 8000,
+              "checksum": 1032000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 13273833,
+          "iterations": 8000,
+          "checksum": 1032000,
+          "minimum_met": true,
+          "calls_per_batch": 8000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 13273833,
+              "iterations": 8000,
+              "checksum": 1032000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "set",
+      "iterations": 10000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 16467094,
+          "iterations": 10000,
+          "checksum": 1290000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 16467094,
+              "iterations": 10000,
+              "checksum": 1290000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 16328689,
+          "iterations": 10000,
+          "checksum": 1290000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 16328689,
+              "iterations": 10000,
+              "checksum": 1290000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "set",
+      "iterations": 10000,
+      "batches": 2,
+      "samples": {
+        "baseline": {
+          "ns": 33748901,
+          "iterations": 20000,
+          "checksum": 2580000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 2,
+          "subsamples": [
+            {
+              "ns": 17048731,
+              "iterations": 10000,
+              "checksum": 1290000
+            },
+            {
+              "ns": 16700170,
+              "iterations": 10000,
+              "checksum": 1290000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 31436820,
+          "iterations": 20000,
+          "checksum": 2580000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 2,
+          "subsamples": [
+            {
+              "ns": 15623343,
+              "iterations": 10000,
+              "checksum": 1290000
+            },
+            {
+              "ns": 15813477,
+              "iterations": 10000,
+              "checksum": 1290000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "insert",
+      "iterations": 1000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 1958451,
+          "iterations": 1000,
+          "checksum": 158000,
+          "minimum_met": false,
+          "calls_per_batch": 1000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 1958451,
+              "iterations": 1000,
+              "checksum": 158000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 1984278,
+          "iterations": 1000,
+          "checksum": 158000,
+          "minimum_met": false,
+          "calls_per_batch": 1000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 1984278,
+              "iterations": 1000,
+              "checksum": 158000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "insert",
+      "iterations": 2000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 3949610,
+          "iterations": 2000,
+          "checksum": 316000,
+          "minimum_met": false,
+          "calls_per_batch": 2000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 3949610,
+              "iterations": 2000,
+              "checksum": 316000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 4046439,
+          "iterations": 2000,
+          "checksum": 316000,
+          "minimum_met": false,
+          "calls_per_batch": 2000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 4046439,
+              "iterations": 2000,
+              "checksum": 316000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "insert",
+      "iterations": 4000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 7997615,
+          "iterations": 4000,
+          "checksum": 632000,
+          "minimum_met": false,
+          "calls_per_batch": 4000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 7997615,
+              "iterations": 4000,
+              "checksum": 632000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 7995485,
+          "iterations": 4000,
+          "checksum": 632000,
+          "minimum_met": false,
+          "calls_per_batch": 4000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 7995485,
+              "iterations": 4000,
+              "checksum": 632000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "insert",
+      "iterations": 8000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 14854953,
+          "iterations": 8000,
+          "checksum": 1264000,
+          "minimum_met": true,
+          "calls_per_batch": 8000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 14854953,
+              "iterations": 8000,
+              "checksum": 1264000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 14315788,
+          "iterations": 8000,
+          "checksum": 1264000,
+          "minimum_met": true,
+          "calls_per_batch": 8000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 14315788,
+              "iterations": 8000,
+              "checksum": 1264000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "insert",
+      "iterations": 10000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 18544561,
+          "iterations": 10000,
+          "checksum": 1580000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 18544561,
+              "iterations": 10000,
+              "checksum": 1580000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 17778303,
+          "iterations": 10000,
+          "checksum": 1580000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 17778303,
+              "iterations": 10000,
+              "checksum": 1580000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "insert",
+      "iterations": 10000,
+      "batches": 2,
+      "samples": {
+        "baseline": {
+          "ns": 35118947,
+          "iterations": 20000,
+          "checksum": 3160000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 2,
+          "subsamples": [
+            {
+              "ns": 17298338,
+              "iterations": 10000,
+              "checksum": 1580000
+            },
+            {
+              "ns": 17820609,
+              "iterations": 10000,
+              "checksum": 1580000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 36043493,
+          "iterations": 20000,
+          "checksum": 3160000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 2,
+          "subsamples": [
+            {
+              "ns": 18322725,
+              "iterations": 10000,
+              "checksum": 1580000
+            },
+            {
+              "ns": 17720768,
+              "iterations": 10000,
+              "checksum": 1580000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "remove",
+      "iterations": 1000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 1217203,
+          "iterations": 1000,
+          "checksum": 103000,
+          "minimum_met": false,
+          "calls_per_batch": 1000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 1217203,
+              "iterations": 1000,
+              "checksum": 103000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 1198640,
+          "iterations": 1000,
+          "checksum": 103000,
+          "minimum_met": false,
+          "calls_per_batch": 1000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 1198640,
+              "iterations": 1000,
+              "checksum": 103000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "remove",
+      "iterations": 2000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 2328618,
+          "iterations": 2000,
+          "checksum": 206000,
+          "minimum_met": false,
+          "calls_per_batch": 2000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 2328618,
+              "iterations": 2000,
+              "checksum": 206000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 2431110,
+          "iterations": 2000,
+          "checksum": 206000,
+          "minimum_met": false,
+          "calls_per_batch": 2000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 2431110,
+              "iterations": 2000,
+              "checksum": 206000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "remove",
+      "iterations": 4000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4510253,
+          "iterations": 4000,
+          "checksum": 412000,
+          "minimum_met": false,
+          "calls_per_batch": 4000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 4510253,
+              "iterations": 4000,
+              "checksum": 412000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 4303131,
+          "iterations": 4000,
+          "checksum": 412000,
+          "minimum_met": false,
+          "calls_per_batch": 4000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 4303131,
+              "iterations": 4000,
+              "checksum": 412000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "remove",
+      "iterations": 8000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 8688148,
+          "iterations": 8000,
+          "checksum": 824000,
+          "minimum_met": false,
+          "calls_per_batch": 8000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 8688148,
+              "iterations": 8000,
+              "checksum": 824000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 8420117,
+          "iterations": 8000,
+          "checksum": 824000,
+          "minimum_met": false,
+          "calls_per_batch": 8000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 8420117,
+              "iterations": 8000,
+              "checksum": 824000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "remove",
+      "iterations": 10000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 11294769,
+          "iterations": 10000,
+          "checksum": 1030000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 11294769,
+              "iterations": 10000,
+              "checksum": 1030000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 10046706,
+          "iterations": 10000,
+          "checksum": 1030000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 10046706,
+              "iterations": 10000,
+              "checksum": 1030000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "remove",
+      "iterations": 10000,
+      "batches": 2,
+      "samples": {
+        "baseline": {
+          "ns": 21443603,
+          "iterations": 20000,
+          "checksum": 2060000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 2,
+          "subsamples": [
+            {
+              "ns": 11136871,
+              "iterations": 10000,
+              "checksum": 1030000
+            },
+            {
+              "ns": 10306732,
+              "iterations": 10000,
+              "checksum": 1030000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 20780977,
+          "iterations": 20000,
+          "checksum": 2060000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 2,
+          "subsamples": [
+            {
+              "ns": 10297858,
+              "iterations": 10000,
+              "checksum": 1030000
+            },
+            {
+              "ns": 10483119,
+              "iterations": 10000,
+              "checksum": 1030000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "remove",
+      "iterations": 10000,
+      "batches": 4,
+      "samples": {
+        "baseline": {
+          "ns": 42395158,
+          "iterations": 40000,
+          "checksum": 4120000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 4,
+          "subsamples": [
+            {
+              "ns": 10498201,
+              "iterations": 10000,
+              "checksum": 1030000
+            },
+            {
+              "ns": 10691028,
+              "iterations": 10000,
+              "checksum": 1030000
+            },
+            {
+              "ns": 10185989,
+              "iterations": 10000,
+              "checksum": 1030000
+            },
+            {
+              "ns": 11019940,
+              "iterations": 10000,
+              "checksum": 1030000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 44051599,
+          "iterations": 40000,
+          "checksum": 4120000,
+          "minimum_met": true,
+          "calls_per_batch": 10000,
+          "batches": 4,
+          "subsamples": [
+            {
+              "ns": 10674062,
+              "iterations": 10000,
+              "checksum": 1030000
+            },
+            {
+              "ns": 10683955,
+              "iterations": 10000,
+              "checksum": 1030000
+            },
+            {
+              "ns": 11341828,
+              "iterations": 10000,
+              "checksum": 1030000
+            },
+            {
+              "ns": 11351754,
+              "iterations": 10000,
+              "checksum": 1030000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "wide",
+      "iterations": 1,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 8360240,
+          "iterations": 1,
+          "checksum": 217895,
+          "minimum_met": false,
+          "calls_per_batch": 1,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 8360240,
+              "iterations": 1,
+              "checksum": 217895
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 6748195,
+          "iterations": 1,
+          "checksum": 217895,
+          "minimum_met": false,
+          "calls_per_batch": 1,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 6748195,
+              "iterations": 1,
+              "checksum": 217895
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "wide",
+      "iterations": 2,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 12900149,
+          "iterations": 2,
+          "checksum": 435790,
+          "minimum_met": true,
+          "calls_per_batch": 2,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 12900149,
+              "iterations": 2,
+              "checksum": 435790
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 12290848,
+          "iterations": 2,
+          "checksum": 435790,
+          "minimum_met": true,
+          "calls_per_batch": 2,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 12290848,
+              "iterations": 2,
+              "checksum": 435790
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "wide",
+      "iterations": 4,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 22676961,
+          "iterations": 4,
+          "checksum": 871580,
+          "minimum_met": true,
+          "calls_per_batch": 4,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 22676961,
+              "iterations": 4,
+              "checksum": 871580
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 22152618,
+          "iterations": 4,
+          "checksum": 871580,
+          "minimum_met": true,
+          "calls_per_batch": 4,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 22152618,
+              "iterations": 4,
+              "checksum": 871580
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "wide",
+      "iterations": 8,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 43765895,
+          "iterations": 8,
+          "checksum": 1743160,
+          "minimum_met": true,
+          "calls_per_batch": 8,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 43765895,
+              "iterations": 8,
+              "checksum": 1743160
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 37682718,
+          "iterations": 8,
+          "checksum": 1743160,
+          "minimum_met": true,
+          "calls_per_batch": 8,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 37682718,
+              "iterations": 8,
+              "checksum": 1743160
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "deep",
+      "iterations": 1000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 8908183,
+          "iterations": 1000,
+          "checksum": 251000,
+          "minimum_met": false,
+          "calls_per_batch": 1000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 8908183,
+              "iterations": 1000,
+              "checksum": 251000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 9584731,
+          "iterations": 1000,
+          "checksum": 251000,
+          "minimum_met": false,
+          "calls_per_batch": 1000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 9584731,
+              "iterations": 1000,
+              "checksum": 251000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "deep",
+      "iterations": 2000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 18653918,
+          "iterations": 2000,
+          "checksum": 502000,
+          "minimum_met": true,
+          "calls_per_batch": 2000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 18653918,
+              "iterations": 2000,
+              "checksum": 502000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 16945820,
+          "iterations": 2000,
+          "checksum": 502000,
+          "minimum_met": true,
+          "calls_per_batch": 2000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 16945820,
+              "iterations": 2000,
+              "checksum": 502000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "deep",
+      "iterations": 4000,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 33969985,
+          "iterations": 4000,
+          "checksum": 1004000,
+          "minimum_met": true,
+          "calls_per_batch": 4000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 33969985,
+              "iterations": 4000,
+              "checksum": 1004000
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 33051419,
+          "iterations": 4000,
+          "checksum": 1004000,
+          "minimum_met": true,
+          "calls_per_batch": 4000,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 33051419,
+              "iterations": 4000,
+              "checksum": 1004000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "comments",
+      "iterations": 1,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 5485961,
+          "iterations": 1,
+          "checksum": 1000158,
+          "minimum_met": false,
+          "calls_per_batch": 1,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 5485961,
+              "iterations": 1,
+              "checksum": 1000158
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 5308003,
+          "iterations": 1,
+          "checksum": 1000158,
+          "minimum_met": false,
+          "calls_per_batch": 1,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 5308003,
+              "iterations": 1,
+              "checksum": 1000158
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "comments",
+      "iterations": 2,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 9715232,
+          "iterations": 2,
+          "checksum": 2000316,
+          "minimum_met": false,
+          "calls_per_batch": 2,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 9715232,
+              "iterations": 2,
+              "checksum": 2000316
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 9480648,
+          "iterations": 2,
+          "checksum": 2000316,
+          "minimum_met": false,
+          "calls_per_batch": 2,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 9480648,
+              "iterations": 2,
+              "checksum": 2000316
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "comments",
+      "iterations": 4,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 18273746,
+          "iterations": 4,
+          "checksum": 4000632,
+          "minimum_met": true,
+          "calls_per_batch": 4,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 18273746,
+              "iterations": 4,
+              "checksum": 4000632
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 17870278,
+          "iterations": 4,
+          "checksum": 4000632,
+          "minimum_met": true,
+          "calls_per_batch": 4,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 17870278,
+              "iterations": 4,
+              "checksum": 4000632
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "comments",
+      "iterations": 8,
+      "batches": 1,
+      "samples": {
+        "baseline": {
+          "ns": 34449848,
+          "iterations": 8,
+          "checksum": 8001264,
+          "minimum_met": true,
+          "calls_per_batch": 8,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 34449848,
+              "iterations": 8,
+              "checksum": 8001264
+            }
+          ]
+        },
+        "candidate": {
+          "ns": 33587339,
+          "iterations": 8,
+          "checksum": 8001264,
+          "minimum_met": true,
+          "calls_per_batch": 8,
+          "batches": 1,
+          "subsamples": [
+            {
+              "ns": 33587339,
+              "iterations": 8,
+              "checksum": 8001264
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case": "set",
+      "iterations": 10000,
+      "batches": 2,
+      "minimum_met": true
+    },
+    {
+      "case": "insert",
+      "iterations": 10000,
+      "batches": 2,
+      "minimum_met": true
+    },
+    {
+      "case": "remove",
+      "iterations": 10000,
+      "batches": 4,
+      "minimum_met": true
+    },
+    {
+      "case": "wide",
+      "iterations": 8,
+      "batches": 1,
+      "minimum_met": true
+    },
+    {
+      "case": "deep",
+      "iterations": 4000,
+      "batches": 1,
+      "minimum_met": true
+    },
+    {
+      "case": "comments",
+      "iterations": 8,
+      "batches": 1,
+      "minimum_met": true
+    }
+  ],
+  "completed_utc": "2026-11-04T20:16:04Z",
+  "reproducer_source": "import hashlib,json,os,platform,random,statistics,subprocess,sys,time\nfrom pathlib import Path\nwork=Path(__file__).resolve().parent\nroot=work.parents[2]\nmanifest_path=root.parent/'goose-toml-edit/.build/reuse-benchmark-runners-a79cf60.json'\nmanifest=json.loads(manifest_path.read_text())\nhashfile=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()\nassert hashfile(manifest['compiler'])==manifest['compiler_sha256']\ndef verify():\n for name,row in manifest['runners'].items():\n  assert hashfile(row['binary'])==row['binary_sha256']\n  for file,digest in row['source_files_sha256'].items():assert hashfile(Path(row['source'])/file)==digest\nverify();os.sched_setaffinity(0,{6})\nreport={'started_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'cpu':6,'platform':platform.platform(),'cpu_model':next(x.split(':',1)[1].strip() for x in Path('/proc/cpuinfo').read_text().splitlines() if x.startswith('model name')),'protocol':'aggregated_batches_v2','target_batch_ns':30000000,'minimum_batch_ns':10000000,'seed':20261104,'manifest_sha256':hashfile(manifest_path),'compiler_sha256':manifest['compiler_sha256'],'provenance':manifest,'script_sha256':hashfile(__file__),'samples':[],'scope':'Six unchanged public-call workloads; intentional editor-only overlay of ae32; shared host; exact output handled by separate parity/alias suites, checksum checks here; fixture construction outside runner timer.'}\ncases=['set','insert','remove','wide','deep','comments'];percall={}\ndef run(name,case,count,batches=1):\n rows=[]\n for _ in range(batches):\n  r=subprocess.run([manifest['runners'][name]['binary'],case,str(count)],text=True,capture_output=True,check=True,timeout=120);assert not r.stderr\n  ns,checksum=map(int,r.stdout.split());assert ns>0 and checksum>0 and checksum%count==0\n  current=checksum//count;assert case not in percall or percall[case]==current;percall[case]=current\n  rows.append({'ns':ns,'iterations':count,'checksum':checksum})\n total=sum(row['ns'] for row in rows)\n return {'ns':total,'iterations':count*batches,'checksum':sum(row['checksum'] for row in rows),'minimum_met':total>=10000000,'calls_per_batch':count,'batches':batches,'subsamples':rows}\nif sys.argv[1]=='calibrate':\n report['calibration_samples']=[];report['cases']=[]\n for case in cases:\n  count=1 if case in ['wide','comments'] else 1000\n  batches=1\n  while True:\n   pair={name:run(name,case,count,batches) for name in manifest['runners']};report['calibration_samples'].append({'case':case,'iterations':count,'batches':batches,'samples':pair})\n   if min(row['ns'] for row in pair.values())>=30000000 or (count==10000 and batches==32):break\n   if count<10000:count=min(count*2,10000)\n   else:batches*=2\n  report['cases'].append({'case':case,'iterations':count,'batches':batches,'minimum_met':all(row['minimum_met'] for row in pair.values())})\n destination=work/'public-batched-calibration.json'\nelse:\n cfg=json.loads((work/'public-batched-calibration.json').read_text());assert cfg['manifest_sha256']==report['manifest_sha256'] and cfg['script_sha256']==report['script_sha256'] and cfg['compiler_sha256']==report['compiler_sha256']\n report['config_sha256']=hashfile(work/'public-batched-calibration.json');report['cases']=cfg['cases'];rng=random.Random(20261104)\n for round_id in range(9):\n  order=list(cfg['cases']);rng.shuffle(order)\n  for item in order:\n   case=item['case'];count=item['iterations'];batches=item['batches']\n   for name in (list(manifest['runners']) if (round_id+cases.index(case))%2==0 else list(reversed(manifest['runners']))):\n    report['samples'].append({'round':round_id,'runner':name,'case':case,**run(name,case,count,batches)})\n report['ratios_of_medians']=[]\n for item in cfg['cases']:\n  case=item['case'];med={name:statistics.median(row['ns']/row['iterations'] for row in report['samples'] if row['runner']==name and row['case']==case) for name in manifest['runners']}\n  report['ratios_of_medians'].append({'case':case,'ns_per_op':med,'candidate_over_baseline':med['candidate']/med['baseline'],'eligible_for_timing_claim':item['minimum_met'] and all(row['minimum_met'] for row in report['samples'] if row['case']==case)})\n destination=work/sys.argv[1]\nverify();assert hashfile(manifest_path)==report['manifest_sha256'] and hashfile(manifest['compiler'])==report['compiler_sha256']\nreport['completed_utc']=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime());report['reproducer_source']=Path(__file__).read_text();destination.write_text(json.dumps(report,indent=2)+'\\n');print(destination)\n",
+  "original_artifact_sha256": "6742870a07599b8394ba2b30657c9fdf88829a4e0adbfff766c0dcb40b597b5f",
+  "transcription_note": "Local workspace path prefix normalized to $WORKSPACE; JSON layout compacted. All measured samples, values and original provenance hashes retained. Original raw artifact hash refers to unnormalized local file.",
+  "samples": [
+
+  ]
+}
