@@ -98,9 +98,13 @@ def main():
     if smoke.returncode == 0 or not crash.is_file() or crash.read_bytes() != expected or "assert failed" not in smoke_log:
         raise RuntimeError("Goose assertion artifact self-test failed; see " + str(work / "self-test.log"))
     print("Verified Goose assertion failures save the exact triggering input", flush=True)
+    # One case audits both spec versions, including four parses, two writes
+    # and invariant walks under coverage + ASan/UBSan. Collision-heavy valid
+    # seeds can take over five seconds without a library hang. Keep a bounded
+    # deadline with headroom for that combined instrumented workload.
     command = [str(work / "parser-fuzzer"), str(corpus), str(seeds),
                "-max_len=" + str(limit + 1), "-max_total_time=" + str(args.seconds),
-               "-runs=" + str(args.runs), "-seed=" + str(args.seed), "-timeout=5",
+               "-runs=" + str(args.runs), "-seed=" + str(args.seed), "-timeout=15",
                "-rss_limit_mb=1024", "-artifact_prefix=" + str(artifacts) + "/"]
     print(f"Fuzzing both TOML versions and strict-1.0 roundtrips with {official} union official fixtures and resource/collision seeds", flush=True)
     print("Campaign log: " + str(work / "run.log"), flush=True)

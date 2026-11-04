@@ -18,6 +18,29 @@ fn resource_error(error: const u8[:]) -> bool {
 fn invariant(value: toml::Document&) {
     assert(value.nodes.len >= 1 && value.nodes.len <= toml::MAX_NODES && value.nodes[0].parent == -1);
     assert(value.bytes.len <= toml::MAX_INPUT_BYTES);
+    // Validate every indexed node and each probe cluster in linear time.
+    // Calling find for every colliding key makes the harness quadratic again,
+    // outside the parser's own metered work, especially under coverage tracing.
+    var indexed: bool[>..] = []; for i in value.nodes.len { indexed.push(false); }
+    var entries = 0;
+    if value.index.len > 0 {
+        let length = value.index.len; let mask = length - 1;
+        assert(length <= toml::MAX_NODES * 2 && (length & mask) == 0);
+        assert(value.indexed >= 0 && value.indexed * 2 <= length);
+        var empty = 0; while empty < length && value.index[empty] != -1 { empty++; }
+        assert(empty < length);
+        var cluster = 0;
+        for offset in length {
+            let slot = (empty + 1 + offset) & mask; let id = value.index[slot];
+            if id == -1 { cluster = offset + 1; continue; }
+            assert(id > 0 && id < value.nodes.len && !indexed[id]);
+            indexed[id] = true; entries++;
+            let home = (value.nodes[id].key_hash & (mask as u64)) as i64;
+            assert(((slot - home) & mask) <= offset - cluster);
+        }
+    }
+    assert(entries == value.indexed);
+    let stride = (value.nodes.len + 31) / 32;
     var edges = 0; var text_work = 0;
     for node, id in value.nodes {
         assert(node.key.start >= 0 && node.key.start <= value.bytes.len);
@@ -34,8 +57,12 @@ fn invariant(value: toml::Document&) {
             assert(node.parent >= 0 && node.parent < id);
             assert(node.depth == value.nodes[node.parent].depth + 1 && node.depth <= toml::MAX_DEPTH);
             if value.nodes[node.parent].kind == toml::Kind.Table {
-                assert(toml::find(value, node.parent, toml::key(value, id)) == id);
-            }
+                assert(indexed[id]);
+                assert(node.key_hash == toml::key_hash(node.parent, toml::key(value, id)));
+                if id == 1 || id + 1 == value.nodes.len || id % stride == 0 {
+                    assert(toml::find(value, node.parent, toml::key(value, id)) == id);
+                }
+            } else { assert(!indexed[id]); }
         }
         var count = 0;
         var child = node.first;
