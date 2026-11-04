@@ -19,3 +19,18 @@ jobs:
       - run: make conformance
       - run: make property scalar security sanitize
       - run: make fuzz
+  arm64:
+    name: Native Linux ARM64
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    env:
+      EXPECTED_ARCH: aarch64
+      JOBS: "2"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .toolchain
+          key: goose-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('GOOSE_REVISION', 'scripts/setup-goose.sh') }}
+      - name: Validate architecture, public APIs and both TOML versions
+        run: ./scripts/check-platform.sh

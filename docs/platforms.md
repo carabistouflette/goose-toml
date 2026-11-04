@@ -13,9 +13,40 @@ application struct mapping is outside its scope.
   bounds-check elimination disabled.
 - Clang/libFuzzer with AddressSanitizer/UndefinedBehaviorSanitizer for bounded
   native fuzz campaigns.
-- GitHub Actions is configured for `ubuntu-24.04`; remote run outcomes are linked
-  from the public repository's Actions page rather than inferred from local runs.
+- The original GitHub Actions job uses `ubuntu-24.04`; remote run outcomes are
+  linked from the public repository's Actions page rather than inferred from local runs.
 
+## Additional platform gate: Linux ARM64
+
+CI includes a separate native `ubuntu-24.04-arm` job. It is a
+[standard GitHub-hosted runner for public repositories](https://docs.github.com/en/actions/reference/runners/github-hosted-runners),
+with no larger or self-hosted runner requirement. Its toolchain cache is separated
+by architecture so x86-64 compiler binaries cannot be restored into the ARM job.
+
+**ARM64 execution is pending until that job actually passes.** Adding a runner
+label, generating C, or finding an emulator does not establish platform support.
+The development workstation has QEMU/Clang but no installed ARM64 libc/sysroot or
+cross compiler, so it has not produced local ARM64 execution evidence.
+
+Reproduce the native gate on a Linux ARM64 machine with the prerequisites below:
+
+```sh
+EXPECTED_ARCH=aarch64 ./scripts/check-platform.sh
+```
+
+The script rejects a mismatched CPU architecture or non-64-bit userspace, logs
+actual platform/tool versions and source/compiler revisions, then builds the
+pinned compiler. It runs formatting/type checks and the public API suites through
+both Goose's in-process runner and native binaries: UTF-8, parser, lifecycle,
+TOML 1.1 grammar, document editing, writer/float round trips, mutation model and
+example. It also runs both official TOML decoder/encoder versions, Python property
+and scalar-oracle checks, and hostile/resource and encoder-protocol regressions.
+Failures stop the gate. A green ARM job therefore establishes those tested paths
+on that runner; it does not imply ARM sanitizer/fuzzer or benchmark validation.
+
+Use the job's actual result at the corresponding source commit on the
+[Actions page](https://github.com/carabistouflette/goose-toml/actions) as evidence.
+The script also supports `EXPECTED_ARCH=x86_64` for the existing Linux target.
 Other operating systems, architectures, C compilers, and Goose revisions are not
 yet validated or promised compatible. Pure Goose source alone does not establish
 cross-platform support. Sanitizer/fuzzer commands currently target Linux.
