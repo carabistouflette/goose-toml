@@ -1,0 +1,89 @@
+{
+  "started_utc": "2026-11-04T20:22:03Z",
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu": 6,
+  "cpu_model": "Intel(R) Core(TM) Ultra 7 258V",
+  "rounds": 9,
+  "iterations": 1000,
+  "warmup_processes_per_build": 1,
+  "flags": "goose build source/bench.goose --cc CC -O2",
+  "cc": "gcc (GCC) 16.2.1 20260810",
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "goose_version": "goose eadca40 (runtime 3025e5810379)",
+  "measurement_script_sha256": "25f4eca18162a7f11390e2d2f0dfe396e73dbe52d3a8c19635e450d11a641b80",
+  "goose_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+  "builds": {
+    "baseline": {
+      "sha": "ff13455e3e969f5fa1e3bd3362b1f98cac64a581",
+      "dirty": "",
+      "source_sha256": {
+        "source/bench.goose": "021608bd0dba00c009bb49ace00440aec1c8894d5cb02c1455ea97f2ca35fbf6",
+        "source/editor.goose": "7664b58ea6901c422a95d676ecc7c4bc50613754db5d76580b37bd6a13f791a9",
+        "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+        "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+        "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+        "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+        "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+      },
+      "binary_sha256": "a1d4746857e7450eec4dc1278474a6005a9f6775bd4ea8268334e1fe28f25081"
+    },
+    "candidate": {
+      "sha": "ff13455e3e969f5fa1e3bd3362b1f98cac64a581",
+      "dirty": "",
+      "source_sha256": {
+        "source/bench.goose": "021608bd0dba00c009bb49ace00440aec1c8894d5cb02c1455ea97f2ca35fbf6",
+        "source/editor.goose": "7664b58ea6901c422a95d676ecc7c4bc50613754db5d76580b37bd6a13f791a9",
+        "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+        "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+        "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+        "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+        "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+      },
+      "binary_sha256": "a1d4746857e7450eec4dc1278474a6005a9f6775bd4ea8268334e1fe28f25081"
+    }
+  },
+  "scope": "Complete fresh owned edits on a shared host; alternating process order; no exclusive isolation claim.",
+  "median_ns_per_op": {
+    "baseline": {
+      "put_small": 1500.455,
+      "remove_small": 868.352,
+      "put_large": 1364730.64,
+      "remove_large": 1243199.6
+    },
+    "candidate": {
+      "put_small": 1420.273,
+      "remove_small": 907.776,
+      "put_large": 1314712.716,
+      "remove_large": 1281522.943
+    }
+  },
+  "candidate_over_baseline": {
+    "put_small": 0.9465615429986237,
+    "remove_small": 1.0454009433962264,
+    "put_large": 0.9633495998888104,
+    "remove_large": 1.0308263797703923
+  },
+  "completed_utc": "2026-11-04T20:23:05Z",
+  "original_artifact_sha256": "3d1ae070890e907cce792a859aeb1eb3b36aade1dba87175fe9e3bd2231e09da",
+  "transcription_note": "Local workspace path prefix normalized to $WORKSPACE; JSON layout compacted. All measured samples, values and original provenance hashes retained. Original raw artifact hash refers to unnormalized local file.",
+  "samples": [
+    {"round":0,"build":"baseline","cases":{"put_small":{"ns":1547946,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":909119,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1457216428,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1580339390,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":0,"build":"candidate","cases":{"put_small":{"ns":1420273,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":907776,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1314465698,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1435085654,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":1,"build":"candidate","cases":{"put_small":{"ns":1710725,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":1131385,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1503762598,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1217011091,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":1,"build":"baseline","cases":{"put_small":{"ns":1500455,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":844067,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1381723216,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1268730529,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":2,"build":"baseline","cases":{"put_small":{"ns":1452096,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":876219,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1313066078,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1243199600,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":2,"build":"candidate","cases":{"put_small":{"ns":1300925,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":777166,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1268773998,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1226736134,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":3,"build":"candidate","cases":{"put_small":{"ns":1410855,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":1056910,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1381303520,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1312746011,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":3,"build":"baseline","cases":{"put_small":{"ns":1348305,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":805518,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1364730640,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1316012315,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":4,"build":"baseline","cases":{"put_small":{"ns":1508462,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":834048,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1374570028,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1214272807,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":4,"build":"candidate","cases":{"put_small":{"ns":1416396,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":870022,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1347864998,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1281522943,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":5,"build":"candidate","cases":{"put_small":{"ns":1792746,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":1067395,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1314712716,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1190932495,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":5,"build":"baseline","cases":{"put_small":{"ns":1414193,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":796251,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1297706100,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1329729979,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":6,"build":"baseline","cases":{"put_small":{"ns":1696787,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":1000071,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1277128391,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1178942177,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":6,"build":"candidate","cases":{"put_small":{"ns":1408238,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":818887,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1454774079,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1207508592,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":7,"build":"candidate","cases":{"put_small":{"ns":1518763,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":816613,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1306526584,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1290839026,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":7,"build":"baseline","cases":{"put_small":{"ns":1435382,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":868352,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1382912751,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1185603281,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":8,"build":"baseline","cases":{"put_small":{"ns":1570743,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":976823,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1318939252,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1194995607,"input_bytes":289072,"output_bytes":289055}}},
+    {"round":8,"build":"candidate","cases":{"put_small":{"ns":1827993,"input_bytes":68,"output_bytes":89},"remove_small":{"ns":1099693,"input_bytes":68,"output_bytes":52},"put_large":{"ns":1295217961,"input_bytes":289072,"output_bytes":289093},"remove_large":{"ns":1325607202,"input_bytes":289072,"output_bytes":289055}}}
+  ]
+}

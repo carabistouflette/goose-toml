@@ -1,0 +1,49 @@
+{
+  "runtime_baseline": "de7dfe092f6d72811417355044e5d024d5600613",
+  "engine_candidate": "a79cf60ff6ba86dd887dd5749f5b312ca0ef48b4",
+  "engine_sha256": "1fa20fcb1bb3c7ad1751788ae34d6c91dd348397e8871283da6c687c222b59c1",
+  "measurement_baseline": "ff13455e3e969f5fa1e3bd3362b1f98cac64a581",
+  "measurement_candidate": "b1c31f7f8af62b2da8945ceef189d7daa7cbc813",
+  "published_pins_changed": false,
+  "hosted_checks": "not run for this unreleased experiment",
+  "provenance": {
+    "commit": "a79cf60ff6ba86dd887dd5749f5b312ca0ef48b4",
+    "dirty": "",
+    "hashes": {
+      "source/editor.goose": "1fa20fcb1bb3c7ad1751788ae34d6c91dd348397e8871283da6c687c222b59c1",
+      "source/tests/oracle.goose": "ed2b0501a38257be8c0511c56fbd4ddee94451256da7e0b7f7df66018c002710",
+      "source/.build/oracle": "211c04bb0ebf29afda32e0e1ae9c4012a08ccc6803a13f90e3d25189a747a710",
+      "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+      "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+      "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+      "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d"
+    }
+  },
+  "tests": {
+    "source_format_check_JIT_O2_debug": "PASS",
+    "default_model_cases_per_variant": 2405,
+    "legacy_golden_and_generated_cases_per_variant": 533,
+    "source_index_TOML10": 717,
+    "source_index_TOML11": 720,
+    "gcc_asan_ubsan": "PASS",
+    "clang_asan_ubsan": "PASS",
+    "lifetime_growth_shrink_named_index_retained_error_borrowed_inputs": "PASS on final follow-up test code",
+    "exact_legacy_calls": 5134,
+    "exact_legacy_seed": 20261104,
+    "exact_legacy_binary_sha256": "ce153a8971ad5a32dd1811d29e49c338d970b98d61d96428c98f9f8edd77a884",
+    "fuzz_runs": 16872,
+    "fuzz_seconds_observed": 31,
+    "assertion_artifact_selftest": "PASS",
+    "calibration_mismatched_flags_rejection": "PASS"
+  },
+  "logs_sha256": {
+    "reuse-initial.log": "46d869e963a5e995abfe7c4346b5aeafd9d7efa135ff587f3718e5223e24af5a",
+    "reuse-checkpoint.log": "5672a1912f721c822e424bfd65326e5179e26e6c298e113713e460425809d727",
+    "frozen-gcc.log": "b8c163baa19308b07ff8b932be4f143b33b7e5afcb64aefa4d003fb353d03c1a",
+    "frozen-clang-fuzz.log": "6744b5c3bdbed83e8beba2c0d1679dcc84a40d3dbccd5a7885f6b1754707af2f",
+    "reuse-review-tests.log": "5672a1912f721c822e424bfd65326e5179e26e6c298e113713e460425809d727",
+    "final-tests-gcc.log": "b8daaa7b7a049a832a535b19be6e8fb3d42e11bfd11b3f5e29583e6113a92031",
+    "final-tests-clang.log": "578af796af5fc8e6b2fe8a493795cc27f89e9bfe8767690970061e12d7a965c0",
+    "reuse-differential.log": "20984083f2e257f4f80974f3e92532153567601b02525ab57b8bbdbd03822906"
+  }
+}

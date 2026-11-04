@@ -1,0 +1,4018 @@
+{
+  "started_utc": "2026-11-04T20:00:04Z",
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu": 6,
+  "rounds": 9,
+  "seed": 20261104,
+  "additional_warmups": 8,
+  "minimum_batch_ns": 10000000,
+  "unchanged_binary_control": false,
+  "cpu_model": "Intel(R) Core(TM) Ultra 7 258V",
+  "goose_version": "goose eadca40 (runtime 3025e5810379)",
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "script_sha256": "c624aba27c470482e4e6746dacbe6f5ccab934626a4a3af13271ecbc8d4f21f5",
+  "goose_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+  "cc": "gcc (GCC) 16.2.1 20260810",
+  "flags": "goose build source/tests/profile_costs.goose --cc gcc -O2",
+  "snapshots": {
+    "baseline": {
+      "sha": "3f111333d685a9d2aa0c1a71d1a7e001e9e0ea14",
+      "dirty": "",
+      "hashes": {
+        "source/editor.goose": "7664b58ea6901c422a95d676ecc7c4bc50613754db5d76580b37bd6a13f791a9",
+        "source/tests/profile_costs.goose": "ee5d4bd6fcd047b24c9990e8c20f61513195b0f65e0c919ec7e8cec86a8af9d5",
+        "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+        "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+        "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+        "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+        "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+      }
+    },
+    "candidate": {
+      "sha": "e9ecd6d3281ef0c62d58c2d0c371ae1ec4343b3a",
+      "dirty": "",
+      "hashes": {
+        "source/editor.goose": "1fa20fcb1bb3c7ad1751788ae34d6c91dd348397e8871283da6c687c222b59c1",
+        "source/tests/profile_costs.goose": "ee5d4bd6fcd047b24c9990e8c20f61513195b0f65e0c919ec7e8cec86a8af9d5",
+        "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+        "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+        "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+        "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+        "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+      }
+    }
+  },
+  "scope": "Post-preflight calls, shared host, no exclusive isolation; input construction and exact-byte pre/post checks outside timer.",
+  "binary_sha256": {
+    "baseline": "7b7ecf248aaa769c9969be42254192e99d1a0cb00e4ee27d5c369e20bb1a9cdc",
+    "candidate": "ee2b937b01455ae0ce892d878f3087f86bcccca3fab294b150d65c03bc231890"
+  },
+  "calibration_samples": [
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 356632,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 60000
+        },
+        "candidate": {
+          "ns": 405250,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 60000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 724951,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 120000
+        },
+        "candidate": {
+          "ns": 674411,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 120000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 1451592,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 240000
+        },
+        "candidate": {
+          "ns": 1372599,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 240000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 2589683,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 480000
+        },
+        "candidate": {
+          "ns": 2791714,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 480000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 10000,
+      "samples": {
+        "baseline": {
+          "ns": 3375703,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 600000
+        },
+        "candidate": {
+          "ns": 3565114,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 600000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 2735427,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 158000
+        },
+        "candidate": {
+          "ns": 2518539,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 158000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 5101383,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 316000
+        },
+        "candidate": {
+          "ns": 5426434,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 316000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 10274062,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 632000
+        },
+        "candidate": {
+          "ns": 9629319,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 632000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 18953337,
+          "iterations": 8000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 1264000
+        },
+        "candidate": {
+          "ns": 18063514,
+          "iterations": 8000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 1264000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 2234428,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 158000
+        },
+        "candidate": {
+          "ns": 2327957,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 158000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 4615444,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 316000
+        },
+        "candidate": {
+          "ns": 4619540,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 316000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 8602722,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 632000
+        },
+        "candidate": {
+          "ns": 8834186,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 632000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 17435985,
+          "iterations": 8000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 1264000
+        },
+        "candidate": {
+          "ns": 18018952,
+          "iterations": 8000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 1264000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        32,
+        0
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 9619327,
+          "iterations": 1000,
+          "input_bytes": 477,
+          "output_bytes": 471,
+          "checksum": 516000
+        },
+        "candidate": {
+          "ns": 9824208,
+          "iterations": 1000,
+          "input_bytes": 477,
+          "output_bytes": 471,
+          "checksum": 516000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        32,
+        0
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 19284232,
+          "iterations": 2000,
+          "input_bytes": 477,
+          "output_bytes": 471,
+          "checksum": 1032000
+        },
+        "candidate": {
+          "ns": 20715307,
+          "iterations": 2000,
+          "input_bytes": 477,
+          "output_bytes": 471,
+          "checksum": 1032000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        32,
+        31
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 10212175,
+          "iterations": 1000,
+          "input_bytes": 477,
+          "output_bytes": 470,
+          "checksum": 515000
+        },
+        "candidate": {
+          "ns": 9800621,
+          "iterations": 1000,
+          "input_bytes": 477,
+          "output_bytes": 470,
+          "checksum": 515000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        32,
+        31
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 19338599,
+          "iterations": 2000,
+          "input_bytes": 477,
+          "output_bytes": 470,
+          "checksum": 1030000
+        },
+        "candidate": {
+          "ns": 18173493,
+          "iterations": 2000,
+          "input_bytes": 477,
+          "output_bytes": 470,
+          "checksum": 1030000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 241302,
+          "iterations": 1,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 65604
+        },
+        "candidate": {
+          "ns": 247827,
+          "iterations": 1,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 65604
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 479200,
+          "iterations": 2,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 131208
+        },
+        "candidate": {
+          "ns": 493510,
+          "iterations": 2,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 131208
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 1065576,
+          "iterations": 4,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 262416
+        },
+        "candidate": {
+          "ns": 1047541,
+          "iterations": 4,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 262416
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 8,
+      "samples": {
+        "baseline": {
+          "ns": 2109140,
+          "iterations": 8,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 524832
+        },
+        "candidate": {
+          "ns": 2260175,
+          "iterations": 8,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 524832
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 16,
+      "samples": {
+        "baseline": {
+          "ns": 4244186,
+          "iterations": 16,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 1049664
+        },
+        "candidate": {
+          "ns": 4126486,
+          "iterations": 16,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 1049664
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 32,
+      "samples": {
+        "baseline": {
+          "ns": 8326540,
+          "iterations": 32,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 2099328
+        },
+        "candidate": {
+          "ns": 8350401,
+          "iterations": 32,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 2099328
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 64,
+      "samples": {
+        "baseline": {
+          "ns": 16655026,
+          "iterations": 64,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 4198656
+        },
+        "candidate": {
+          "ns": 15723828,
+          "iterations": 64,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 4198656
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 246265,
+          "iterations": 1,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 65598
+        },
+        "candidate": {
+          "ns": 239105,
+          "iterations": 1,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 65598
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 487379,
+          "iterations": 2,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 131196
+        },
+        "candidate": {
+          "ns": 478407,
+          "iterations": 2,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 131196
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 1016421,
+          "iterations": 4,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 262392
+        },
+        "candidate": {
+          "ns": 966994,
+          "iterations": 4,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 262392
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 8,
+      "samples": {
+        "baseline": {
+          "ns": 1990579,
+          "iterations": 8,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 524784
+        },
+        "candidate": {
+          "ns": 1925196,
+          "iterations": 8,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 524784
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 16,
+      "samples": {
+        "baseline": {
+          "ns": 3958366,
+          "iterations": 16,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 1049568
+        },
+        "candidate": {
+          "ns": 3880691,
+          "iterations": 16,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 1049568
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 32,
+      "samples": {
+        "baseline": {
+          "ns": 7814171,
+          "iterations": 32,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 2099136
+        },
+        "candidate": {
+          "ns": 7842479,
+          "iterations": 32,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 2099136
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 64,
+      "samples": {
+        "baseline": {
+          "ns": 15698542,
+          "iterations": 64,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 4198272
+        },
+        "candidate": {
+          "ns": 15381698,
+          "iterations": 64,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 4198272
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 3910088,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 1000068
+        },
+        "candidate": {
+          "ns": 3921449,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 1000068
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 7628722,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 2000136
+        },
+        "candidate": {
+          "ns": 7156851,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 2000136
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 14005434,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 4000272
+        },
+        "candidate": {
+          "ns": 14139837,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 4000272
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 3369728,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 1000062
+        },
+        "candidate": {
+          "ns": 3531176,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 1000062
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 7519232,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 2000124
+        },
+        "candidate": {
+          "ns": 7646795,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 2000124
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 13762680,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 4000248
+        },
+        "candidate": {
+          "ns": 13867544,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 4000248
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4813312,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        },
+        "candidate": {
+          "ns": 4127109,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 8680672,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        },
+        "candidate": {
+          "ns": 8708007,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 17716843,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        },
+        "candidate": {
+          "ns": 15863616,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4537284,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 168936
+        },
+        "candidate": {
+          "ns": 3904343,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 168936
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 8974963,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 337872
+        },
+        "candidate": {
+          "ns": 8364853,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 337872
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 17835720,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 675744
+        },
+        "candidate": {
+          "ns": 17920428,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 675744
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4375278,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        },
+        "candidate": {
+          "ns": 5207105,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 9654925,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        },
+        "candidate": {
+          "ns": 9746936,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 18953874,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        },
+        "candidate": {
+          "ns": 18940454,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4462403,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 168933
+        },
+        "candidate": {
+          "ns": 4262369,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 168933
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 9618151,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 337866
+        },
+        "candidate": {
+          "ns": 9509644,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 337866
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 18740891,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 675732
+        },
+        "candidate": {
+          "ns": 18380835,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 675732
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 195604,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 66000
+        },
+        "candidate": {
+          "ns": 214371,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 66000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 426845,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 132000
+        },
+        "candidate": {
+          "ns": 424044,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 132000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 926533,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 264000
+        },
+        "candidate": {
+          "ns": 992639,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 264000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 1769783,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 528000
+        },
+        "candidate": {
+          "ns": 1767878,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 528000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 10000,
+      "samples": {
+        "baseline": {
+          "ns": 2196281,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 660000
+        },
+        "candidate": {
+          "ns": 2395306,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 660000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 2168187,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 1000068
+        },
+        "candidate": {
+          "ns": 2135881,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 1000068
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 4190028,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 2000136
+        },
+        "candidate": {
+          "ns": 4461344,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 2000136
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 8759567,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 4000272
+        },
+        "candidate": {
+          "ns": 8715626,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 4000272
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 8,
+      "samples": {
+        "baseline": {
+          "ns": 16686595,
+          "iterations": 8,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 8000544
+        },
+        "candidate": {
+          "ns": 17249944,
+          "iterations": 8,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 8000544
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 2477401,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        },
+        "candidate": {
+          "ns": 2355082,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 4914998,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        },
+        "candidate": {
+          "ns": 4551347,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 9405644,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        },
+        "candidate": {
+          "ns": 9193629,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 8,
+      "samples": {
+        "baseline": {
+          "ns": 18552982,
+          "iterations": 8,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 1351536
+        },
+        "candidate": {
+          "ns": 17930886,
+          "iterations": 8,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 1351536
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        8,
+        -1
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 2688486,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 177000
+        },
+        "candidate": {
+          "ns": 2761664,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 177000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        8,
+        -1
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 5788046,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 354000
+        },
+        "candidate": {
+          "ns": 5363784,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 354000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        8,
+        -1
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 10618570,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 708000
+        },
+        "candidate": {
+          "ns": 10580801,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 708000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 554475,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 66000
+        },
+        "candidate": {
+          "ns": 539136,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 66000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 1084691,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 132000
+        },
+        "candidate": {
+          "ns": 1194396,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 132000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 2232784,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 264000
+        },
+        "candidate": {
+          "ns": 2257266,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 264000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 4593692,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 528000
+        },
+        "candidate": {
+          "ns": 4639156,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 528000
+        }
+      }
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 10000,
+      "samples": {
+        "baseline": {
+          "ns": 5612744,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 660000
+        },
+        "candidate": {
+          "ns": 5500609,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 660000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 373144,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 60000
+        },
+        "candidate": {
+          "ns": 279471,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 60000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 574047,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 120000
+        },
+        "candidate": {
+          "ns": 650619,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 120000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 1255281,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 240000
+        },
+        "candidate": {
+          "ns": 1232122,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 240000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 2327789,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 480000
+        },
+        "candidate": {
+          "ns": 2591958,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 480000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 10000,
+      "samples": {
+        "baseline": {
+          "ns": 3148498,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 600000
+        },
+        "candidate": {
+          "ns": 2867526,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 15,
+          "checksum": 600000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 2354174,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 158000
+        },
+        "candidate": {
+          "ns": 2412206,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 158000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 4893841,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 316000
+        },
+        "candidate": {
+          "ns": 4710206,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 316000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 9459518,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 632000
+        },
+        "candidate": {
+          "ns": 9317082,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 632000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 17625295,
+          "iterations": 8000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 1264000
+        },
+        "candidate": {
+          "ns": 17795195,
+          "iterations": 8000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 1264000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 2229135,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 158000
+        },
+        "candidate": {
+          "ns": 2210455,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 158000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 4623965,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 316000
+        },
+        "candidate": {
+          "ns": 4721954,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 316000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 9292797,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 632000
+        },
+        "candidate": {
+          "ns": 9501618,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 632000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 18847266,
+          "iterations": 8000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 1264000
+        },
+        "candidate": {
+          "ns": 18434840,
+          "iterations": 8000,
+          "input_bytes": 119,
+          "output_bytes": 113,
+          "checksum": 1264000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        32,
+        0
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 9395997,
+          "iterations": 1000,
+          "input_bytes": 477,
+          "output_bytes": 471,
+          "checksum": 516000
+        },
+        "candidate": {
+          "ns": 9840967,
+          "iterations": 1000,
+          "input_bytes": 477,
+          "output_bytes": 471,
+          "checksum": 516000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        32,
+        0
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 19052165,
+          "iterations": 2000,
+          "input_bytes": 477,
+          "output_bytes": 471,
+          "checksum": 1032000
+        },
+        "candidate": {
+          "ns": 20187767,
+          "iterations": 2000,
+          "input_bytes": 477,
+          "output_bytes": 471,
+          "checksum": 1032000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        32,
+        31
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 10467782,
+          "iterations": 1000,
+          "input_bytes": 477,
+          "output_bytes": 470,
+          "checksum": 515000
+        },
+        "candidate": {
+          "ns": 10205532,
+          "iterations": 1000,
+          "input_bytes": 477,
+          "output_bytes": 470,
+          "checksum": 515000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 268670,
+          "iterations": 1,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 65604
+        },
+        "candidate": {
+          "ns": 261021,
+          "iterations": 1,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 65604
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 523854,
+          "iterations": 2,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 131208
+        },
+        "candidate": {
+          "ns": 510778,
+          "iterations": 2,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 131208
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 979565,
+          "iterations": 4,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 262416
+        },
+        "candidate": {
+          "ns": 1022614,
+          "iterations": 4,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 262416
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 8,
+      "samples": {
+        "baseline": {
+          "ns": 2039504,
+          "iterations": 8,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 524832
+        },
+        "candidate": {
+          "ns": 2063816,
+          "iterations": 8,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 524832
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 16,
+      "samples": {
+        "baseline": {
+          "ns": 4324674,
+          "iterations": 16,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 1049664
+        },
+        "candidate": {
+          "ns": 4152745,
+          "iterations": 16,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 1049664
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 32,
+      "samples": {
+        "baseline": {
+          "ns": 7930888,
+          "iterations": 32,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 2099328
+        },
+        "candidate": {
+          "ns": 7790508,
+          "iterations": 32,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 2099328
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 64,
+      "samples": {
+        "baseline": {
+          "ns": 15350688,
+          "iterations": 64,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 4198656
+        },
+        "candidate": {
+          "ns": 131071512,
+          "iterations": 64,
+          "input_bytes": 65559,
+          "output_bytes": 65559,
+          "checksum": 4198656
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 226148,
+          "iterations": 1,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 65598
+        },
+        "candidate": {
+          "ns": 239663,
+          "iterations": 1,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 65598
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 481256,
+          "iterations": 2,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 131196
+        },
+        "candidate": {
+          "ns": 478492,
+          "iterations": 2,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 131196
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 993195,
+          "iterations": 4,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 262392
+        },
+        "candidate": {
+          "ns": 1028149,
+          "iterations": 4,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 262392
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 8,
+      "samples": {
+        "baseline": {
+          "ns": 2167336,
+          "iterations": 8,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 524784
+        },
+        "candidate": {
+          "ns": 2048178,
+          "iterations": 8,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 524784
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 16,
+      "samples": {
+        "baseline": {
+          "ns": 3926277,
+          "iterations": 16,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 1049568
+        },
+        "candidate": {
+          "ns": 3942146,
+          "iterations": 16,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 1049568
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 32,
+      "samples": {
+        "baseline": {
+          "ns": 7959170,
+          "iterations": 32,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 2099136
+        },
+        "candidate": {
+          "ns": 7808896,
+          "iterations": 32,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 2099136
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 64,
+      "samples": {
+        "baseline": {
+          "ns": 15577846,
+          "iterations": 64,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 4198272
+        },
+        "candidate": {
+          "ns": 15621302,
+          "iterations": 64,
+          "input_bytes": 65559,
+          "output_bytes": 65553,
+          "checksum": 4198272
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 3750624,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 1000068
+        },
+        "candidate": {
+          "ns": 3734884,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 1000068
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 7237607,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 2000136
+        },
+        "candidate": {
+          "ns": 7170965,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 2000136
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 14268667,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 4000272
+        },
+        "candidate": {
+          "ns": 14757371,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 4000272
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 3797082,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 1000062
+        },
+        "candidate": {
+          "ns": 30114465,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 1000062
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 7609018,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 2000124
+        },
+        "candidate": {
+          "ns": 7396414,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 2000124
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 15368991,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 4000248
+        },
+        "candidate": {
+          "ns": 14582798,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000017,
+          "checksum": 4000248
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4232607,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        },
+        "candidate": {
+          "ns": 3918634,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 8068811,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        },
+        "candidate": {
+          "ns": 9171947,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 18817621,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        },
+        "candidate": {
+          "ns": 16512425,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4590501,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 168936
+        },
+        "candidate": {
+          "ns": 3838992,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 168936
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 9292781,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 337872
+        },
+        "candidate": {
+          "ns": 8553603,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 337872
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 18533027,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 675744
+        },
+        "candidate": {
+          "ns": 18325660,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168891,
+          "checksum": 675744
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4692105,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        },
+        "candidate": {
+          "ns": 4334800,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 8902837,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        },
+        "candidate": {
+          "ns": 7965612,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 18063266,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        },
+        "candidate": {
+          "ns": 18878645,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4402167,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 168933
+        },
+        "candidate": {
+          "ns": 4243563,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 168933
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 9414853,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 337866
+        },
+        "candidate": {
+          "ns": 9172816,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 337866
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 18691902,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 675732
+        },
+        "candidate": {
+          "ns": 19189183,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168888,
+          "checksum": 675732
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 395879,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 66000
+        },
+        "candidate": {
+          "ns": 396841,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 66000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 897149,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 132000
+        },
+        "candidate": {
+          "ns": 788162,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 132000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 1630583,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 264000
+        },
+        "candidate": {
+          "ns": 2832736,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 264000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 3188844,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 528000
+        },
+        "candidate": {
+          "ns": 3234473,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 528000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 10000,
+      "samples": {
+        "baseline": {
+          "ns": 4139898,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 660000
+        },
+        "candidate": {
+          "ns": 4017766,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 660000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4064928,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 1000068
+        },
+        "candidate": {
+          "ns": 4040152,
+          "iterations": 1,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 1000068
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 8155960,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 2000136
+        },
+        "candidate": {
+          "ns": 7984813,
+          "iterations": 2,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 2000136
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 15081169,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 4000272
+        },
+        "candidate": {
+          "ns": 15929169,
+          "iterations": 4,
+          "input_bytes": 1000023,
+          "output_bytes": 1000023,
+          "checksum": 4000272
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 1,
+      "samples": {
+        "baseline": {
+          "ns": 4415043,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        },
+        "candidate": {
+          "ns": 4727727,
+          "iterations": 1,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 168942
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 2,
+      "samples": {
+        "baseline": {
+          "ns": 9491441,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        },
+        "candidate": {
+          "ns": 9370476,
+          "iterations": 2,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 337884
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 4,
+      "samples": {
+        "baseline": {
+          "ns": 18436408,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        },
+        "candidate": {
+          "ns": 18354802,
+          "iterations": 4,
+          "input_bytes": 168897,
+          "output_bytes": 168897,
+          "checksum": 675768
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        8,
+        -1
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 2854787,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 176000
+        },
+        "candidate": {
+          "ns": 2818635,
+          "iterations": 1000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 176000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        8,
+        -1
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 5761039,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 352000
+        },
+        "candidate": {
+          "ns": 5612626,
+          "iterations": 2000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 352000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        8,
+        -1
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 11432157,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 704000
+        },
+        "candidate": {
+          "ns": 11446137,
+          "iterations": 4000,
+          "input_bytes": 119,
+          "output_bytes": 132,
+          "checksum": 704000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 1000,
+      "samples": {
+        "baseline": {
+          "ns": 523533,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 66000
+        },
+        "candidate": {
+          "ns": 525637,
+          "iterations": 1000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 66000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 2000,
+      "samples": {
+        "baseline": {
+          "ns": 1055351,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 132000
+        },
+        "candidate": {
+          "ns": 1164792,
+          "iterations": 2000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 132000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 4000,
+      "samples": {
+        "baseline": {
+          "ns": 2194684,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 264000
+        },
+        "candidate": {
+          "ns": 2271477,
+          "iterations": 4000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 264000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 8000,
+      "samples": {
+        "baseline": {
+          "ns": 4377767,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 528000
+        },
+        "candidate": {
+          "ns": 4684652,
+          "iterations": 8000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 528000
+        }
+      }
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 10000,
+      "samples": {
+        "baseline": {
+          "ns": 5595527,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 660000
+        },
+        "candidate": {
+          "ns": 5945792,
+          "iterations": 10000,
+          "input_bytes": 21,
+          "output_bytes": 21,
+          "checksum": 660000
+        }
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 10000,
+      "minimum_met": false
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 8000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 8000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        32,
+        0
+      ],
+      "iterations": 2000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        32,
+        31
+      ],
+      "iterations": 2000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 64,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 64,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 10000,
+      "minimum_met": false
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 8,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 8,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        8,
+        -1
+      ],
+      "iterations": 4000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "source",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 10000,
+      "minimum_met": false
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        0
+      ],
+      "iterations": 10000,
+      "minimum_met": false
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        0
+      ],
+      "iterations": 8000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        8,
+        7
+      ],
+      "iterations": 8000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        32,
+        0
+      ],
+      "iterations": 2000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        32,
+        31
+      ],
+      "iterations": 1000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 64,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        65536,
+        1,
+        0
+      ],
+      "iterations": 64,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        1000000,
+        1,
+        0
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        0
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        9999
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        1,
+        -1
+      ],
+      "iterations": 10000,
+      "minimum_met": false
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        1000000,
+        1,
+        -1
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "remove",
+        0,
+        10000,
+        -1
+      ],
+      "iterations": 4,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        8,
+        -1
+      ],
+      "iterations": 4000,
+      "minimum_met": true
+    },
+    {
+      "case": [
+        "legacy",
+        "set",
+        0,
+        1,
+        0
+      ],
+      "iterations": 10000,
+      "minimum_met": false
+    }
+  ],
+  "completed_utc": "2026-11-04T20:00:24Z",
+  "original_artifact_sha256": "c4487842788ffb37ea9bb4224a9be33e356860311acb38df6c6d75c9293045bf",
+  "transcription_note": "Local workspace path prefix normalized to $WORKSPACE; JSON layout compacted. All measured samples, values and original provenance hashes retained. Original raw artifact hash refers to unnormalized local file.",
+  "samples": [
+
+  ]
+}
