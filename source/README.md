@@ -18,7 +18,8 @@ fn main() {
 }
 ```
 
-Only `toml_source::put` and `toml_source::remove` are supported entry points.
+The supported entry points are `toml_source::put`, `toml_source::remove`,
+`toml_source::legacy_set` and `toml_source::legacy_remove`.
 Other declarations are implementation details. Both return `(owned_output,
 owned_error)`, with an empty error on success and empty output on every error.
 The application owns reading files and atomic publication after success.
@@ -53,6 +54,46 @@ and `value` routines. Its private offsets refer to the original bytes, never
 the parsed document's decoded key/text arena. Parser declaration rules and work
 budgets apply unchanged. Fixture tests compare the source index's complete
 semantic node layout and arena with the ordinary parser.
+
+## Companion compatibility profile
+
+`legacy_set(source, decoded_path, raw_value)` and
+`legacy_remove(source, decoded_path)` expose the compatibility profile for
+[goose-toml-edit](https://github.com/carabistouflette/goose-toml-edit).
+They return the same owned `(output, error)` pair and are fixed to strict
+TOML 1.0. They share the scanner, lookup, subtree selection and splice engine
+with `put`/`remove`; the default operations retain their existing policies.
+
+The compatibility reference is companion commit
+[`cedb2c3c98affbeb45bd34bc7a6618f5a9b75ad0`](https://github.com/carabistouflette/goose-toml-edit/commit/cedb2c3c98affbeb45bd34bc7a6618f5a9b75ad0).
+The profile preserves its output and diagnostic bytes, including these rules:
+
+- Validate the path first, replacement fragment second, original source third.
+  Parse only the first fragment value using the literal four-byte `x = `
+  wrapper; only spaces/tabs may follow it. Trailing comments/newlines or
+  statements return the strict-suffix diagnostic without parsing that suffix.
+  Comments/newlines inside a value remain allowed by the TOML grammar.
+- Paths permit 1..64 decoded components and up to 1 MiB combined key bytes.
+  Traversing through a scalar, array or inline table fails before checking for
+  a child. A genuinely missing prefix short-circuits to missing. Removing an
+  entire array of tables remains supported.
+- Insert at root byte zero or immediately after the closest explicit ancestor
+  header's complete line. Use the first source newline style, or LF. New keys
+  use TOML quoting with uppercase control escapes, including `\u007F` for DEL.
+- Before encoding each inserted key, reserve two quote bytes plus six bytes
+  per decoded byte within the 1 MiB insertion cap, including prior separators.
+  This conservative guard can reject a new key whose actual encoding would
+  fit; it does not apply when replacing/removing an existing assignment.
+- Source/output are capped at 1 MiB each and the replacement at 1 MiB minus
+  four wrapper bytes; an empty replacement is rejected. Existing parser limits
+  also apply. Even a missing-key removal reparses its independent owned copy.
+  Every failure returns empty output and an owned nonempty diagnostic.
+
+The companion obtains the complete result before replacing or clearing its
+caller's output, preserving input/output aliasing. This module performs no I/O.
+The compatibility profile is follow-on work and is **not** included in the
+frozen `v0.1.0-alpha.1` release. Use an immutable reviewed commit that contains
+these entry points; do not assume their presence in that alpha tag.
 
 ## Preservation and current limits
 
@@ -103,7 +144,8 @@ make -C source fuzz
 
 The opt-in target has its own Makefile and tests. Tests include exact source
 comparisons, all ASCII key bytes, source-context cases, 2,405 generated
-semantic/preservation checks against Python `tomllib`, and source-index equality
+semantic/preservation checks against Python `tomllib`, 21 frozen legacy
+output/diagnostic fixtures plus 512 independent insertion byte checks, and source-index equality
 on all pinned TOML 1.0 and 1.1 fixtures. Python comparisons use their shared
 TOML 1.0 subset; explicit tests cover version-specific behavior. Sanitizers
 instrument both editor tests and the independent model adapter. Fuzzing reuses
@@ -142,7 +184,7 @@ These cases characterize specific workloads; they do not prove worst-case
 latency or a universal performance ranking. CI runs benchmark smoke execution
 without timing thresholds.
 
-The final local source validation also passed the consumer-overload regression
+The recorded pre-profile local source validation also passed the consumer-overload regression
 in-process and optimized native, all model/fixture checks under the hardened
 parser, GCC/Clang ASan/UBSan, and 84,695 Clang/libFuzzer executions in 31 seconds
 (seed 20261104, bounded by the 30-second budget). The assertion-bridge self-test

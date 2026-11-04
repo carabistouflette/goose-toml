@@ -73,3 +73,6 @@ for case, line in zip(cases, lines):
             assert output.count(comment) == source.count(comment), (case, comment, output)
         assert "[unrelated]" in output and "text='''[fake.header] # not a comment'''" in output
 print(f'{len(cases)} source-edit model/preservation cases passed')
+
+import compatibility
+compatibility.run(sys.argv[1])

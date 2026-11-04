@@ -10,6 +10,12 @@ fn parse_int(value: const u8[:]) -> i64, bool { return 999, true; }
 fn parse_int(value: u8[>..]&, base: i64) -> i64, bool { return 998, true; }
 fn parse_flt(value: u8[>..]&) -> f64, bool { return 997.0, true; }
 fn main() {
+    let legacy_bad, legacy_error = toml_source::legacy_set("x=1", ["x"], "[");
+    assert(legacy_bad.len == 0 && legacy_error == "toml: invalid decimal integer part at byte 5 (line 1, byte column 6)");
+    let legacy_ok, legacy_ok_error = toml_source::legacy_set("x=12", ["new"], "1.5");
+    assert(legacy_ok_error.len == 0 && legacy_ok == "\"new\" = 1.5\nx=12");
+    let legacy_remove, legacy_remove_error = toml_source::legacy_remove("x=1", ["x", "missing"]);
+    assert(legacy_remove.len == 0 && legacy_remove_error == "toml-edit: cannot traverse an array, scalar or inline table");
     let malformed, malformed_error = toml_source::put("x=1", ["z"], "[1");
     assert(malformed_error.len > 0 && malformed.len == 0);
     let overflow, overflow_error = toml_source::put("x=1", ["z"], "9223372036854775808");

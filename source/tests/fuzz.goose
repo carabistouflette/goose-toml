@@ -21,6 +21,14 @@ export fn fuzz_parse(input: const u8[:]) -> i64 {
     let split = input.len / 2;
     let edited, edit_error = toml_source::put(input[..split], ["a", "b"], input[split..]);
     if edit_error.len == 0 { check_output(edited); } else { assert(edited.len == 0); }
+    let legacy_removed, legacy_remove_error = toml_source::legacy_remove(input, ["__source_fuzz_probe"]);
+    if legacy_remove_error.len == 0 { assert(parse_error.len == 0); check_output(legacy_removed); }
+    else { assert(legacy_removed.len == 0); }
+    let legacy_added, legacy_add_error = toml_source::legacy_set(input, ["__source_fuzz_probe"], "{path='世界'}");
+    if legacy_add_error.len == 0 { assert(parse_error.len == 0); check_output(legacy_added); }
+    else { assert(legacy_added.len == 0); }
+    let legacy_edited, legacy_edit_error = toml_source::legacy_set(input[..split], ["a", "b"], input[split..]);
+    if legacy_edit_error.len == 0 { check_output(legacy_edited); } else { assert(legacy_edited.len == 0); }
     return if parse_error.len == 0 { 1 } else { 0 };
 }
 export fn fuzz_assertion_probe(value: i64) { assert(value != 0); }
