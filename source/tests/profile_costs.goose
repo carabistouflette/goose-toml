@@ -46,6 +46,7 @@ fn main() {
     var key: u8[>..] = [];
     if target < 0 { key.append("absent"); } else { key.append("key"); format(key, target); }
     let path: (const u8[:])[1] = [key];
+    // Full preflight always runs; warmups counts additional calls, not cold use.
     // Full bytes checked before/after timing; loops use constant-cost checks.
     let before, before_error = invoke(source, path, legacy, removing);
     assert(before_error.len == 0 && before == expected);

@@ -59,7 +59,11 @@ The fixture creates exact expected bytes independently, including the different
 root insertion anchors. It verifies full output before and after timing, checks
 status/length and a constant-cost checksum during measurement, and bounds every
 argument and final input/output size. Fixture creation and full-byte comparisons
-are outside the timed loop. Expected/preflight builders remain live; account for
+are outside the timed loop. This driver always executes a full preflight;
+`warmups=0` still measures calls after that preflight, not cold first use.
+`warmups` counts additional calls. The endpoint checksum cannot detect same-length middle-byte corruption within
+an individual timed call; keep the full pre/post comparisons and independent
+correctness suites. Expected/preflight builders remain live; account for
 that when interpreting whole-process memory counters.
 
 Build and smoke execution (one iteration; no timing conclusion):
@@ -83,7 +87,12 @@ Proposed experiment matrix; avoid the Cartesian product, which could exceed
 | Insertion sanity | 0 | 8 | missing | set |
 
 Run each profile against **the same profile** in a baseline and candidate.
-Different policy profiles are not interchangeable performance baselines.
+Different policy profiles are not interchangeable performance baselines. Use
+the full immutable SHA of this reviewed fixture-bearing preparation checkpoint
+as the baseline: public `de7` has the same engine but does not contain this
+driver. Record that SHA before the campaign and verify the baseline engine
+against `de7`. Require the driver blob/hash to be identical in the optimization
+candidate; record any overlay explicitly rather than claiming raw `de7` ran it.
 Retain the existing four-case default and six-case public companion workloads
 as acceptance comparisons; this fixture supplements them.
 
@@ -132,9 +141,19 @@ For a later campaign: build both clean immutable snapshots with one unchanged
 fixture source, pinned compiler and C flags. Record script/source/compiler and
 binary hashes, CPU model/affinity, UTC bounds, input/output sizes, warmups,
 iteration counts and every sample. Use at least nine alternating/shuffled paired
-rounds and a separately started confirmation. Use 1000 calls for small cases;
-calibrate large-case batch lengths before freezing the matrix. Report cold
-first-use separately from warm repeated calls. Retain the original samples,
+rounds and a separately started confirmation. Start calibration at 1000 calls for small cases. Calibrate both small and large
+batches, then freeze counts and a minimum measured duration before recording
+the campaign; split into repeated batches if the driver's 10000-call cap is too
+short. Proposed initial criteria are at least 10 ms per recorded batch, a 5% median
+speed benefit and explicit review of any workload regression above 5%; freeze
+these or justified alternatives before timing. Estimate baseline variability
+with paired unchanged-binary runs. Do not claim a
+benefit smaller than the observed noise; require a separately started repeat
+to agree before describing an improvement. Report cold
+first-use separately from warm repeated calls. A separate cold-path harness is
+required: use a fresh process with no preflight invocation, time its first public
+call, then check full output against the expected bytes after the measured call.
+Do not label this driver's zero-additional-warmup result as cold latency. Retain the original samples,
 rejected hypotheses and regressions; no exclusive-host or universal speed claim.
 
 Collect generated-code stack/region counts and, where available, page-fault/RSS
