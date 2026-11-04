@@ -61,7 +61,9 @@ def main():
             parser.error(f'non-engine measurement input differs: {name}')
     compiler = args.goose.resolve()
     report = {'started_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-              'platform': platform.platform(), 'cpu': args.cpu,
+              'platform': platform.platform(), 'cpu': args.cpu, 'rounds': args.rounds,
+              'seed': 20261104, 'additional_warmups': 8,
+              'unchanged_binary_control': roots['baseline'] == roots['candidate'],
               'cpu_model': next(s.split(':', 1)[1].strip() for s in Path('/proc/cpuinfo').read_text().splitlines()
                                 if s.startswith('model name')),
               'goose_version': subprocess.check_output([str(compiler), '--version'], text=True).strip(),
@@ -120,6 +122,9 @@ def main():
         config = json.loads(args.config.read_text())
         assert [tuple(row['case']) for row in config['cases']] == CASES
         assert config['script_sha256'] == report['script_sha256']
+        assert before['baseline'] == config['snapshots']['baseline']
+        expected = config['snapshots']['baseline'] if report['unchanged_binary_control'] else config['snapshots']['candidate']
+        assert before['candidate'] == expected, 'snapshot differs from frozen calibration'
         for name in FILES[1:]:
             assert config['snapshots']['baseline']['hashes'][name] == before['baseline']['hashes'][name]
         report['config_sha256'] = digest(args.config)
