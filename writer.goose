@@ -176,11 +176,11 @@ recursive fn write_value(w: Writer&, doc: const WriteDocument&, id: i64, parent:
 // On failure the output is empty. Document storage and IDs remain unchanged.
 fn serialize(doc: Document&) -> u8[>..], u8[>..] {
     if doc.nodes.len == 0 || doc.nodes.len > MAX_NODES || doc.bytes.len > MAX_INPUT_BYTES {
-        return [], str("toml: invalid document size");
+        return [], toml::own_bytes("toml: invalid document size");
     }
     let root = doc.nodes[0];
     if root.kind != Kind.Table || root.parent != -1 || root.depth != 0 || root.next != -1 {
-        return [], str("toml: root must be a document table");
+        return [], toml::own_bytes("toml: root must be a document table");
     }
     var output: u8[>..]   = []; var error: u8[>..] = [];
     var seen:   bool[>..] = []; var names: WriteName[>..] = [];
@@ -195,6 +195,6 @@ fn serialize(doc: Document&) -> u8[>..], u8[>..] {
     var w = Writer { output: output, error: error, seen: seen, names: names, .. };
     var view = WriteDocument { nodes: doc.nodes, bytes: doc.bytes };
     write_value(w, view, 0, -1, 0);
-    if w.error.len > 0 { return [], copy(w.error); }
-    return copy(w.output), [];
+    if w.error.len > 0 { return [], toml::own_bytes(w.error); }
+    return toml::own_bytes(w.output), [];
 }

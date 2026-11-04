@@ -8,6 +8,7 @@ check:
 	$(GOOSE) check tests/document.goose
 	$(GOOSE) check tests/writer.goose
 	$(GOOSE) check tests/writer-scalars.goose
+	$(GOOSE) check tests/overloads.goose
 	$(GOOSE) check tests/mutation.goose
 	$(GOOSE) check tests/utf8.goose
 	$(GOOSE) check tests/parser.goose
@@ -29,6 +30,7 @@ test:
 	$(GOOSE) run tests/document.goose
 	$(GOOSE) run tests/writer.goose
 	$(GOOSE) run tests/mutation.goose
+	$(GOOSE) run tests/overloads.goose
 	mkdir -p .build
 	$(GOOSE) build tests/parser.goose -o .build/parser
 	./.build/parser
@@ -42,6 +44,8 @@ test:
 	./.build/writer
 	$(GOOSE) build tests/mutation.goose -o .build/mutation
 	./.build/mutation
+	$(GOOSE) build tests/overloads.goose -o .build/overloads
+	./.build/overloads
 	$(GOOSE) run examples/config.goose
 format:
 	$(GOOSE) format toml.goose document.goose writer.goose vendor/text.goose examples tests bench
@@ -76,7 +80,7 @@ sanitize:
 	$(GOOSE) tests/lifecycle.goose --standalone --debug --no-bce -o .build/lifecycle-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/lifecycle-sanitized .build/lifecycle-sanitized.c -lm -ldl -lpthread
 	./.build/lifecycle-sanitized
-	@for target in spec11 document writer mutation; do \
+	@for target in spec11 document writer mutation overloads; do \
 		$(GOOSE) tests/$$target.goose --standalone --debug --no-bce -o .build/$$target-sanitized.c && \
 		gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/$$target-sanitized .build/$$target-sanitized.c -lm -ldl -lpthread && \
 		./.build/$$target-sanitized || exit $$?; \
