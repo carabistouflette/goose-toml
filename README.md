@@ -109,6 +109,8 @@ For a current absolute measurement without a comparison baseline, use
 The measured snapshot, tool versions, raw samples and limitations are recorded in
 [benchmark results](docs/results.md).
 
+Current [cross-language parsing and writing results](docs/comparison-results.md) include raw nine-round reports and limitations.
+
 For pinned Rust, Go and C++ feature coverage, see [the feature matrix](docs/comparison-features.md). Reproduce fresh owned-document parsing comparisons with [the comparison harness](bench/compare/README.md). Language-specific struct binding and source-format preservation remain outside the common semantic workflow.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md),
