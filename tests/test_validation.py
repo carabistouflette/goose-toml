@@ -108,6 +108,13 @@ class WriterBitHarnessTests(unittest.TestCase):
                 self.assertRaises(self.writer["WriterScalarFailure"]):
             self.writer["run_batch"]("unused", [0x3ff0000000000000], 1)
 
+    def test_integer_mode_checks_exact_signed_kind(self):
+        self.writer["check_frame"](0x8000000000000000, b'T\t"v" = -9223372036854775808', True)
+        self.writer["check_frame"](0x7fffffffffffffff, b'T\t"v" = 9223372036854775807', True)
+        for frame in [b'T\t"v" = 1.0', b'T\t"v" = true', b'T\t"v" = 2']:
+            with self.subTest(frame=frame), self.assertRaises(self.writer["WriterScalarFailure"]):
+                self.writer["check_frame"](1, frame, True)
+
 
 if __name__ == "__main__":
     unittest.main()

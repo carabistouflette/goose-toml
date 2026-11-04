@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Independent raw-binary64 writer oracle using Python 3.11+ tomllib.
+"""Independent raw-i64/binary64 writer oracle using Python 3.11+ tomllib.
 
-The Goose adapter constructs Input.Float directly from high/low raw IEEE words,
+The Goose adapter constructs Float or Integer directly from high/low raw words,
 serializes it, and returns TOML. It never parses decimal floats or TOML. Python
 checks the resulting scalar is a float and packs it back to the original bits;
 NaN sign/payload identity is intentionally unspecified and only isnan is checked.
@@ -94,7 +94,7 @@ def biased_bits():
     return iter(sorted(values))
 
 
-def check_frame(bits, frame):
+def check_frame(bits, frame, integer=False):
     label = f"bits={bits:016x}, response={frame!r}"
     require(frame.startswith(b"T\t") and frame.count(b"\t") == 1, "invalid response frame: " + label)
     payload = frame[2:]
@@ -105,6 +105,10 @@ def check_frame(bits, frame):
         raise WriterScalarFailure("invalid serialized TOML: " + label) from error
     require(set(document) == {"v"}, "wrong serialized document keys: " + label)
     value = document["v"]
+    if integer:
+        expected_integer = bits if bits < 1 << 63 else bits - (1 << 64)
+        require(type(value) is int and value == expected_integer, "writer changed integer kind/value: " + label)
+        return
     require(type(value) is float, "writer changed Float to another TOML kind: " + label)
     expected = from_bits(bits)
     if math.isnan(expected):
@@ -113,11 +117,11 @@ def check_frame(bits, frame):
         require(float_bits(value) == bits, "writer changed binary64 value or zero sign: " + label)
 
 
-def run_batch(runner, cases, timeout):
+def run_batch(runner, cases, timeout, integer=False):
     source = "".join(f"{bits >> 32:08x}\t{bits & 0xFFFFFFFF:08x}\n" for bits in cases).encode("ascii")
     require(len(source) <= 180000, "input batch exceeds adapter cap")
     try:
-        result = subprocess.run([runner], input=source, capture_output=True, timeout=timeout)
+        result = subprocess.run([runner, "--integer"] if integer else [runner], input=source, capture_output=True, timeout=timeout)
     except subprocess.TimeoutExpired as error:
         raise WriterScalarFailure(f"writer adapter timed out after {timeout}s ({len(cases)} records)") from error
     except OSError as error:
@@ -129,26 +133,27 @@ def run_batch(runner, cases, timeout):
     frames = result.stdout.split(b"\n")[:-1]
     require(len(frames) == len(cases), f"writer adapter returned {len(frames)} frames for {len(cases)} records")
     for bits, frame in zip(cases, frames):
-        check_frame(bits, frame)
+        check_frame(bits, frame, integer)
 
 
-def campaign(runner, cases, batch_size, timeout):
+def campaign(runner, cases, batch_size, timeout, integer=False):
     batch = []
     checked = 0
     for bits in cases:
         batch.append(bits)
         if len(batch) == batch_size:
-            run_batch(runner, batch, timeout)
+            run_batch(runner, batch, timeout, integer)
             checked += len(batch)
             batch = []
     if batch:
-        run_batch(runner, batch, timeout)
+        run_batch(runner, batch, timeout, integer)
         checked += len(batch)
     return checked
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--integer", action="store_true", help="check signed i64 instead of binary64")
     parser.add_argument("--runner", type=Path, default=Path(".build/writer-scalars"))
     parser.add_argument("--random-cases", type=int, default=100000)
     parser.add_argument("--batch-size", type=int, default=5000)
@@ -161,10 +166,21 @@ def main():
     if not math.isfinite(args.timeout) or not 0 < args.timeout <= 300:
         parser.error("--timeout must be finite and in (0, 300]")
     runner = str(args.runner.resolve())
-    raw = campaign(runner, random_bits(args.random_cases), args.batch_size, args.timeout)
-    print(f"{raw} independent random binary64 writer cases passed (seed {SEED:#x})", flush=True)
-    biased = campaign(runner, biased_bits(), args.batch_size, args.timeout)
-    print(f"{biased} biased exponent/mantissa/fraction writer cases passed", flush=True)
+    raw = campaign(runner, random_bits(args.random_cases), args.batch_size, args.timeout, args.integer)
+    print(f"{raw} independent random 64-bit writer cases passed (seed {SEED:#x})", flush=True)
+    if args.integer:
+        boundaries = {0, 1, (1 << 63) - 1, 1 << 63, (1 << 64) - 1}
+        for exponent in range(20):
+            for offset in range(-4, 5):
+                value = 10 ** exponent + offset
+                if 0 <= value < 1 << 63:
+                    boundaries.add(value)
+                    boundaries.add((-value) & MASK64)
+        cases = sorted(boundaries)
+    else:
+        cases = biased_bits()
+    biased = campaign(runner, cases, args.batch_size, args.timeout, args.integer)
+    print(f"{biased} biased writer boundary cases passed", flush=True)
     print(f"{raw + biased} raw-bits -> TOML -> Python writer cases passed")
 
 

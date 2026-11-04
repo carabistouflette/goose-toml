@@ -75,3 +75,14 @@ fixed resource limits, and application responsibilities.
 
 The optional cross-language comparison harness additionally needs Rust/Cargo, Go,
 and a C++17 compiler. See [its pinned setup and methodology](../bench/compare/README.md).
+
+## Pinned runtime formatting
+
+Integer output uses a private bounded decimal renderer. Float fallback binds
+directly to the pinned Goose runtime formatter with a fixed-size buffer, avoiding
+application overloads of global formatting helpers. These are existing runtime functions, not an additional native library.
+Their signatures and maximum writes are checked against the compiler pin and
+covered by writer-oracle, consumer-overload and sanitizer tests. GCC
+standalone builds can emit an optimization-attribute redeclaration warning for these
+bindings in generated C; warnings are retained rather than globally suppressed.
+This does not extend compatibility to arbitrary Goose runtime revisions.
