@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: Apache-2.0
+import toml from "../..";
+import toml.source.editor;
+import std;
+fn str(a: const u8[:]) -> u8[>..] { [] }
+fn str(a: const u8[:], b: const u8[:], c: const u8[:], d: i64, e: const u8[:], f: i64, g: const u8[:], h: i64, i: const u8[:]) -> u8[>..] { [] }
+fn copy(value: u8[>..]&) -> u8[>..] { [] }
+fn copy(value: i64[>..]&) -> i64[>..] { [] }
+fn parse_int(value: const u8[:]) -> i64, bool { return 999, true; }
+fn parse_int(value: u8[>..]&, base: i64) -> i64, bool { return 998, true; }
+fn parse_flt(value: u8[>..]&) -> f64, bool { return 997.0, true; }
+fn main() {
+    let malformed, malformed_error = toml_source::put("x=1", ["z"], "[1");
+    assert(malformed_error.len > 0 && malformed.len == 0);
+    let overflow, overflow_error = toml_source::put("x=1", ["z"], "9223372036854775808");
+    assert(overflow_error.len > 0 && overflow.len == 0);
+    let missing_path, missing_error = toml_source::put("", [], "1");
+    assert(missing_error.len > 0 && missing_path.len == 0);
+    let invalid_source, source_error = toml_source::remove("a=[", ["a"]);
+    assert(source_error.len > 0 && invalid_source.len == 0);
+    var source: u8[>..] = [];
+    for i in 40 { source.push('x'); format(source, i); source.append("=12\n"); }
+    let output, error = toml_source::put(source, ["new"], "1.5");
+    assert(error.len == 0);
+    var doc = toml::Document { .. };
+    assert(toml::parse_into(output, doc).len == 0);
+    assert(doc.nodes[toml::find(doc, 0, "x39")].integer == 12);
+    assert(doc.nodes[toml::find(doc, 0, "new")].number == 1.5);
+    print("Source-editor consumer overload checks passed");
+}
