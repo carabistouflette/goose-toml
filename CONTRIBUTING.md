@@ -1,6 +1,6 @@
 # Contributing
 
-Keep the API small, pure, and explicit. Applications own file/process I/O. Target the TOML 1.0 specification; do not silently accept later-version extensions. Add regressions for every behavior fix, including malformed input, ownership, and resource limits.
+Keep the API small, pure, and explicit. Applications own file/process I/O. Keep TOML 1.0 strict by default and test TOML 1.1 only through the explicit version option. The writer emits TOML 1.0-compatible syntax. Add regressions for every behavior fix, including malformed input, ownership, and resource limits.
 
 Use focused branches and Conventional Commits. Commit working milestones regularly. Run `make format`, `make check test`, and `git diff --check`. Request independent review, fix actionable findings, and keep CI passing. Do not commit generated compilers, build output, credentials, or private workspace notes.
 

@@ -2,8 +2,8 @@
 
 The library is pure Goose. It has no external native runtime dependency beyond
 Goose's standard library and the strict UTF-8 snapshot included in `vendor/`.
-Applications own I/O. Struct mapping and TOML serialization are outside the
-initial document-parser API.
+Applications own I/O. The API includes semantic document editing and TOML serialization. Automatic
+application struct mapping is outside its scope.
 
 ## Validated configuration
 
@@ -38,3 +38,6 @@ or access the network at runtime.
 
 See [README.md](../README.md) for API ownership rules, exact supported syntax,
 fixed resource limits, and application responsibilities.
+
+The optional cross-language comparison harness additionally needs Rust/Cargo, Go,
+and a C++17 compiler. See [its pinned setup and methodology](../bench/compare/README.md).

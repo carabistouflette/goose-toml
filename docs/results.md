@@ -5,8 +5,8 @@
 Measurements below use parser commit
 [`9e8e4bcfbd227ed206cf59594d0ce329d5ebfb86`](https://github.com/carabistouflette/goose-toml/commit/9e8e4bcfbd227ed206cf59594d0ce329d5ebfb86),
 with vendored goose-text `09d5f0c39e50d3270189bd0c6798cd10ab2f0c0d`.
-Later publication commits add documentation and benchmark reporting; they do not
-change these measured parser sources. Exact source-file, workload, tool and
+This is a historical parser-only measurement. Subsequent feature and performance
+changes are not represented by these samples. Exact source-file, workload, tool and
 binary hashes are in the [raw report](../bench/results/2026-11-04-linux-x86_64.json).
 
 ## Native benchmark, 2026-11-04 UTC
