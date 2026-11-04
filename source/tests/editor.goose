@@ -3,6 +3,7 @@ import toml from "../..";
 import toml.source.editor;
 import std;
 import compatibility;
+import reuse_lifetimes;
 fn put(source: const u8[:], path: const u8[:][:], value: const u8[:], expected: const u8[:], version: toml::Version = toml::Version.V1_0) {
     let output, error = toml_source::put(source, path, value, version);
     if error.len > 0 { print(error); }
@@ -19,6 +20,7 @@ fn reject(source: const u8[:], path: const u8[:][:], value: const u8[:]) {
 }
 fn main() {
     compatibility_tests::run();
+    reuse_lifetime_tests::run();
     let source = "# title\r\n[dependencies] # keep\r\n  old = { path = '../old' } # old note\r\n\r\n[package]\r\nname = 'app'\r\n";
     put(source, ["dependencies", "new"], "{ path = '../new' }", "# title\r\n[dependencies] # keep\r\n  old = { path = '../old' } # old note\r\n\"new\" = { path = '../new' }\r\n\r\n[package]\r\nname = 'app'\r\n");
     put(source, ["dependencies", "old"], "{ path = '../other' }", "# title\r\n[dependencies] # keep\r\n  old = { path = '../other' } # old note\r\n\r\n[package]\r\nname = 'app'\r\n");
