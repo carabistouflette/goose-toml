@@ -91,6 +91,7 @@ sanitize:
 	$(GOOSE) tests/writer-scalars.goose --standalone --debug --no-bce -o .build/writer-scalars-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/writer-scalars-sanitized .build/writer-scalars-sanitized.c -lm -ldl -lpthread
 	python3 -O scripts/writer-scalar-test.py --runner .build/writer-scalars-sanitized
+	python3 -O scripts/writer-scalar-test.py --integer --runner .build/writer-scalars-sanitized
 	$(GOOSE) tests/decoder.goose --standalone --debug --no-bce -o .build/decoder-sanitized.c
 	gcc -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -o .build/decoder-sanitized .build/decoder-sanitized.c -lm -ldl -lpthread
 	python3 scripts/security-test.py --decoder .build/decoder-sanitized
@@ -125,3 +126,4 @@ writer-scalar:
 	mkdir -p .build
 	$(GOOSE) build tests/writer-scalars.goose --cc gcc -O2 -o .build/writer-scalars
 	python3 scripts/writer-scalar-test.py --runner .build/writer-scalars
+	python3 scripts/writer-scalar-test.py --integer --runner .build/writer-scalars

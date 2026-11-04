@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
-// Independent writer adapter: raw IEEE-754 bits -> Input.Float -> serialized TOML.
+// Independent writer adapter: raw 64-bit words -> Float/Integer -> TOML.
 // Input is high/low 32-bit words, each eight hex digits separated by TAB.
 // Output is T<TAB>the one-line TOML document, one newline-terminated record each.
-// This adapter never invokes Goose's TOML or decimal-float parser.
+// --integer selects signed i64. No TOML or decimal-value parser is used.
 import toml from "..";
 import std;
 import binary;
@@ -19,6 +19,9 @@ fn word(text: const u8[:]) -> i64 {
     return value;
 }
 fn main() {
+    let argv = args();
+    let integer = argv.len == 2 && argv[1] == "--integer";
+    if argv.len > 1 && !integer { bad_frame(); return; }
     var input: u8[>..] = []; read_stdin(input);
     if input.len == 0 || input.len > 180000 || input[input.len - 1] != '\n' { bad_frame(); return; }
     let lines = split(input, '\n');
@@ -31,9 +34,11 @@ fn main() {
             (low & 255) as u8, ((low >> 8) & 255) as u8, ((low >> 16) & 255) as u8, (low >> 24) as u8,
             (high & 255) as u8, ((high >> 8) & 255) as u8, ((high >> 16) & 255) as u8, (high >> 24) as u8,
         ];
-        let value, ok = binary::read_f64le(bytes, 0); assert(ok);
+        let bits, ok = binary::read_u64le(bytes, 0); assert(ok);
+        let value: toml::Input = if integer { toml::Input.Integer { value: bits as! i64 } }
+            else { toml::Input.Float { value: binary::f64_of_bits(bits) } };
         toml::init(doc);
-        let id, put_error = toml::put(doc, 0, "v", toml::Input.Float { value: value });
+        let id, put_error = toml::put(doc, 0, "v", value);
         assert(put_error.len == 0 && id > 0);
         let source, error = toml::serialize(doc);
         if error.len > 0 { write_stderr(error); write_stderr("\n"); exit(3); }

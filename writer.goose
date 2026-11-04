@@ -5,10 +5,9 @@ import json;
 
 let MAX_OUTPUT_BYTES = 8388608;
 let MAX_WRITE_TEXT_WORK = 8388608;
-// These are the same pinned-runtime routines used by builtin formatting.
-// Fixed local buffers below provide their proven maximum output capacity;
-// calling the runtime directly avoids global consumer formatting overloads.
-extern fn runtime_format_integer(destination: u8&, value: i64) -> i64 = "gs_fmt_i64";
+// This is the pinned runtime routine used by builtin float formatting.
+// A fixed local buffer below provides its proven maximum output capacity;
+// calling it directly avoids global consumer formatting overloads.
 extern fn runtime_format_float(destination: u8&, value: f64) -> i64 = "gs_fmt_f64";
 // Borrow fixed views of scratch allocated once in serialize, keeping recursive
 // calls compact. Document views are read-only; the backing arrays never resize.
@@ -34,10 +33,21 @@ fn write_byte(w: Writer&, value: u8) {
 }
 fn write_integer(w: Writer&, value: i64) {
     if w.error.len > 0 { return; }
+    if value >= 0 && value < 10 { write_byte(w, '0' + value as u8); return; }
     var text: u8[20] = [0; 20];
-    let len = toml::runtime_format_integer(text[0], value);
-    if len <= 0 || len > text.len { write_fail(w, "invalid runtime integer formatting"); return; }
-    write_bytes(w, text[..len]);
+    // Form MIN_I64's magnitude without overflowing signed arithmetic.
+    var magnitude = if value < 0 { (-(value + 1)) as u64 + 1 } else { value as u64 };
+    var at = 20;
+    loop {
+        let pair = magnitude % 100; magnitude /= 100;
+        if magnitude > 0 || pair >= 10 {
+            at -= 2; text[at] = '0' + (pair / 10) as u8;
+            text[at + 1] = '0' + (pair % 10) as u8;
+        } else { at--; text[at] = '0' + pair as u8; }
+        if magnitude == 0 { break; }
+    }
+    if value < 0 { at--; text[at] = '-'; }
+    write_bytes(w, text[at..]);
 }
 fn write_finite_float(w: Writer&, number: f64) {
     // This conservative magnitude window stays inside the pinned standard
