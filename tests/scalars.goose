@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 // Batched public-API scalar oracle adapter for scripts/scalar-test.py.
 // Input: newline-terminated numeric/boolean tokens, one token per record.
-// Output: E for ordinary parse rejection, or I/F/B<TAB>value, one line per record.
+// Output: E or I/B<TAB>value; F<TAB>16 native-order byte hex digits for f64.
 // Runtime failures and unexpected accepted kinds are process failures, never E.
 import toml from "..";
 import std;
 import os;
-import json;
 
 fn emit_scalar(doc: toml::Document&, out: u8[>..]&) {
     let id = toml::find(doc, 0, "v");
@@ -15,10 +14,13 @@ fn emit_scalar(doc: toml::Document&, out: u8[>..]&) {
     if node.kind == toml::Kind.Integer { format(out, "I\t", node.integer, "\n"); }
     else if node.kind == toml::Kind.Float {
         out.append("F\t");
-        if node.number != node.number { out.append("nan"); }
-        else if node.number > 1.7976931348623157e308 { out.append("inf"); }
-        else if node.number < -1.7976931348623157e308 { out.append("-inf"); }
-        else { json::format_number(out, node.number); }
+        // Observe the actual f64 bytes directly: the oracle must not depend
+        // on the language's float formatter sharing conversion code.
+        let value: f64[1] = [node.number];
+        for byte in bytes_of(value) {
+            out.push("0123456789abcdef"[byte >> 4]);
+            out.push("0123456789abcdef"[byte & 15]);
+        }
         out.push('\n');
     } else if node.kind == toml::Kind.Boolean { out.append(if node.boolean { "B\ttrue\n" } else { "B\tfalse\n" }); }
     else { write_stderr("scalar adapter: unexpected accepted value kind\n"); exit(2); }

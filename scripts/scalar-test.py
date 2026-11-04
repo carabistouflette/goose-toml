@@ -9,9 +9,10 @@ memory and process startup costs. Runtime diagnostics, abnormal exits, timeouts,
 and malformed/missing/extra response frames fail independently of parse errors.
 
 The secondary oracle checks acceptance, scalar kind, integer/boolean value, and
-float.hex() equality (including signed zero). NaN encoding/sign is unspecified,
-so NaNs compare with isnan. Python's arbitrary-precision integers are restricted
-to i64; decimal overflow is rejected while explicit inf/nan remains valid. Tokens
+raw IEEE-754 byte equality (including signed zero) on the same native host.
+There is no Goose float-formatting round trip. NaN encoding/sign is unspecified,
+so NaNs require an all-one exponent and a nonzero fraction. Python's arbitrary-
+precision integers are restricted to i64; decimal overflow is rejected while explicit inf/nan remains valid. Tokens
 longer than 128 ASCII bytes are rejected per goose-toml's documented scalar cap.
 Datetimes and strings are covered by other suites, not this numeric campaign.
 """
@@ -22,6 +23,7 @@ import math
 import random
 import re
 import subprocess
+import struct
 import sys
 import time
 import tomllib
@@ -29,7 +31,7 @@ from pathlib import Path
 
 SEED = 0x850AC24
 BATCH_SIZE = 5000
-FLOAT_FRAME = re.compile(r"(?:-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?|-?inf|nan)")
+FLOAT_FRAME = re.compile(r"[0-9a-f]{16}")
 
 
 class ScalarFailure(Exception):
@@ -75,8 +77,12 @@ def check_frame(token, frame):
         require(payload == ("true" if expected else "false"), "wrong boolean value: " + context)
     else:
         require(FLOAT_FRAME.fullmatch(payload) is not None, "invalid float frame: " + context)
-        value = float(payload)
-        same = math.isnan(value) and math.isnan(expected) if math.isnan(expected) else value.hex() == expected.hex()
+        raw = bytes.fromhex(payload)
+        if math.isnan(expected):
+            bits = int.from_bytes(raw, sys.byteorder)
+            same = bits & 0x7ff0000000000000 == 0x7ff0000000000000 and bits & 0x000fffffffffffff != 0
+        else:
+            same = raw == struct.pack("=d", expected)
         require(same, "wrong binary64 value or zero sign: " + context)
 
 

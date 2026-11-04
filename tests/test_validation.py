@@ -4,6 +4,7 @@ import contextlib
 import io
 import runpy
 import subprocess
+import struct
 import sys
 import tomllib
 import unittest
@@ -46,6 +47,33 @@ class PropertyHarnessTests(unittest.TestCase):
 
     def test_normal_parser_rejection_is_still_accepted(self):
         self.invoke_rejection(b"toml: invalid scalar at byte 2\n")
+
+
+class ScalarBitHarnessTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.scalar = runpy.run_path(str(SCRIPT.with_name("scalar-test.py")))
+
+    def check(self, token, value):
+        self.scalar["check_frame"](token, "F\t" + struct.pack("=d", value).hex())
+
+    def test_raw_finite_bits_and_zero_sign(self):
+        self.check("1.0", 1.0)
+        self.check("-0.0", -0.0)
+        for token, wrong in [("1.0", 1.0000000000000002), ("-0.0", 0.0), ("inf", -float("inf"))]:
+            with self.subTest(token=token), self.assertRaises(self.scalar["ScalarFailure"]):
+                self.check(token, wrong)
+
+    def test_nan_policy_accepts_payloads_but_not_infinity(self):
+        for bits in [0x7ff0000000000001, 0xfff8000000000042]:
+            self.scalar["check_frame"]("nan", "F\t" + bits.to_bytes(8, sys.byteorder).hex())
+        with self.assertRaises(self.scalar["ScalarFailure"]):
+            self.check("nan", float("inf"))
+
+    def test_wrong_or_truncated_bit_frames_fail(self):
+        for frame in ["F\t1.0", "F\t00000000", "F\tfffffffffffffffff", "F\t000000000000000G"]:
+            with self.subTest(frame=frame), self.assertRaises(self.scalar["ScalarFailure"]):
+                self.scalar["check_frame"]("1.0", frame)
 
 
 if __name__ == "__main__":
