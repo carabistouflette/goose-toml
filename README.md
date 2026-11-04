@@ -51,6 +51,10 @@ replacing the placeholder with the full commit you have reviewed. The experiment
 
 Use `init`, `put`, `push`, `set`, `remove`, `erase` and `compact` for [supported edits](docs/document.md). `serialize(doc)` returns owned TOML text and an owned error, without changing the document. The fields supporting declaration state, hashing, arenas and index are implementation details; do not modify them directly. There is no separate immutable wrapper in this experimental API. Helper functions in the source are not stable API.
 
+For byte-preserving file edits, the opt-in [source editor](source/README.md)
+provides `put` and `remove` without regenerating unrelated source. Its ownership,
+resource limits and unsupported layouts are documented separately.
+
 ## Cost and resource limits
 
 Parsing is linear in input size plus key-index probe/comparison work and bounded scalar conversion. Sealing skips already closed inline subtrees, so total sealing work is linear in nodes. The index uses open addressing at most 50% load with full decoded-key equality checks. It sizes storage by named entries, excluding array elements, and rehashes only indexed entries. `find` hashes O(key bytes), has expected constant probe cost and worst-case linear cost in named entries; application lookups are separate from the per-parse work budget. Deterministic hashes are **not** assumed collision-resistant: a cumulative work budget counts probes, rehash collisions, and compared key bytes, rejecting hostile workloads rather than permitting unbounded quadratic parsing.
@@ -91,7 +95,11 @@ Setup requires Git, CMake 3.27+, C/C++20 compilers, Make, and libc development h
 
 `make sanitize` runs the unit suite and hostile-input decoder checks with Goose debug/range checks, bounds-check elimination disabled, and GCC AddressSanitizer/UndefinedBehaviorSanitizer. It targets Linux GCC builds. CI runs conformance, property tests, scalar grammar/rounding checks, security probes, sanitizers, and a bounded coverage-guided fuzz campaign in addition to the normal tests.
 
-`make fuzz` additionally requires Clang with libFuzzer/ASan/UBSan runtimes, and the pinned official fixtures downloaded by `make conformance`. It reuses document arenas across fuzz inputs and both spec versions, serializes successful parses, reparses strict TOML 1.0, and checks semantic equality plus tree links, depth, scalar child counts, key/text spans, UTF-8 output, and indexed lookups. It seeds from the union of both official manifests (785 fixture paths, content-deduplicated) plus collision/resource cases. The default campaign stops at 100,000 executions or roughly 30 seconds plus initialization/check overhead; override `FUZZ_RUNS`, `FUZZ_SECONDS`, `FUZZ_SEED`, or `FUZZ_CC` as needed. Logs, writable corpus, and failures stay in `.build/fuzz/`.
+`make fuzz` additionally requires Clang with libFuzzer/ASan/UBSan runtimes, and the pinned official fixtures downloaded by `make conformance`. It reuses document arenas across fuzz inputs and both spec versions, serializes successful parses, reparses strict TOML 1.0, and checks semantic equality plus tree links, depth, scalar child counts, key/text spans, UTF-8 output, and index integrity. Index-cluster and per-node hash checks scan the entire
+index; a bounded sample additionally exercises public lookups, avoiding quadratic
+harness work on collision-heavy seeds. Each complete two-version case has a
+15-second deadline under coverage and sanitizers; this is a harness timeout,
+not a parser latency guarantee. It seeds from the union of both official manifests (785 fixture paths, content-deduplicated) plus collision/resource cases. The default campaign stops at 100,000 executions or roughly 30 seconds plus initialization/check overhead; override `FUZZ_RUNS`, `FUZZ_SECONDS`, `FUZZ_SEED`, or `FUZZ_CC` as needed. Logs, writable corpus, and failures stay in `.build/fuzz/`.
 
 The fuzzer's C host bridges Goose's fatal `_Exit` path to `abort()` so libFuzzer can preserve the exact triggering bytes. Before each campaign it intentionally fails a Goose assertion in a separate self-test binary and verifies that the matching input artifact was written. A failed self-test or missing execution summary fails the target. Reproduce a captured input with `.build/fuzz/parser-fuzzer .build/fuzz/artifacts/crash-<hash>` and turn confirmed defects into deterministic regressions. The persistent corpus affects future mutation sequences; the numeric seed alone does not fully reproduce a campaign. This target runs Linux native code with extra checks; it is not a throughput benchmark or exhaustive TOML semantic oracle.
 

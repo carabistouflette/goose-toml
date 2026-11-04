@@ -8,6 +8,13 @@ compiler pinned in `GOOSE_REVISION` and an immutable reviewed dependency commit.
 - Strict TOML 1.0 parsing by default, with explicit TOML 1.1 support.
 - Owned semantic document, lookup, construction, replacement, removal and compaction.
 - Bounded TOML 1.0 writing, including conversion from TOML 1.1 spellings.
+- Opt-in source-preserving `source/editor` put/remove operations, with owned
+  results, bounded validation and byte preservation outside edited token spans.
+  Inline-table children and individual array elements remain unsupported.
+- Linear index-cluster audits in the fuzz harness, retaining per-node index/hash
+  checks and sampled lookups without quadratic collision-key validation. A
+  bounded 15-second per-input deadline accommodates the complete instrumented
+  two-version roundtrip workload.
 - Consumer-overload hardening for diagnostics, numeric parsing, index growth,
   owned results and numeric serialization.
 - Guarded finite-float formatting improvement, independently checked against
@@ -18,8 +25,9 @@ compiler pinned in `GOOSE_REVISION` and an immutable reviewed dependency commit.
 - Twelve-workload comparisons against pinned Rust, Go and C++ solutions, with
   raw samples, compiler/source provenance, timezone diagnostics and limitations.
 
-Resource limits deliberately reject some valid large documents. Serialization
-regenerates syntax; comments/formatting and automatic application struct mapping
-are not preserved/provided. Writing performance remains workload-dependent,
-particularly for extreme floats. See the README, platform documentation and
+Resource limits deliberately reject some valid large documents. The semantic
+writer regenerates syntax; use the opt-in source editor to retain comments and
+formatting outside edited spans. Automatic application struct mapping is not
+provided. Writing performance remains workload-dependent, particularly for
+extreme floats. See the README, platform documentation and
 measured results for the complete contracts and evidence.
