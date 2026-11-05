@@ -41,6 +41,17 @@ export fn fuzz_parse(input: const u8[:]) -> i64 {
         toml_source::Edit.Remove { path: other }];
     let combined, combined_error = toml_source::apply(input[..split], replacement);
     if combined_error.len == 0 { check_output(combined); } else { assert(combined.len == 0); }
+    let inline_changed, inline_error = toml_source::put(input, ["v", "x"], "[2,3]");
+    if inline_error.len == 0 { assert(parse_error.len == 0); check_output(inline_changed); }
+    else { assert(inline_changed.len == 0); }
+    var inline_source: u8[>..] = []; inline_source.append("v={x="); inline_source.append(input); inline_source.push('}');
+    let replaced, replaced_error = toml_source::put(inline_source, ["v", "x"], "1");
+    if replaced_error.len == 0 {
+        var result = toml::Document { .. }; assert(toml::parse_into(replaced, result).len == 0);
+        let table = toml::find(result, 0, "v"); let field = toml::find(result, table, "x");
+        assert(field >= 0 && result.nodes[field].kind == toml::Kind.Integer && result.nodes[field].integer == 1);
+    }
+    else { assert(replaced.len == 0); }
     return if parse_error.len == 0 { 1 } else { 0 };
 }
 export fn fuzz_assertion_probe(value: i64) { assert(value != 0); }

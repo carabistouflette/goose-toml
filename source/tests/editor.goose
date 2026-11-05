@@ -5,6 +5,7 @@ import std;
 import compatibility;
 import reuse_lifetimes;
 import batch;
+import inline_values;
 fn put(source: const u8[:], path: const u8[:][:], value: const u8[:], expected: const u8[:], version: toml::Version = toml::Version.V1_0) {
     let output, error = toml_source::put(source, path, value, version);
     if error.len > 0 { print(error); }
@@ -20,6 +21,7 @@ fn reject(source: const u8[:], path: const u8[:][:], value: const u8[:]) {
     assert(error.len > 0 && output.len == 0);
 }
 fn main() {
+    inline_tests::run();
     batch_tests::run();
     compatibility_tests::run();
     reuse_lifetime_tests::run();
@@ -48,7 +50,7 @@ fn main() {
     remove("[[a]]\nx=1\n[[a]]\nx=2\n[z]\ny=3\n", ["a"], "\n\n\n\n[z]\ny=3\n");
     remove("a={x=1}\nb=2", ["a"], "\nb=2");
     remove("a=1 # keep", ["missing"], "a=1 # keep");
-    reject("a={x=1}", ["a", "x"], "2");
+    put("a={x=1}", ["a", "x"], "2", "a={x=2}");
     reject("a={x=1}", ["a", "y"], "2");
     reject("a=1", ["a", "x"], "2");
     reject("[a]\nx=1", ["a"], "2");

@@ -32,7 +32,8 @@ source index and final validation across its requests.
 ## Operations
 
 `put(source, path, raw_value, version = toml::Version.V1_0)` replaces a directly
-assigned value or inserts a new member. `raw_value` is exactly one TOML value;
+assigned value, including an existing value inside an inline table, or inserts a
+new member outside inline tables. `raw_value` is exactly one TOML value;
 it is independently parsed under the selected version, preventing extra
 assignments or headers from being injected. Raw spelling is retained. Insertion
 uses the deepest existing table body, with quoted relative dotted names as
@@ -85,8 +86,10 @@ created by an earlier request. Equal paths and ancestor/descendant paths are
 rejected, even when missing. Independent siblings under a shared missing prefix
 are allowed. Insertions at the same original offset appear in request order;
 other spans follow original source order. Newline separation uses the bytes
-already emitted, including the effect of removals. Unsupported inline children,
+already emitted, including the effect of removals. Inline member insertion/removal,
 header replacements, parser limits and version selection follow `put`/`remove`.
+Batch `Put` also supports existing inline assigned values. Discovery is shared
+for requests in the same enclosing inline value, using original source offsets.
 
 Validation stages are count/path/budget/conflict preflight, all replacement
 fragments, original-source indexing, span planning, then rendering and final
@@ -100,8 +103,8 @@ still validates the source and returns its independent owned copy.
 The aggregate decoded path bytes plus raw replacement bytes cannot exceed
 1 MiB. Each individual path/fragment and the completed source also obey the
 limits below. One original source index and one final parse cover a changed
-batch, in addition to an independent parse of each replacement fragment. The
-planner shares statement and subtree metadata; bounded lookup costs up to
+batch, in addition to an independent parse of each replacement fragment and
+on-demand discovery of selected inline owners. The planner shares statement and subtree metadata; bounded lookup costs up to
 O(edits × parser nodes), conflict checks O(edits² × path segments), and span
 sorting O(spans log spans). Temporary storage includes the index, parser nodes,
 statement metadata, and rendered output. This does not promise a strict heap
@@ -165,9 +168,28 @@ Removing the last dotted or header-created child can also make its now-empty
 `a.b=1` leaves a blank line, not an explicit empty `[a]` table. Existing explicit
 headers outside the selected subtree remain unchanged.
 
-Edits to an individual child inside an inline table are deliberately unsupported
-in this version. They return an error and empty output. Replacing or removing the
-entire directly assigned inline table is supported. Replacing a header-declared
+The default `put` and batch `Put` can replace an existing assigned value inside
+an inline table, including a nested value, an array, or a complete nested inline
+table. For example, `["dependencies", "helper", "path"]` can update the path in
+`dependencies = { helper = { path = "../old" } }`, copying every byte outside
+that value span. Decoded dotted/quoted keys follow the normal path rules.
+An implicit table introduced only by dotted inline keys has no complete value
+span and cannot be replaced as a whole. Inserting or removing individual inline
+members and selecting array elements remain unsupported. Replacing or removing
+the entire directly assigned outer inline table is supported. The legacy
+compatibility profile retains its original rejection of inline children.
+
+Inline replacement is unreleased and is not present in alpha.4. Discovery
+reparses the enclosing inline assignment using the existing parser's key/value
+routines plus inline framing, recording source positions before decoded text
+enters the arena. It verifies the rebased node/key/parent layout against the
+original index. Each discovery parse has its own existing node/depth/key-work
+budgets; a valid source can still exhaust a discovery budget. Arrays and strings
+are consumed by the parser, rather than searched for delimiter-like bytes.
+A batch discovers each selected enclosing inline value at most once. Output
+must still parse under the requested version, including replacements whose
+whitespace or comments would otherwise invalidate the surrounding inline table.
+Replacing a header-declared
 table or AoT with a raw value is also unsupported. A source-preserving caller
 should report unsupported layouts without falling back to whole-file
 normalization. Array ordinals, formatting cleanup and sequential dependent edit plans are not
@@ -179,13 +201,14 @@ Each call is bounded independently:
 - Replacement fragment: at most 1 MiB minus four wrapper bytes.
 - Path: 1..64 segments and at most 4,096 total decoded key bytes.
 - Index: at most 65,536 statements, plus existing parser node/depth/key-work limits.
-- Single edits: at most three bounded parsing passes for insertion/replacement, two for removal.
+- Single edits: at most three bounded parsing passes for ordinary insertion/replacement, two for removal; an inline replacement adds one enclosing-value discovery parse.
 - Batches: at most 64 requests, 1 MiB aggregate decoded paths/raw values, and the parsing stages above.
 
 Outside existing metered parser/index work, scans, path walks and copying are
-linear in bounded input plus output size for single edits; batch planning has
-the additional costs stated above. Storage is O(input bytes + parser
-nodes + statements), not a strict allocation-byte budget. Runtime allocation
+linear in bounded input plus output size for single edits; inline discovery adds
+one parse of the selected enclosing value. Batch planning has the additional
+costs stated above, plus at most one discovery parse per selected inline owner.
+Storage is O(input bytes + parser nodes + statements), not a strict allocation-byte budget. Runtime allocation
 failure follows Goose's normal policy. Applications must bound repeated calls
 and input I/O themselves. No native kernel or runtime dependency is introduced.
 
