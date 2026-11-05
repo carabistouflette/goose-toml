@@ -34,8 +34,11 @@ byte-identical to the release.
 ## Validation state
 
 - Markdown local paths/anchors and Git whitespace: checked during preparation.
-- Released config example, all complete guide snippets, and the new source-edit
-  example: executable validation pending the shared-machine hold's release.
+- Released config example, all four complete guide snippets, and the new
+  source-edit example: PASS with the pinned compiler. A fresh public package
+  import resolved exactly to alpha.6, with runtime/license/compiler files
+  byte-checked against Git blobs; its checkout stayed clean. The new inline
+  example asserts exact output. [Commands and output](results/announcement-examples.json).
 - Optional setup/conformance/fuzz commands: checked against maintained targets;
   the full historical campaigns are not repeated for prose changes.
 - Current parse/write results: queued for one finite, explicitly granted window.

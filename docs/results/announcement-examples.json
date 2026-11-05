@@ -1,0 +1,115 @@
+{
+  "task": "GL-DOCSTOML-01",
+  "release": "e5e5644c45e78e8eb05999978bb4155ea0bbb180",
+  "compiler_pin": "eadca409f68210893f366e60d0c2f0dc29a339be",
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "elapsed_seconds": 2.3691984129836783,
+  "results": [
+    {
+      "label": "format new example",
+      "command": [
+        "<pinned-goose>",
+        "format",
+        "examples/source-edit.goose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.004923161992337555,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "released config",
+      "command": [
+        "<pinned-goose>",
+        "run",
+        "examples/config.goose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.16521836002357304,
+      "stdout": "Server port: 8080\n",
+      "stderr": ""
+    },
+    {
+      "label": "README.md snippet 0",
+      "command": [
+        "<pinned-goose>",
+        "run",
+        "<checkout>/.build/announcement-examples/README-0.goose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.1287670150049962,
+      "stdout": "8080\n",
+      "stderr": "fetching the package toml from carabistouflette/goose-toml@e5e5644c45e78e8eb05999978bb4155ea0bbb180\n"
+    },
+    {
+      "label": "docs/document.md snippet 0",
+      "command": [
+        "<pinned-goose>",
+        "run",
+        "<checkout>/.build/announcement-examples/docs-document-0.goose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.14686992700444534,
+      "stdout": "\"server\" = {\"port\" = 8080}\n\n",
+      "stderr": ""
+    },
+    {
+      "label": "source/README.md snippet 0",
+      "command": [
+        "<pinned-goose>",
+        "run",
+        "<checkout>/.build/announcement-examples/source-README-0.goose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.28248398000141606,
+      "stdout": "# project notes\n[dependencies]\nold = {path='../old'} # keep\n\"helper\" = {path='../helper'}\n\n",
+      "stderr": ""
+    },
+    {
+      "label": "source/README.md snippet 1",
+      "command": [
+        "<pinned-goose>",
+        "run",
+        "<checkout>/.build/announcement-examples/source-README-1.goose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.29925939097302034,
+      "stdout": "[package]\nname = 'renamed'\n[dependencies]\n\n\n",
+      "stderr": ""
+    },
+    {
+      "label": "new inline batch example",
+      "command": [
+        "<pinned-goose>",
+        "run",
+        "examples/source-edit.goose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.27577989699784666,
+      "stdout": "dependencies = {\"helper\" = {path='../helper'},  old = {path='../updated'} } # keep\n\n",
+      "stderr": ""
+    }
+  ],
+  "result": "PASS",
+  "fresh_public_import": {
+    "resolved_commit": "e5e5644c45e78e8eb05999978bb4155ea0bbb180",
+    "tracked_status": "",
+    "sha256": {
+      "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+      "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+      "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+      "source/editor.goose": "d1e9c4648f1d696aa3e45ef3f976555dc1d02908c9c650a85ed85b82f22c8d4d",
+      "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+      "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+    }
+  },
+  "example_sources": {
+    ".build/announcement-examples/README-0.goose": "bb2048b02c5e4f1a2ab73db8b1e1fa70363000d8cf606c2f8624f332c832c551",
+    ".build/announcement-examples/docs-document-0.goose": "9dd34c2e4d4197408e9f0194971c7a97cbb2d6e9ca87ecca3efdc978c38f2669",
+    ".build/announcement-examples/source-README-0.goose": "e96a7d9cf1542861bcc0ee0e550d0d1642775c982f233005be92024e8c268c44",
+    ".build/announcement-examples/source-README-1.goose": "f896873388f8c708f5d2f255235c19415ac805bf60a56cbd9f3fbabbcedd17b0",
+    "examples/config.goose": "d54e2bd9aefa80a791281de2a47aee8e3a954b436f5b36511e37d9650cf9b8ad",
+    "examples/source-edit.goose": "acdd02cc259814017509e4b7c4ca644141171a442a0e3e1d51af1242ca995563"
+  }
+}
