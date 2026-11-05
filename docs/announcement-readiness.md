@@ -34,6 +34,8 @@ byte-identical to the release.
 ## Validation state
 
 - Markdown local paths/anchors and Git whitespace: checked during preparation.
+- Existing `make check`, including the new example: PASS, 2.536 seconds within
+  its 180-second bound. [Recorded output](results/announcement-make-check.json).
 - Released config example, all four complete guide snippets, and the new
   source-edit example: PASS with the pinned compiler. A fresh public package
   import resolved exactly to alpha.6, with runtime/license/compiler files
@@ -52,6 +54,11 @@ executable harness, compiler binary/source and dependency locks. Existing
 [benchmark identities](benchmark-currentness.json) were compared against Git
 blobs from alpha.6, not inferred from report dates. All old raw JSON is unchanged.
 No alpha.6 source-editor performance claim requires a separate campaign.
+
+Two independent final reviews at `c83a75248af12d4661803acf2f4f10ae4d7db112`
+found no Standards or Spec blockers. The Spec review independently recomputed
+all 96 displayed median/MAD pairs from 864 samples and matched source/tool
+identities and example hashes. Later changes only record check/review evidence.
 
 Example commands and measurement outcomes are recorded above. Final public
 documentation revision and hosted checks remain pending publication.
