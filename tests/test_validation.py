@@ -2,6 +2,7 @@
 """Regression tests for the independent-oracle harness, not parser internals."""
 import contextlib
 import io
+import json
 import runpy
 import subprocess
 import struct
@@ -24,6 +25,51 @@ class PropertyHarnessTests(unittest.TestCase):
                 contextlib.redirect_stdout(io.StringIO()):
             runpy.run_path(str(SCRIPT), run_name="__main__")
             self.assertEqual(decoder.call_count, 2)
+
+    def invoke_success(self, output, expected):
+        result = subprocess.CompletedProcess([], 0, stdout=output, stderr=b"")
+        with patch.object(sys, "argv", [str(SCRIPT), "--cases", "1"]), \
+                patch("tomllib.loads", return_value=expected), \
+                patch("subprocess.run", return_value=result) as decoder, \
+                contextlib.redirect_stdout(io.StringIO()):
+            runpy.run_path(str(SCRIPT), run_name="__main__")
+            self.assertEqual(decoder.call_count, 2)
+
+    def test_scalar_tags_cannot_coerce_malformed_payloads(self):
+        cases = [("bool", "invalid", False), ("bool", False, False),
+                 ("integer", True, 1), ("integer", 1.9, 1),
+                 ("float", 1, 1.0), ("string", 1, 1),
+                 ("string", False, False), ("string", ["data"], ["data"])]
+        for kind, payload, expected in cases:
+            output = json.dumps({"v": {"type": kind, "value": payload}}).encode()
+            with self.subTest(kind=kind, payload=payload), self.assertRaises((AssertionError, ValueError)):
+                self.invoke_success(output, {"v": expected})
+
+    def test_duplicate_json_members_cannot_hide_wrong_values_or_tags(self):
+        outputs = [b'{"v":{"type":"integer","value":"2"},"v":{"type":"integer","value":"1"}}',
+                   b'{"v":{"type":"integer","value":"wrong","value":"1"}}',
+                   b'{"v":{"type":"string","type":"integer","value":"1"}}']
+        for output in outputs:
+            with self.subTest(output=output), self.assertRaises((AssertionError, ValueError)):
+                self.invoke_success(output, {"v": 1})
+
+    def test_non_json_constants_cannot_hide_in_boolean_tags(self):
+        for constant in [b"NaN", b"Infinity", b"-Infinity"]:
+            output = b'{"v":{"type":"bool","value":' + constant + b'}}'
+            with self.subTest(constant=constant), self.assertRaises((AssertionError, ValueError)):
+                self.invoke_success(output, {"v": False})
+
+    def test_non_utf8_json_output_is_rejected(self):
+        output = '{"v":{"type":"string","value":"data"}}'.encode("utf-16")
+        with self.assertRaises((AssertionError, ValueError)):
+            self.invoke_success(output, {"v": "data"})
+
+    def test_valid_tagged_types_still_match(self):
+        self.invoke_success(b'{"v":[{"type":"bool","value":"false"},'
+                            b'{"type":"integer","value":"1"},'
+                            b'{"type":"float","value":"-0.0"},'
+                            b'{"type":"string","value":"data"}]}',
+                            {"v": [False, 1, -0.0, "data"]})
 
     def test_type_value_tables_are_not_scalar_tags(self):
         untag = runpy.run_path(str(SCRIPT))["untag"]

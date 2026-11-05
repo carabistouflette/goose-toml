@@ -17,21 +17,40 @@ from pathlib import Path
 def untag(value):
     if isinstance(value, list):
         return [untag(v) for v in value]
+    if not isinstance(value, dict):
+        raise ValueError("decoder scalar must have a tagged object")
     # A TOML table can itself have fields named type and value. Only tagged
     # scalar leaves have a raw string in the JSON type slot; table fields are
     # represented by tagged objects/arrays instead.
-    if isinstance(value, dict) and set(value) == {"type", "value"} and isinstance(value["type"], str):
+    if set(value) == {"type", "value"} and isinstance(value["type"], str):
         kind, text = value["type"], value["value"]
+        if not isinstance(text, str):
+            raise ValueError("decoder tagged scalar value must be a string")
         if kind == "integer":
             return int(text)
         if kind == "float":
             return float(text)
         if kind == "bool":
+            if text not in ("true", "false"):
+                raise ValueError("decoder boolean must be true or false")
             return text == "true"
         if kind == "string":
             return text
         raise AssertionError(f"unexpected generated kind: {kind}")
     return {key: untag(v) for key, v in value.items()}
+
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate decoder JSON member: {key!r}")
+        result[key] = value
+    return result
+
+
+def reject_constant(value):
+    raise ValueError(f"non-JSON constant in decoder output: {value}")
 
 
 def equal(a, b):
@@ -96,7 +115,9 @@ def main():
         else:
             assert not result.stderr, ("unexpected successful-parse diagnostics", data, result.stderr)
             assert expected is not None, ("unexpected acceptance", data, result.stdout)
-            decoded = untag(json.loads(result.stdout))
+            decoded = untag(json.loads(result.stdout.decode("utf-8"),
+                                       object_pairs_hook=unique_object,
+                                       parse_constant=reject_constant))
             assert equal(expected, decoded), ("value mismatch", data, expected, decoded)
         checked += 1
 
