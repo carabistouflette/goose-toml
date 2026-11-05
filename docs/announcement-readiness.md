@@ -60,6 +60,7 @@ found no Standards or Spec blockers. The Spec review independently recomputed
 all 96 displayed median/MAD pairs from 864 samples and matched source/tool
 identities and example hashes. Later changes only record check/review evidence.
 
-Example commands and measurement outcomes are recorded above. Final public
-documentation revision and hosted checks remain pending publication.
-The upstream discussion remains unopened.
+Example commands and measurement outcomes are recorded above.
+[PR17](https://github.com/carabistouflette/goose-toml/pull/17) records publication
+and exact-head hosted checks; consult its final status rather than inferring
+publication from local validation. This audit does not open an upstream discussion.
