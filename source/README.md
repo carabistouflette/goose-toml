@@ -110,7 +110,7 @@ allocation budget or a speedup for every batch size/layout.
 Batch validation and the complete-operation measurements, including the
 slower single-edit control and shared-host limits, are retained in the
 [atomic batch report](tests/results/atomic-batches/README.md). This API is
-unreleased; existing alpha tags do not contain it.
+introduced in `v0.1.0-alpha.4`; alpha.1 through alpha.3 do not contain it.
 
 ## Companion compatibility profile
 

@@ -52,8 +52,11 @@ replacing the placeholder with the full commit you have reviewed. The experiment
 Use `init`, `put`, `push`, `set`, `remove`, `erase` and `compact` for [supported edits](docs/document.md). `serialize(doc)` returns owned TOML text and an owned error, without changing the document. The fields supporting declaration state, hashing, arenas and index are implementation details; do not modify them directly. There is no separate immutable wrapper in this experimental API. Helper functions in the source are not stable API.
 
 For byte-preserving file edits, the opt-in [source editor](source/README.md)
-provides `put` and `remove` without regenerating unrelated source. Its ownership,
-resource limits and unsupported layouts are documented separately.
+provides `put` and `remove` without regenerating unrelated source. Starting with
+`v0.1.0-alpha.4`, `Edit` and `apply` also support bounded atomic batches against
+one original snapshot. Any batch failure returns empty output. Its ownership,
+resource limits, conflict rules and unsupported layouts are documented separately.
+For one edit, prefer `put`/`remove`; batch timing is workload-dependent.
 
 ## Cost and resource limits
 

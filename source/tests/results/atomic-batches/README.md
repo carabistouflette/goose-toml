@@ -1,6 +1,7 @@
 # Atomic snapshot batch validation
 
-The new `Edit`/`apply` API is **unreleased**. Runtime commit
+The `Edit`/`apply` API is included in **v0.1.0-alpha.4**. At validation time it
+was unreleased. Runtime commit
 `95eddfd036e7d156fe3b6ebf5693bb618d009d8a` and benchmark checkpoint
 `424153d50d0c4c00b7af758fee679ed4be1bf108` have identical engine bytes:
 SHA-256 `63bcce775165d33a63acb160799262bf1b4e400d34a2d6b49fcf48f4098d21f6`.
@@ -89,6 +90,7 @@ python3 source/tests/batch_benchmark.py --goose .toolchain/goose/build/goose \
   --cpu 3 --rounds 7 --output /tmp/atomic-batch-timings.json
 ```
 
-Existing releases and downstream pins are unchanged. Core parser, semantic
-Document, writer and vendored text files match the approved baseline. This is
-feature validation, not a release or consumer-adoption handoff.
+Prior releases and downstream pins were unchanged by this feature validation.
+Core parser, semantic
+Document, writer and vendored text files match the approved baseline. This report records
+feature validation; release identity and consumer adoption have separate evidence.
