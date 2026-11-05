@@ -46,5 +46,12 @@ fn run() {
     var dense: u8[>..] = []; dense.append("v={keep=["); for i in 65533 { dense.append("1,"); } dense.append("]}"); inline_tests::reject(dense, a, "1");
     var deep:  u8[>..] = []; deep.append("v="); var path: (const u8[:])[>..] = ["v"];
     for i in 62 { deep.append("{x="); path.push("x"); } deep.append("{}"); for i in 62 { deep.push('}'); } path.push("new"); inline_tests::reject(deep, path, "[1]");
+    var borrowed: u8[>..] = []; borrowed.append("v={old='new'}");
+    let borrowed_path: (const u8[:])[2] = [borrowed[..1], borrowed[8..11]];
+    let alias_output, alias_error = toml_source::put(borrowed, borrowed_path, borrowed[7..12]);
+    let alias_batch, alias_batch_error = toml_source::apply(borrowed, [inline_tests::edit(borrowed_path, borrowed[7..12])]);
+    assert(alias_error.len == 0 && alias_batch_error.len == 0);
+    borrowed[0] = 'w'; borrowed[8] = 'N';
+    assert(alias_output == "v={\"new\" = 'new', old='new'}" && alias_batch == alias_output);
     print("Inline member insertion checks passed");
 }
