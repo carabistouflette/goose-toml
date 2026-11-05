@@ -57,6 +57,9 @@ provides `put` and `remove` without regenerating unrelated source. Starting with
 one original snapshot. Any batch failure returns empty output. Its ownership,
 resource limits, conflict rules and unsupported layouts are documented separately.
 For one edit, prefer `put`/`remove`; batch timing is workload-dependent.
+Starting with `v0.1.0-alpha.5`, default `put` and batch `Put` can also replace
+existing assigned values inside inline tables while preserving surrounding bytes.
+Inline member insertion/removal and legacy-profile behavior are unchanged.
 
 ## Cost and resource limits
 

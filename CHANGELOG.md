@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.1.0-alpha.5 — 2026-11-05
 
 - Default source `put` and batch `Put` replace existing assigned values inside
   inline tables while preserving surrounding source bytes. Each selected
@@ -8,6 +8,17 @@
   discovery is shared per owner. Legacy behavior is unchanged. Inline member
   insertion/removal, implicit dotted-table replacement and array ordinals
   remain unsupported.
+- Added exact nested/quoted/dotted key, multiline, TOML 1.1, ownership, full
+  64-edit and resource-limit regressions. Independent models cover 650 inline
+  single edits and 778 inline batches in native/debug and GCC/Clang sanitizer
+  modes; fresh 5,134-call legacy parity remains byte-identical.
+
+Discovery adds one bounded enclosing-value parse, shared per inline owner in a
+batch. Its separate parser budget can reject a source that passed the original
+index under a different hash layout. Final source validation and existing caps
+still apply. No new performance or allocation claim is made. See the
+[inline validation report](source/tests/results/inline-replacement/README.md).
+This remains an experimental prerelease without an API stability promise.
 
 ## v0.1.0-alpha.4 — 2026-11-05
 

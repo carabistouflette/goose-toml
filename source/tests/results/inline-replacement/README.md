@@ -1,8 +1,9 @@
 # Existing inline-value replacement validation
 
 Feature checkpoint `996f6ef2e0f6f447446868fd9bf561c81784514b` adds on-demand
-source-span discovery to default `put` and batch `Put`. It is **unreleased**;
-alpha.4 and downstream pins stay unchanged. Engine SHA-256:
+source-span discovery to default `put` and batch `Put`, included in
+**v0.1.0-alpha.5**. The checkpoint was unreleased during validation; alpha.4
+and downstream pins were unchanged by that work. Engine SHA-256:
 `a4c60f404996ada8780e7759b1184fafd914b820cf95d497ebf4546f0546d333`.
 
 An enclosing inline value is reparsed through the existing key/value routines
