@@ -42,20 +42,30 @@ def main():
         parser.error('commit sources before measuring')
     goose = args.goose.resolve()
     compiler_hash = digest(goose)
+    compiler_root = goose.parents[1]
+    def toolchain():
+        manifest = [(str(path.relative_to(compiler_root)), digest(path))
+                    for path in sorted((compiler_root / 'stdlib').rglob('*.goose'))]
+        return {'head': subprocess.check_output(['git', '-C', str(compiler_root), 'rev-parse', 'HEAD'], text=True).strip(),
+                'status': subprocess.check_output(['git', '-C', str(compiler_root), 'status', '--porcelain'], text=True).strip(),
+                'stdlib_file_count': len(manifest),
+                'stdlib_manifest_sha256': hashlib.sha256(json.dumps(manifest).encode()).hexdigest()}
+    compiler_sources = toolchain()
+    assert not compiler_sources['status'] and compiler_sources['head'] == (ROOT / 'GOOSE_REVISION').read_text().strip()
     binary = ROOT / 'source/.build/batch-bench-measured'
     binary.parent.mkdir(exist_ok=True)
     subprocess.run([str(goose), 'build', 'source/tests/batch_bench.goose', '--cc', args.cc,
                     '-O2', '-o', str(binary)], cwd=ROOT, check=True)
     binary_hash = digest(binary)
     report = {'started_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-              'provenance': before, 'compiler_sha256': compiler_hash, 'binary_sha256': binary_hash,
+              'provenance': before, 'compiler_sources': compiler_sources, 'compiler_sha256': compiler_hash, 'binary_sha256': binary_hash,
               'goose': subprocess.check_output([str(goose), '--version'], text=True).strip(),
               'cc': subprocess.check_output([args.cc, '--version'], text=True).splitlines()[0],
               'platform': platform.platform(), 'cpu': args.cpu, 'rounds': args.rounds,
               'cpu_model': next((s.split(':', 1)[1].strip() for s in Path('/proc/cpuinfo').read_text().splitlines()
                                  if s.startswith('model name')), ''),
               'flags': '-O2', 'cases': CASES, 'samples': [],
-              'scope': 'Shared host; no exclusive CPU/host claim. Prebuilt independent existing root leaves, alternating put/remove. Sequential calls transfer each owned result through clear/append before the next call. Batch and sequence produce identical exact bytes. No insertion/dependency/general speed claim.',
+              'scope': 'Shared host; no exclusive CPU/host claim. Prebuilt independent existing root leaves, alternating put/remove. Sequential calls transfer intermediate owned results through clear/append before the next call; the final result is returned directly. Batch and sequence produce identical exact bytes. No insertion/dependency/general speed claim.',
               'checks': 'Full expected bytes before/after timing; one selected warmup in each process; timed loops check error/length and length+endpoint checksum (not full-byte hashing).'}
     lengths = {}
     for round_id in range(args.rounds):
@@ -80,7 +90,7 @@ def main():
                                        for mode in ['batch', 'sequence']} for name, *_ in CASES}
     report['batch_over_sequence'] = {name: row['batch'] / row['sequence']
                                     for name, row in report['median_ns_per_batch'].items()}
-    assert snapshot() == before and digest(goose) == compiler_hash and digest(binary) == binary_hash
+    assert snapshot() == before and digest(goose) == compiler_hash and digest(binary) == binary_hash and toolchain() == compiler_sources
     report['completed_utc'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
     args.output.write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report['batch_over_sequence'], indent=2))

@@ -13,7 +13,9 @@ fn sequence(source: const u8[:], paths: const u8[:][:]) -> u8[>..] {
     for part, i in paths {
         let input = if i == 0 { source } else { current };
         let output, error = invoke(input, part, i % 2 == 0);
-        assert(error.len == 0); current.clear(); current.append(output);
+        assert(error.len == 0);
+        if i + 1 == paths.len { return output; }
+        current.clear(); current.append(output);
     }
     return current;
 }
