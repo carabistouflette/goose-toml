@@ -1,7 +1,8 @@
 # Pinned TOML comparisons
 
 These original Apache-2.0 adapters compare fresh, owned DOM parsing and writing
-of the same eight byte sequences from `bench/parse.goose`. They are a measurement tool, not
+of the same byte sequences: eight default cases from `bench/parse.goose`,
+or twelve with `--corpus extended`. They are a measurement tool, not
 a portable ranking. Generated inputs, binaries, raw samples and reports stay in
 the ignored `.build/compare/` directory. Dependency implementations stay outside
 the source tree; licenses and source URLs are in `dependencies.json` and the
@@ -22,8 +23,8 @@ python3 scripts/compare.py --cpu 1 --iterations 100000 --rounds 9
 ```
 
 Choose an allowed CPU; omitting `--cpu` selects the minimum allowed CPU and warns
-that affinity does not reserve a shared machine's core. Coordinate with other
-host users before measuring. A smoke run uses `--iterations 1000 --rounds 1`;
+that affinity does not reserve a shared machine's core. Coordinate an all-host quiet window with other
+host users before measuring; builds and tests on other CPUs can interfere. A smoke run uses `--iterations 1000 --rounds 1`;
 its short samples are useful for checking the protocol, not comparing speed.
 The base iteration count is divided by the same per-workload factors as
 `bench/parse.goose`; every runner gets exactly the same resulting count.
@@ -179,3 +180,9 @@ order, CPU affinity, counters, raw nanoseconds and medians, plus compiler versio
 dependency versions/licenses/checksums, build settings and source/binary hashes.
 It contains no private absolute paths. Short samples, process initialization,
 shared-host interference and frequency drift remain material limitations.
+
+## Published results
+
+Use the [benchmark index](../../docs/benchmarks.md) to distinguish current
+implementation measurements from historical reports. A recent date does not
+establish matching source, harness, compiler or dependency identity.

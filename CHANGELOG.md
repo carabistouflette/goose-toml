@@ -1,5 +1,9 @@
 # Changelog
 
+Entries record changes at each release. Historical timing results describe their
+measured snapshots; see [benchmark status](docs/benchmarks.md) before quoting them
+for a later version.
+
 ## v0.1.0-alpha.6 — 2026-11-05
 
 - Default source `put` and batch `Put` insert missing members in inline tables,

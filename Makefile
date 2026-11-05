@@ -16,6 +16,7 @@ check:
 	$(GOOSE) check tests/lifecycle.goose
 	$(GOOSE) check tests/fuzz.goose
 	$(GOOSE) check examples/config.goose
+	$(GOOSE) check examples/source-edit.goose
 	$(GOOSE) check tests/decoder.goose
 	$(GOOSE) check tests/encoder.goose
 	$(GOOSE) check bench/parse.goose
@@ -47,6 +48,7 @@ test:
 	$(GOOSE) build tests/overloads.goose -o .build/overloads
 	./.build/overloads
 	$(GOOSE) run examples/config.goose
+	$(GOOSE) run examples/source-edit.goose
 format:
 	$(GOOSE) format toml.goose document.goose writer.goose vendor/text.goose examples tests bench
 

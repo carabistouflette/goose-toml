@@ -1,88 +1,61 @@
-# Platforms and compatibility
+# Platforms and setup
 
-The library is pure Goose. It has no external native runtime dependency beyond
-Goose's standard library and the strict UTF-8 snapshot included in `vendor/`.
-Applications own I/O. The API includes semantic document editing and TOML serialization. Automatic
-application struct mapping is outside its scope.
+The library is Goose source with a vendored UTF-8 helper. It adds no external
+native runtime library and performs no I/O. Use Goose
+`eadca409f68210893f366e60d0c2f0dc29a339be`, pinned in `GOOSE_REVISION`.
+Other compiler revisions are not promised compatible.
 
-## Validated configuration
+## Prerequisites
 
-- Linux x86-64, with the exact compiler revision in `GOOSE_REVISION`.
-- Goose's in-process execution path and GCC native executables.
-- GCC AddressSanitizer/UndefinedBehaviorSanitizer with Goose debug checks and
-  bounds-check elimination disabled.
-- Clang/libFuzzer with AddressSanitizer/UndefinedBehaviorSanitizer for bounded
-  native fuzz campaigns.
-- The original GitHub Actions job uses `ubuntu-24.04`; remote run outcomes are
-  linked from the public repository's Actions page rather than inferred from local runs.
+`make setup` builds the pinned compiler. It needs Git/network access, Make,
+CMake 3.27+, C/C++20 compilers and Linux libc development headers. Python 3.11+
+is needed for property, security and vendor checks.
 
-## Additional platform gate: Linux ARM64
+The optional official conformance suite needs Go 1.27+, or a Go installation
+that can download that toolchain. `make conformance` fetches the runner pinned
+in `TOML_TEST_REVISION`. Fuzzing needs Clang with libFuzzer, ASan and UBSan plus
+the conformance fixtures. Sanitizer commands target Linux GCC/Clang.
 
-CI includes a separate native `ubuntu-24.04-arm` job. It is a
-[standard GitHub-hosted runner for public repositories](https://docs.github.com/en/actions/reference/runners/github-hosted-runners),
-with no larger or self-hosted runner requirement. Its toolchain cache is separated
-by architecture so x86-64 compiler binaries cannot be restored into the ARM job.
+The optional [cross-language benchmarks](../bench/compare/README.md) also need
+Rust/Cargo, Go and a C++17 compiler. These are development dependencies.
+The TOML library does not fetch code at runtime.
 
-**The native ARM64 gate passed** at source
-[`7f12af5c7d26d077b531383589949b5c976f5a68`](https://github.com/carabistouflette/goose-toml/commit/7f12af5c7d26d077b531383589949b5c976f5a68):
-[actual CI execution](https://github.com/carabistouflette/goose-toml/actions/runs/41834667409).
-This records execution of the checks below, rather than inferring support from
-a runner label, generated C, or emulator availability.
-The development workstation has QEMU/Clang but no installed ARM64 libc/sysroot or
-cross compiler, so it has not produced local ARM64 execution evidence.
+## Tested platforms
 
-Reproduce the native gate on a Linux ARM64 machine with the prerequisites below:
+Alpha.6 CI ran natively on Linux x86-64 and ARM64, using `ubuntu-24.04` and
+`ubuntu-24.04-arm`. The root and source-editor suites have different coverage:
+
+| Suite | x86-64 | ARM64 |
+| --- | --- | --- |
+| Root parser/editor/writer | In-process/native tests, conformance, Python oracles, resource checks, GCC sanitizers and bounded Clang fuzzing | `check-platform.sh`: in-process/native tests, conformance, Python oracles and resource checks |
+| Source-preserving editor | In-process/native tests, model/conformance, GCC **and** Clang sanitizers, bounded fuzzing, benchmark smoke | Same source-editor targets |
+
+Root [PR](https://github.com/carabistouflette/goose-toml/actions/runs/42081027387)
+and [push](https://github.com/carabistouflette/goose-toml/actions/runs/42081018140),
+and source-editor [PR](https://github.com/carabistouflette/goose-toml/actions/runs/42081027407)
+and [push](https://github.com/carabistouflette/goose-toml/actions/runs/42081018057)
+jobs passed at release head `88502844d8b85f3b64b7e945f412cb102083dc3d`.
+Its full tree matches released alpha.6 `e5e5644c45e78e8eb05999978bb4155ea0bbb180`.
+Smoke execution is not a performance result. These tests do not establish
+support for untested operating systems, architectures or toolchain revisions.
+
+On a native Linux machine, reproduce the root platform gate with:
 
 ```sh
 EXPECTED_ARCH=aarch64 ./scripts/check-platform.sh
+# On x86-64, use EXPECTED_ARCH=x86_64 instead.
 ```
 
-The script rejects a mismatched CPU architecture or non-64-bit userspace, logs
-actual platform/tool versions and source/compiler revisions, then builds the
-pinned compiler. It runs formatting/type checks and the public API suites through
-both Goose's in-process runner and native binaries: UTF-8, parser, lifecycle,
-TOML 1.1 grammar, document editing, writer/float round trips, mutation model and
-example. It also runs both official TOML decoder/encoder versions, Python property
-and scalar-oracle checks, and hostile/resource and encoder-protocol regressions.
-Failures stop the gate. A green ARM job therefore establishes those tested paths
-on that runner; it does not imply ARM sanitizer/fuzzer or benchmark validation.
+The script rejects a mismatched architecture or non-64-bit userspace and logs
+tool/source versions. See [development commands](development.md) for the separate
+source-editor and sanitizer targets. Successful runs establish the paths tested
+on that platform, not exhaustive correctness.
 
-Use the job's actual result at the corresponding source commit on the
-[Actions page](https://github.com/carabistouflette/goose-toml/actions) as evidence.
-The script also supports `EXPECTED_ARCH=x86_64` for the existing Linux target.
-Other operating systems, architectures, C compilers, and Goose revisions are not
-yet validated or promised compatible. Pure Goose source alone does not establish
-cross-platform support. Sanitizer/fuzzer commands currently target Linux.
+## Runtime formatting
 
-## Tool prerequisites
-
-`make setup` requires Git, CMake 3.27+, C/C++20 compilers, and Make. Linux needs
-libc development headers for Goose's in-process runner. Normal UTF-8, property,
-security, and vendor tests need Python 3.11+.
-
-`make conformance` additionally builds the official runner at `TOML_TEST_REVISION`:
-Go 1.27+ is needed, or an installed Go version with toolchain auto-download support
-and network access. `make fuzz` requires Clang with libFuzzer, ASan, and UBSan
-runtimes and the fixtures fetched by `make conformance`. `make sanitize` and the
-published benchmark protocol use GCC.
-
-Git/network access is needed to provision the pinned compiler and official test
-suite. Once these tools are present, the TOML library itself does not fetch code
-or access the network at runtime.
-
-See [README.md](../README.md) for API ownership rules, exact supported syntax,
-fixed resource limits, and application responsibilities.
-
-The optional cross-language comparison harness additionally needs Rust/Cargo, Go,
-and a C++17 compiler. See [its pinned setup and methodology](../bench/compare/README.md).
-
-## Pinned runtime formatting
-
-Integer output uses a private bounded decimal renderer. Float fallback binds
-directly to the pinned Goose runtime formatter with a fixed-size buffer, avoiding
-application overloads of global formatting helpers. These are existing runtime functions, not an additional native library.
-Their signatures and maximum writes are checked against the compiler pin and
-covered by writer-oracle, consumer-overload and sanitizer tests. GCC
-standalone builds can emit an optimization-attribute redeclaration warning for these
-bindings in generated C; warnings are retained rather than globally suppressed.
-This does not extend compatibility to arbitrary Goose runtime revisions.
+Integer output uses a private bounded renderer. Float fallback binds directly
+to the pinned Goose runtime formatter, avoiding application overloads of global
+formatting helpers. Generated C can emit an optimization-attribute redeclaration
+warning for these bindings; it is retained. The compiler pin, writer-oracle,
+consumer-overload and sanitizer checks cover these existing runtime functions.
+This does not extend compatibility to arbitrary Goose revisions.

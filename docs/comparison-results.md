@@ -1,5 +1,9 @@
 # Parsing and writing comparison
 
+**Historical measurements.** These implementation hashes differ from alpha.6.
+Keep these samples tied to their measured revision; see [benchmark status](benchmarks.md)
+for currentness and [methodology](../bench/compare/README.md) for measurement scope.
+
 Measured source: [`65022d8c1db0181c26a3dcc6bbde569c71d65be3`](https://github.com/carabistouflette/goose-toml/commit/65022d8c1db0181c26a3dcc6bbde569c71d65be3). All three reports were built from this clean commit.
 
 Pinned comparators: Rust `toml` 1.2.0+spec-1.1.0, Go BurntSushi/toml v1.6.0, and C++ toml++ v3.4.0. See [feature differences](comparison-features.md) and [complete methodology and reproduction](../bench/compare/README.md).
@@ -64,6 +68,7 @@ Parsing occurs outside the writer timer; fresh output construction, consumption 
 Run `make setup` and install the additional pinned benchmark dependencies as described in the methodology. Then:
 
 ```sh
+git checkout --detach 65022d8c1db0181c26a3dcc6bbde569c71d65be3
 python3 scripts/compare.py --cpu 1 --iterations 100000 --rounds 9 --mode full --output .build/compare/final-full.json
 python3 scripts/compare.py --cpu 1 --no-build --iterations 100000 --rounds 9 --mode root --output .build/compare/final-root.json
 python3 scripts/compare.py --cpu 1 --no-build --iterations 100000 --rounds 9 --mode write --output .build/compare/final-write.json
@@ -73,6 +78,7 @@ The same eight inputs are used in every language without lowering their native l
 
 ## Feature and validation evidence
 
-The shared semantic workflow is implemented: strict TOML 1.0 parsing, optional TOML 1.1, document construction/mutation and complete semantic TOML 1.0 writing. Automatic host struct binding and comment/format preservation are not provided; fixed resource limits can reject valid larger documents. See [editor contracts and limits](document.md).
+The shared semantic workflow is implemented: strict TOML 1.0 parsing, optional TOML 1.1, document construction/mutation and complete semantic TOML 1.0 writing. At this measured snapshot, automatic host struct binding and comment/format
+preservation are not provided by the compared semantic API; fixed resource limits can reject valid larger documents. See [editor contracts and limits](document.md).
 
 Both official suites pass at the pinned TOML_TEST_REVISION: 1.0 has 208 valid, 509 invalid and 208 encoder cases; 1.1 has 218 valid, 502 invalid and 218 encoder cases. Local checks also pass 2,000 differential property inputs, 2,000 model-based editor steps, 2,000 float-bit writer roundtrips, 356,572 scalar oracle cases, 274 hostile/resource cases and nine encoder protocol cases. GCC ASan/UBSan and a 3,500-execution Clang/libFuzzer campaign covering both versions and write/reparse semantics pass. Independent reviewers checked compatibility, bounds, borrowed lifetimes, output caps and benchmark fairness; concrete findings were fixed before freezing. These checks provide evidence, not exhaustive correctness or a security guarantee.
