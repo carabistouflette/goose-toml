@@ -179,7 +179,8 @@ members and selecting array elements remain unsupported. Replacing or removing
 the entire directly assigned outer inline table is supported. The legacy
 compatibility profile retains its original rejection of inline children.
 
-Inline replacement is unreleased and is not present in alpha.4. Discovery
+Inline replacement is introduced in `v0.1.0-alpha.5` and is not present in
+alpha.4. Discovery
 reparses the enclosing inline assignment using the existing parser's key/value
 routines plus inline framing, recording source positions before decoded text
 enters the arena. It verifies the rebased node/key/parent layout against the
@@ -231,7 +232,7 @@ output/diagnostic fixtures plus 512 independent insertion byte checks, and sourc
 on all pinned TOML 1.0 and 1.1 fixtures. An additional 650 inline `put` and 778
 inline batch frames check exact constructed output and independent semantic
 models; [inline validation evidence](tests/results/inline-replacement/README.md)
-records the unreleased feature checkpoint and its limits. Python comparisons use their shared
+records the feature checkpoint and its limits. Python comparisons use their shared
 TOML 1.0 subset; explicit tests cover version-specific behavior. Sanitizers
 instrument both editor tests and the independent model adapter. Fuzzing reuses
 all pinned TOML 1.0 fixture inputs and verifies exact Goose assertion crash
