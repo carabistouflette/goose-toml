@@ -1,11 +1,27 @@
 # Changelog
 
-## Unreleased
+## v0.1.0-alpha.4 — 2026-11-05
 
 - Added opt-in atomic source batches with `toml_source::Edit` and `apply`.
   Paths address the original snapshot; overlapping paths are rejected, and a
   changed batch shares its source index and final validation. Failures return
   empty output. Existing single-edit and legacy contracts remain unchanged.
+- Batches permit at most 64 requests and 1 MiB aggregate decoded path/raw value
+  bytes; source/output, per-path, fragment and parser limits continue to apply.
+  Paths select the original snapshot, rather than a sequential dependent plan.
+- Added exact ownership, full-cap, conflict, error-precedence and overload tests,
+  an independent 818-case batch model, fresh 5,134-call legacy byte parity,
+  GCC/Clang sanitizer coverage and bounded source fuzzing.
+- Strengthened decoder/encoder oracle checks and validation-runner failure
+  propagation since alpha.3. Core parser, semantic document, writer and pinned
+  compiler/text sources are unchanged.
+
+The [batch validation report](source/tests/results/atomic-batches/README.md)
+retains complete paired measurements and reproduction commands. Batching helps
+its independent multi-edit fixtures; the single-edit control is slower through
+`apply`, so prefer `put`/`remove` for one edit. Shared-host, checksum and workload
+limits apply; these results are not a universal speedup claim. This remains an
+experimental prerelease without an API stability promise.
 
 ## v0.1.0-alpha.3 — 2026-11-04
 
