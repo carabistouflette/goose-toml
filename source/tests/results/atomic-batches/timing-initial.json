@@ -1,0 +1,642 @@
+{
+  "started_utc": "2026-11-05T07:32:21Z",
+  "provenance": {
+    "head": "95eddfd036e7d156fe3b6ebf5693bb618d009d8a",
+    "tree": "189c60a7ed50a204d850e631c281b767f4eb0306",
+    "status": "",
+    "sha256": {
+      "source/editor.goose": "63bcce775165d33a63acb160799262bf1b4e400d34a2d6b49fcf48f4098d21f6",
+      "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+      "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+      "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+      "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+      "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15",
+      "source/tests/batch_bench.goose": "d5805ae0cce3516f520c24c8f22cf65c2795bb0119e754658b9c177b60d72a87",
+      "source/tests/batch_benchmark.py": "6bf1f93f489ffe928c77db85828c623a8d15868f7ee98de74eab27a760471150"
+    }
+  },
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "binary_sha256": "77cbc5321748bd19a7a5fc565898362ee5b34b3776a4f755883e64e8e059b135",
+  "goose": "goose eadca40 (runtime 3025e5810379)",
+  "cc": "gcc (GCC) 16.2.1 20260810",
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu": 4,
+  "rounds": 7,
+  "cpu_model": "Intel(R) Core(TM) Ultra 7 258V",
+  "flags": "-O2",
+  "cases": [
+    [
+      "single_control",
+      8,
+      1,
+      5000
+    ],
+    [
+      "small_4",
+      8,
+      4,
+      2000
+    ],
+    [
+      "wide_16",
+      1024,
+      16,
+      100
+    ],
+    [
+      "wide_64",
+      1024,
+      64,
+      30
+    ]
+  ],
+  "samples": [
+    {
+      "round": 0,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 13495500,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 0,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 13144879,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 0,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 18670816,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 0,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 5691989,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 0,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 41297198,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 0,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 560929757,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 0,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 691548248,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 0,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 19503053,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 1,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 13436292,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 1,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 14233639,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 1,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 5809480,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 1,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 19568456,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 1,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 586545868,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 1,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 44701641,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 1,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 19658415,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 1,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 573124826,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 2,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 12697664,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 2,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 12083943,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 2,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 16359516,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 2,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 4897358,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 2,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 32502770,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 2,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 388879483,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 2,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 503063729,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 2,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 13796708,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 3,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 12847534,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 3,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 13090151,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 3,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 6223095,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 3,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 18838398,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 3,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 500176546,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 3,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 41645276,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 3,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 17726529,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 3,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 689612597,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 4,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 13557754,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 4,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 12667695,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 4,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 18201634,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 4,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 5871309,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 4,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 43360485,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 4,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 596719356,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 4,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 723757863,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 4,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 15317681,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 5,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 10111707,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 5,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 12278164,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 5,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 5506446,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 5,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 18529359,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 5,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 521636882,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 5,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 40826455,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 5,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 19809933,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 5,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 749105249,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 6,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 13989193,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 6,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 12936244,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 6,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 18471543,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 6,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 5290071,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 6,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 40861189,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 6,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 735985067,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 6,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 520760201,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 6,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 16956661,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    }
+  ],
+  "scope": "Shared host; no exclusive CPU/host claim. Prebuilt independent existing root leaves, alternating put/remove. Sequential calls transfer each owned result through clear/append before the next call. Batch and sequence produce identical exact bytes. No insertion/dependency/general speed claim.",
+  "checks": "Full expected bytes before/after timing; one selected warmup in each process; timed loops check error/length and length+endpoint checksum (not full-byte hashing).",
+  "median_ns_per_batch": {
+    "single_control": {
+      "batch": 2699.1,
+      "sequence": 2569.5068
+    },
+    "small_4": {
+      "batch": 2845.9945,
+      "sequence": 9264.6795
+    },
+    "wide_16": {
+      "batch": 412971.98,
+      "sequence": 5609297.57
+    },
+    "wide_64": {
+      "batch": 590884.3,
+      "sequence": 22987086.566666666
+    }
+  },
+  "batch_over_sequence": {
+    "single_control": 1.0504350484692238,
+    "small_4": 0.3071875826897196,
+    "wide_16": 0.07362276200297928,
+    "wide_64": 0.02570505393479638
+  },
+  "completed_utc": "2026-11-05T07:32:32Z"
+}

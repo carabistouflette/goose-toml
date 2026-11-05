@@ -1,0 +1,102 @@
+{
+  "engine_commit": "95eddfd036e7d156fe3b6ebf5693bb618d009d8a",
+  "final_benchmark_commit": "424153d50d0c4c00b7af758fee679ed4be1bf108",
+  "source_sha256": {
+    "source/editor.goose": "63bcce775165d33a63acb160799262bf1b4e400d34a2d6b49fcf48f4098d21f6",
+    "source/tests/batch.goose": "58c567a5476b8758317b9557b0b90fdae5f80b8252bc22065aae78839dac129e",
+    "source/tests/batch_oracle.goose": "61474e4f3041c148b490b5ad31eab3b9703717142ed4daef37f5b0305fc243a4",
+    "source/tests/batch_model.py": "6069d473f4733a2a921529e3647cdc6e1e0eaacf4bd5f4663540fa272d5647ae",
+    "source/tests/overloads.goose": "698aeb27c44407e9ad8b0124bf94a3defe66da7a4f3137aeeab6b0819d5a235c",
+    "source/tests/fuzz.goose": "0c90efb508fbf6c983a1c4ddef52e88758200c9bca55fe0ff5dbc982e8a46bd5",
+    "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+    "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+    "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+    "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+    "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+  },
+  "results": {
+    "source_format_check_test": "pass JIT/native O2/debug-no-BCE including actual64puts/removes, index63error, caps, stage precedence and hostile format/str/copy/parse overloads",
+    "default_model": 2405,
+    "legacy_model": 533,
+    "batch_model": 818,
+    "models_modes": "native O2 and debug; stricter recursive type-aware batch comparison replayed also against final Clang+GCC ASan/UBSan oracle executables",
+    "fixtures": {
+      "toml_1_0": 717,
+      "toml_1_1": 720
+    },
+    "gcc_asan_ubsan": "pass direct overload/editor tests and all three models",
+    "clang_asan_ubsan": "pass direct overload/editor tests and all three models",
+    "fuzz": {
+      "runs": 17578,
+      "seconds": 31,
+      "assertion_artifact_self_test": "pass",
+      "instrumentation": "Clang/libFuzzer+ASan/UBSan debug-no-BCE",
+      "note": "existing pinned compiler frexp alignment compilation warning; no runtime sanitizer/assertion failure"
+    },
+    "legacy_differential": 5134,
+    "independent_reviews": "engine review + independent model/contract review; no blockers. Stage/64-edit regressions and direct diagnostic digits implemented; benchmark review prompted removal of final sequential transfer and explicit toolchain-source snapshot."
+  },
+  "identity_notes": [
+    "Engine and core/oracle bytes unchanged between95eddfd and424153d; only benchmark harness/driver changed.",
+    "Final evidence checkpoint adds type-aware semantic equality to the batch Python oracle; it does not change cases, engine or Goose adapter. New comparator replayed in native/debug/GCC/Clang modes.",
+    "No release/tag/pin/consumer integration changes. Core parser/document/writer/text unchanged vs c1677c4."
+  ],
+  "local_logs": {
+    "standard_and_gcc": {
+      "sha256": "5909e6708b242c328e75ad21d08ef53cb8c301a634ef190c0a6a4f3509520d95",
+      "local_path": "/tmp/batch-final-gcc.log",
+      "tail": [
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/model.py .build/oracle-sanitize",
+        "2405 source-edit model/preservation cases passed",
+        "533 legacy-profile byte/diagnostic checks passed",
+        "SANITIZER_CC=\"gcc\" \"../.toolchain/goose/build/goose\" build tests/batch_oracle.goose --cc \"/tmp/goose-toml-alpha-8gho80q4/source/sanitizer-cc.sh\" --standalone -O2 --no-bce -o .build/batch-oracle-sanitize",
+        "built .build/batch-oracle-sanitize",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/batch_model.py .build/batch-oracle-sanitize",
+        "818 atomic batch semantic/preservation/failure cases passed",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "clang": {
+      "sha256": "711fe125e2f4310d13b78da174184f080e77c5268fc00627a8d424d80e9bc947",
+      "local_path": "/tmp/batch-final-clang.log",
+      "tail": [
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/model.py .build/oracle-sanitize",
+        "2405 source-edit model/preservation cases passed",
+        "533 legacy-profile byte/diagnostic checks passed",
+        "SANITIZER_CC=\"clang\" \"../.toolchain/goose/build/goose\" build tests/batch_oracle.goose --cc \"/tmp/goose-toml-alpha-8gho80q4/source/sanitizer-cc.sh\" --standalone -O2 --no-bce -o .build/batch-oracle-sanitize",
+        "built .build/batch-oracle-sanitize",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/batch_model.py .build/batch-oracle-sanitize",
+        "818 atomic batch semantic/preservation/failure cases passed",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "fuzz": {
+      "sha256": "65e97593526ff8e5cd4b55ddeb5655abfd230b974edec8e5ef63de8def794731",
+      "local_path": "/tmp/batch-final-fuzz.log",
+      "tail": [
+        "       |                              ^",
+        "1 warning generated.",
+        "Verified Goose assertion failures save the exact triggering input",
+        "Fuzzing source-index, no-op preservation and parsed source edits",
+        "Campaign log: /tmp/goose-toml-alpha-8gho80q4/source/.build/fuzz/run.log",
+        "#17578\tDONE   cov: 2353 ft: 8157 corp: 898/6135Kb lim: 1048577 exec/s: 567 rss: 282Mb",
+        "Done 17578 runs in 31 second(s)",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "fuzz_campaign": {
+      "sha256": "7e7baaf76b4df9ff9e750ff621678b42df9231d0dbed91b2288fd468b85840d9",
+      "local_path": "/tmp/goose-toml-alpha-8gho80q4/source/.build/fuzz/run.log",
+      "tail": [
+        "\"E\\000\\000\\000\\000\\000\\000\\000\" # Uses: 35",
+        "\"\\000\\000\\000\\000\\000\\000\\000\\000\" # Uses: 24",
+        "\"\\277\\000\\000\\000\" # Uses: 28",
+        "\"\\377\\377\\377\\377\\377\\377\\377\\022\" # Uses: 23",
+        "\"\\377\\377\\377\\377\\377\\377\\377\\377\" # Uses: 24",
+        "\"\\001\\000\\000\\000\\000\\000\\000\\000\" # Uses: 5",
+        "###### End of recommended dictionary. ######",
+        "Done 17578 runs in 31 second(s)"
+      ]
+    }
+  }
+}

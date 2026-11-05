@@ -16,6 +16,20 @@ rng = random.Random(20261108)
 quote = lambda text: json.dumps(text, ensure_ascii=False).replace("\x7f", "\\u007f")
 cases = []
 
+
+def same(actual, expected):
+    # Python otherwise treats True == 1, including nested dictionaries/lists.
+    if type(actual) is not type(expected):
+        return False
+    if isinstance(expected, dict):
+        return actual.keys() == expected.keys() and all(same(actual[k], expected[k]) for k in expected)
+    if isinstance(expected, list):
+        return len(actual) == len(expected) and all(same(a, b) for a, b in zip(actual, expected))
+    return actual == expected
+
+
+assert not same({'v': True}, {'v': 1})
+
 def add(source, edits, expected, protected=(), exact=None, error=None):
     cases.append((source, edits, expected, protected, exact, error))
 
@@ -113,7 +127,7 @@ for index, (case, line) in enumerate(zip(cases, lines)):
     else:
         assert status == 'O' and not diagnostic, (index, case, diagnostic)
         text = output.decode()
-        assert tomllib.loads(text) == expected, (index, case, text)
+        assert same(tomllib.loads(text), expected), (index, case, text)
         for comment in protected:
             assert text.count(comment) == source.count(comment), (index, comment, text)
         if exact is not None:

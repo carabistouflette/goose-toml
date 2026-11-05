@@ -21,7 +21,7 @@ fn main() {
 The supported entry points are `toml_source::put`, `toml_source::remove`,
 `toml_source::legacy_set`, `toml_source::legacy_remove`, and `toml_source::apply`,
 with the `toml_source::Edit` request type for batches.
-Other declarations are implementation details. All return `(owned_output,
+Other declarations are implementation details. The functions return `(owned_output,
 owned_error)`, with an empty error on success and empty output on every error.
 The application owns reading files and atomic publication after success.
 Inputs are borrowed for the duration of the call; no references or source ranges
@@ -106,6 +106,11 @@ O(edits × parser nodes), conflict checks O(edits² × path segments), and span
 sorting O(spans log spans). Temporary storage includes the index, parser nodes,
 statement metadata, and rendered output. This does not promise a strict heap
 allocation budget or a speedup for every batch size/layout.
+
+Batch validation and the complete-operation measurements, including the
+slower single-edit control and shared-host limits, are retained in the
+[atomic batch report](tests/results/atomic-batches/README.md). This API is
+unreleased; existing alpha tags do not contain it.
 
 ## Companion compatibility profile
 

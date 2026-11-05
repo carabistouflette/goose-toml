@@ -1,0 +1,37 @@
+{
+  "candidate": {
+    "head": "424153d50d0c4c00b7af758fee679ed4be1bf108",
+    "status": "",
+    "source_sha256": {
+      "source/editor.goose": "63bcce775165d33a63acb160799262bf1b4e400d34a2d6b49fcf48f4098d21f6",
+      "source/tests/oracle.goose": "ed2b0501a38257be8c0511c56fbd4ddee94451256da7e0b7f7df66018c002710",
+      "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+      "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+      "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+      "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+      "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+    }
+  },
+  "baseline": "clean cedb2c3 retained executable; hash independently matches public canonical-04c8bef legacy provenance",
+  "harness_revision": "f8d1b1664a86b768a6f1375636d9b2c3a440aa31",
+  "hashes": {
+    "/home/arobin/Work/Projects/goose-libs/libraries/goose-toml/.toolchain/goose/build/goose": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+    "/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/legacy-driver": "ce153a8971ad5a32dd1811d29e49c338d970b98d61d96428c98f9f8edd77a884",
+    "/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/candidate-oracle": "8b297e485e8de320bf8186eab7f9d0c09e888c3e9dcab5baebfac041047826f4",
+    "/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/scripts/property-test.py": "6bdc1af568433814fbdcf6e190f88769ee03eaddb75532f7de2cf10d92a0c7d3",
+    "/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/tests/fixtures/legacy-cedb2c3.json": "f137e22aec1276deb6728fd261d77ece3f76c5eac1de6d7cb0dde804b9f50fbd"
+  },
+  "command": [
+    "python3",
+    "/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/scripts/property-test.py",
+    "--runner",
+    "/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/legacy-driver",
+    "--canonical-oracle",
+    "/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/candidate-oracle",
+    "--cases",
+    "5000"
+  ],
+  "stdout": "Passed 5134 public editor calls; 5000 generated cases, seed 20261104; Python tomllib oracle\nExact differential passed; executable SHA-256: {\"/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/candidate-oracle\": \"8b297e485e8de320bf8186eab7f9d0c09e888c3e9dcab5baebfac041047826f4\", \"/tmp/goose-toml-alpha-8gho80q4/.build/batch-parity/legacy-driver\": \"ce153a8971ad5a32dd1811d29e49c338d970b98d61d96428c98f9f8edd77a884\"}\n",
+  "log_sha256": "cd92d07cac07a9474c92eabfc1179b19dcfe1cde7fee1dee9108c47c7c64871e",
+  "result": "pass; before/after source, HEAD, clean state, compiler, harness, fixture and executable hashes identical"
+}
