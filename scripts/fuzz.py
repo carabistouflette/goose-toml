@@ -8,6 +8,7 @@ logs, and reproducible failure artifacts remain under .build/fuzz/.
 import argparse
 import hashlib
 import json
+import re
 import runpy
 import subprocess
 from pathlib import Path
@@ -115,9 +116,10 @@ def main():
         print((work / "run.log").read_text(errors="replace")[-12000:])
         raise SystemExit(result.returncode if result.returncode > 0 else 1)
     summary = (work / "run.log").read_text(errors="replace").splitlines()
-    completed = [line for line in summary if line.startswith("Done ")]
-    if not completed or int(completed[-1].split()[1]) < 1:
-        raise RuntimeError("libFuzzer exited without an execution summary; see " + str(work / "run.log"))
+    completed = [re.fullmatch(r"Done ([0-9]+) runs in [0-9]+ second\(s\)", line)
+                 for line in summary if line.startswith("Done ")]
+    if len(completed) != 1 or completed[0] is None or int(completed[0].group(1)) < 1:
+        raise RuntimeError("libFuzzer exited without one complete, positive execution summary; see " + str(work / "run.log"))
     for line in summary:
         if line.startswith("Done ") or "DONE" in line:
             print(line)
