@@ -187,6 +187,62 @@ fn insertion_text(path: const (const u8[:])[:], value: const u8[:], depth: i64, 
     addition.append(" = "); addition.append(value); addition.append(eol);
     return addition, [];
 }
+// Inline descendants are sealed by the original parser. Their outermost
+// sealed ancestor is the one complete value owned by a source statement.
+struct InlineValue { node: i64, start: i64, end: i64 }
+fn inline_owner(doc: toml::Document&, target: i64) -> i64 {
+    if doc.nodes[target].state != toml::State.Sealed { return -1; }
+    var owner = target;
+    while doc.nodes[owner].parent >= 0 && doc.nodes[doc.nodes[owner].parent].state == toml::State.Sealed {
+        owner = doc.nodes[owner].parent;
+    }
+    return owner;
+}
+// Walk only inline assignment framing; strings, arrays, scalar grammar,
+// decoded keys, declaration checks and budgets stay in the existing parser.
+recursive fn inline_values(r: toml::Reader&, doc: toml::Document&, node: i64, base: i64, spans: InlineValue[>..]&) {
+    toml::horizontal(r); let start = r.pos;
+    if toml::peek(r) == '{' {
+        doc.nodes[node].kind = toml::Kind.Table; doc.nodes[node].state = toml::State.Inline; r.pos++;
+        if r.version == toml::Version.V1_1 { toml::whitespace(r); } else { toml::horizontal(r); }
+        if toml::peek(r) != '}' {
+            loop {
+                let child = toml::assignment_target(r, doc, node);
+                if child >= 0 { inline_values(r, doc, child, base, spans); }
+                if r.error.len > 0 { return; }
+                if r.version == toml::Version.V1_1 { toml::whitespace(r); } else { toml::horizontal(r); }
+                if toml::peek(r) != ',' { break; }
+                r.pos++;
+                if r.version == toml::Version.V1_1 {
+                    toml::whitespace(r); if toml::peek(r) == '}' { break; }
+                }
+            }
+        }
+        if !toml::expect(r, '}') { return; }
+        toml::seal(doc, node);
+    } else { toml::value(r, doc, node); }
+    if r.error.len == 0 { spans.push(InlineValue { node: base + node, start: start, end: r.pos }); }
+}
+fn collect_inline(source: const u8[:], original: toml::Document&, statement: Statement,
+    version: toml::Version, spans: InlineValue[>..]&) -> u8[>..] {
+    // Inline parsing creates one contiguous node range. Rebase its IDs, then
+    // verify the original node/key/parent layout before trusting source offsets.
+    var doc = toml::Document { .. }; toml::init(doc);
+    var r = toml::Reader { source: source[..statement.end], pos: statement.value_start, version: version, error: [] };
+    inline_values(r, doc, 0, statement.node, spans);
+    if r.error.len > 0 { return owned(r.error); }
+    if r.pos != statement.end || doc.nodes.len > original.nodes.len - statement.node {
+        return owned("toml source: inline source layout mismatch");
+    }
+    for node, i in doc.nodes {
+        let old = original.nodes[statement.node + i];
+        if old.kind != node.kind || (i > 0 && (old.parent != statement.node + node.parent ||
+            toml::key(original, statement.node + i) != toml::key(doc, i))) {
+            return owned("toml source: inline source layout mismatch");
+        }
+    }
+    return [];
+}
 // Replace a directly assigned value or insert a new member. Existing bytes
 // outside the splice, including comments and source spellings, are copied.
 fn put_impl(source: const u8[:], path: const u8[:][:], value: const u8[:], version: toml::Version, profile: Profile) -> u8[>..], u8[>..] {
@@ -203,6 +259,22 @@ fn put_impl(source: const u8[:], path: const u8[:][:], value: const u8[:], versi
         for statement in statements {
             if !statement.header && statement.node == target {
                 return splice(source, statement.value_start, statement.end, value, doc, version, profile);
+            }
+        }
+        if !legacy(profile) {
+            let owner = inline_owner(doc, target);
+            if owner >= 0 {
+                for statement in statements {
+                    if !statement.header && statement.node == owner {
+                        var values: InlineValue[>..] = [];
+                        let error = collect_inline(source, doc, statement, version, values);
+                        if error.len > 0 { return [], error; }
+                        for span in values {
+                            if span.node == target { return splice(source, span.start, span.end, value, doc, version, profile); }
+                        }
+                        break;
+                    }
+                }
             }
         }
         return [], owned(if legacy(profile) { "toml-edit: replace a complete assignment, not a declared table" } else { "toml source: value is not a directly assigned source span" });
@@ -344,15 +416,34 @@ fn apply(source: const u8[:], edits: const Edit[:], version: toml::Version = tom
             removed[request]++;
         }
     }
+    var inline_roots: i64[>..] = []; var inline_spans: InlineValue[>..] = [];
     for edit, i in edits {
         let target = targets[i];
         if !batch_put(edit) {
             if target >= 0 && removed[i] == 0 { return [], batch_error(i, "toml source: value is inside an unsupported inline span"); }
         } else if target >= 0 {
             let slot = assignment[target];
-            if slot < 0 { return [], batch_error(i, "toml source: value is not a directly assigned source span"); }
-            let statement = statements[slot];
-            spans.push(BatchSpan { start: statement.value_start, end: statement.end, request: i });
+            if slot >= 0 {
+                let statement = statements[slot];
+                spans.push(BatchSpan { start: statement.value_start, end: statement.end, request: i });
+            } else {
+                let root = inline_owner(doc, target);
+                if root < 0 || assignment[root] < 0 { return [], batch_error(i, "toml source: value is not a directly assigned source span"); }
+                var scanned = false;
+                for previous in inline_roots { if previous == root { scanned = true; } }
+                if !scanned {
+                    let error = collect_inline(source, doc, statements[assignment[root]], version, inline_spans);
+                    if error.len > 0 { return [], batch_error(i, error); }
+                    inline_roots.push(root);
+                }
+                var found = false;
+                for span in inline_spans {
+                    if span.node == target {
+                        spans.push(BatchSpan { start: span.start, end: span.end, request: i }); found = true; break;
+                    }
+                }
+                if !found { return [], batch_error(i, "toml source: value is not a directly assigned source span"); }
+            }
         } else {
             let at, depth, error = insertion_position(doc, ends, batch_path(edit));
             if error.len > 0 { return [], batch_error(i, error); }

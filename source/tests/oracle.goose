@@ -23,7 +23,7 @@ fn main() {
     loop {
         line.clear(); if !read_line(line) { break; }
         let fields = split(line, '\t');
-        if fields[0] == "LS" || fields[0] == "LR" {
+        if fields[0] == "LS" || fields[0] == "LR" || fields[0] == "P0" || fields[0] == "P1" {
             assert(fields.len >= 3);
             let input = unhex(fields[1]); let value = unhex(fields[2]);
             var keys: u8[>..] = []; var ends: i64[>..] = [];
@@ -32,7 +32,8 @@ fn main() {
             for end in ends { path.push(keys[start..end]); start = end; }
             var output: u8[>..] = []; var error: u8[>..] = [];
             if fields[0] == "LS" { let text, err = toml_source::legacy_set(input, path, value); output.append(text); error.append(err); }
-            else { let text, err = toml_source::legacy_remove(input, path); output.append(text); error.append(err); }
+            else if fields[0] == "LR" { let text, err = toml_source::legacy_remove(input, path); output.append(text); error.append(err); }
+            else { let text, err = toml_source::put(input, path, value, if fields[0] == "P1" { toml::Version.V1_1 } else { toml::Version.V1_0 }); output.append(text); error.append(err); }
             assert(error.len == 0 || output.len == 0);
             print(if error.len > 0 { "E" } else { "O" }, "\t", hex(output), "\t", hex(error));
             continue;

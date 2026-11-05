@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Default source `put` and batch `Put` replace existing assigned values inside
+  inline tables while preserving surrounding source bytes. Each selected
+  enclosing inline value is reparsed using existing parser routines; batch
+  discovery is shared per owner. Legacy behavior is unchanged. Inline member
+  insertion/removal, implicit dotted-table replacement and array ordinals
+  remain unsupported.
+
 ## v0.1.0-alpha.4 — 2026-11-05
 
 - Added opt-in atomic source batches with `toml_source::Edit` and `apply`.
