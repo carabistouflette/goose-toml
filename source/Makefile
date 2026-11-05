@@ -39,6 +39,8 @@ property:
 	python3 tests/batch_model.py .build/batch-oracle-debug
 	python3 tests/inline_model.py .build/oracle .build/batch-oracle
 	python3 tests/inline_model.py .build/oracle-debug .build/batch-oracle-debug
+	python3 tests/inline_insert_model.py .build/oracle .build/batch-oracle
+	python3 tests/inline_insert_model.py .build/oracle-debug .build/batch-oracle-debug
 conformance:
 	mkdir -p .build
 	"$(GOOSE)" build tests/index.goose --cc "$(CC)" -O2 -o .build/index
@@ -54,6 +56,7 @@ sanitize:
 	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/batch_oracle.goose --cc "$(abspath sanitizer-cc.sh)" --standalone -O2 --no-bce -o .build/batch-oracle-sanitize
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/batch_model.py .build/batch-oracle-sanitize
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/inline_model.py .build/oracle-sanitize .build/batch-oracle-sanitize
+	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/inline_insert_model.py .build/oracle-sanitize .build/batch-oracle-sanitize
 
 FUZZ_SECONDS ?= 30
 FUZZ_RUNS ?= 100000

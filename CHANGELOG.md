@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Default source `put` and batch `Put` insert missing members in inline tables,
+  prepending quoted relative dotted keys while preserving existing bytes and
+  trailing commas. Shared-anchor batches retain request order, including empty
+  tables and shared missing prefixes. Existing limits and final validation
+  apply; inline removal and legacy-profile behavior remain unchanged.
+
 ## v0.1.0-alpha.5 — 2026-11-05
 
 - Default source `put` and batch `Put` replace existing assigned values inside

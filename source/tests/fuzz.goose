@@ -52,6 +52,8 @@ export fn fuzz_parse(input: const u8[:]) -> i64 {
         assert(field >= 0 && result.nodes[field].kind == toml::Kind.Integer && result.nodes[field].integer == 1);
     }
     else { assert(replaced.len == 0); }
+    let inserted, insert_error = toml_source::put(inline_source, ["v", "__insert_probe"], "2");
+    if insert_error.len == 0 { check_output(inserted); } else { assert(inserted.len == 0); }
     return if parse_error.len == 0 { 1 } else { 0 };
 }
 export fn fuzz_assertion_probe(value: i64) { assert(value != 0); }

@@ -40,7 +40,7 @@ for index in range(2400):
     value = rng.choice(["{path='世界/🦆'}", '[1, 2, 3]', '0x2A', 'true', "'café'", '"quoted\\nvalue"'])
     expected = copy.deepcopy(tomllib.loads(source))
     exists = table in expected and selected in expected[table]
-    unsupported = style == 3 and ((operation == 'P' and not exists) or (operation == 'R' and exists))
+    unsupported = style == 3 and operation == 'R' and exists
     unsupported |= operation == 'P' and exists and style in (2, 4)
     if not unsupported:
         if operation == 'P':
