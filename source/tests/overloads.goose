@@ -9,7 +9,16 @@ fn copy(value: i64[>..]&) -> i64[>..] { [] }
 fn parse_int(value: const u8[:]) -> i64, bool { return 999, true; }
 fn parse_int(value: u8[>..]&, base: i64) -> i64, bool { return 998, true; }
 fn parse_flt(value: u8[>..]&) -> f64, bool { return 997.0, true; }
+fn format(output: u8[>..]&, value: i64) {}
 fn main() {
+    let x_path: (const u8[:])[1] = ["x"]; let y_path: (const u8[:])[1] = ["y"];
+    let edits: toml_source::Edit[2] = [toml_source::Edit.Put { path: y_path, value: "2" },
+        toml_source::Edit.Remove { path: x_path }];
+    let batched, batch_error = toml_source::apply("x=1", edits);
+    assert(batch_error.len == 0 && batched == "\"y\" = 2\n");
+    let bad_edits: toml_source::Edit[1] = [toml_source::Edit.Put { path: x_path, value: "[" }];
+    let batch_bad, batch_bad_error = toml_source::apply("x=1", bad_edits);
+    assert(batch_bad.len == 0 && find(batch_bad_error, "batch edit 0:") >= 0);
     let legacy_bad, legacy_error = toml_source::legacy_set("x=1", ["x"], "[");
     assert(legacy_bad.len == 0 && legacy_error == "toml: invalid decimal integer part at byte 5 (line 1, byte column 6)");
     let legacy_ok, legacy_ok_error = toml_source::legacy_set("x=12", ["new"], "1.5");
@@ -25,7 +34,10 @@ fn main() {
     let invalid_source, source_error = toml_source::remove("a=[", ["a"]);
     assert(source_error.len > 0 && invalid_source.len == 0);
     var source: u8[>..] = [];
-    for i in 40 { source.push('x'); format(source, i); source.append("=12\n"); }
+    for i in 40 {
+        source.push('x'); if i >= 10 { source.push('0' + (i / 10) as u8); }
+        source.push('0' + (i % 10) as u8); source.append("=12\n");
+    }
     let output, error = toml_source::put(source, ["new"], "1.5");
     assert(error.len == 0);
     var doc = toml::Document { .. };

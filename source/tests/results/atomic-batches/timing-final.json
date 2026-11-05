@@ -1,0 +1,648 @@
+{
+  "started_utc": "2026-11-05T07:34:32Z",
+  "provenance": {
+    "head": "424153d50d0c4c00b7af758fee679ed4be1bf108",
+    "tree": "9a579eaaa7d2de9de948bdf301f8d2cabdc9fa02",
+    "status": "",
+    "sha256": {
+      "source/editor.goose": "63bcce775165d33a63acb160799262bf1b4e400d34a2d6b49fcf48f4098d21f6",
+      "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+      "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+      "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+      "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+      "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15",
+      "source/tests/batch_bench.goose": "8c6818769d69f65c68a232c3ab854f5578d21ee21c44ccaddbc90a29d117fb10",
+      "source/tests/batch_benchmark.py": "b8cf4fae1a987c5a227d71871d03454d72b638d41626004862725fea0f04b24e"
+    }
+  },
+  "compiler_sources": {
+    "head": "eadca409f68210893f366e60d0c2f0dc29a339be",
+    "status": "",
+    "stdlib_file_count": 15,
+    "stdlib_manifest_sha256": "1fc4dab5c70a28c4b40ea4e16258e34013d8bf9764e1e01faaeada18b3da79d5"
+  },
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "binary_sha256": "df67ab3800a5d05bdf8e5b6ac7a27f49fd7195fbbb59bb7fddbd8156695f2d1d",
+  "goose": "goose eadca40 (runtime 3025e5810379)",
+  "cc": "gcc (GCC) 16.2.1 20260810",
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu": 3,
+  "rounds": 7,
+  "cpu_model": "Intel(R) Core(TM) Ultra 7 258V",
+  "flags": "-O2",
+  "cases": [
+    [
+      "single_control",
+      8,
+      1,
+      5000
+    ],
+    [
+      "small_4",
+      8,
+      4,
+      2000
+    ],
+    [
+      "wide_16",
+      1024,
+      16,
+      100
+    ],
+    [
+      "wide_64",
+      1024,
+      64,
+      30
+    ]
+  ],
+  "samples": [
+    {
+      "round": 0,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 16649066,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 0,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 24294597,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 0,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 21848586,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 0,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 6221678,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 0,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 44248536,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 0,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 590588505,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 0,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 688358909,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 0,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 18382784,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 1,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 13123161,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 1,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 15234083,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 1,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 6254975,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 1,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 19843273,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 1,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 586797743,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 1,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 41390712,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 1,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 18543400,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 1,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 682514653,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 2,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 14459364,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 2,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 13267276,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 2,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 18942478,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 2,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 6064008,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 2,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 41797916,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 2,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 576012570,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 2,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 679123445,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 2,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 18862601,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 3,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 14210148,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 3,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 15180621,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 3,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 6120607,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 3,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 19181135,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 3,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 571516218,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 3,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 45272465,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 3,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 18193321,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 3,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 708243238,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 4,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 14445125,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 4,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 13745633,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 4,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 19191859,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 4,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 6026373,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 4,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 42113069,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 4,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 568156463,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 4,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 676723118,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 4,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 17927666,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 5,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 13385545,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 5,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 15064133,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 5,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 6194253,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 5,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 18520043,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 5,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 566752437,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 5,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 41773401,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 5,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 19057172,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 5,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 683382320,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 6,
+      "case": "single_control",
+      "mode": "batch",
+      "ns": 13915455,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 6,
+      "case": "single_control",
+      "mode": "sequence",
+      "ns": 12889753,
+      "iterations": 5000,
+      "source_bytes": 124,
+      "output_bytes": 124,
+      "checksum": 845000
+    },
+    {
+      "round": 6,
+      "case": "small_4",
+      "mode": "sequence",
+      "ns": 18610757,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 6,
+      "case": "small_4",
+      "mode": "batch",
+      "ns": 6013973,
+      "iterations": 2000,
+      "source_bytes": 124,
+      "output_bytes": 112,
+      "checksum": 314000
+    },
+    {
+      "round": 6,
+      "case": "wide_16",
+      "mode": "batch",
+      "ns": 40877437,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 6,
+      "case": "wide_16",
+      "mode": "sequence",
+      "ns": 566457371,
+      "iterations": 100,
+      "source_bytes": 16310,
+      "output_bytes": 16247,
+      "checksum": 1629200
+    },
+    {
+      "round": 6,
+      "case": "wide_64",
+      "mode": "sequence",
+      "ns": 686956971,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    },
+    {
+      "round": 6,
+      "case": "wide_64",
+      "mode": "batch",
+      "ns": 17734840,
+      "iterations": 30,
+      "source_bytes": 16310,
+      "output_bytes": 16056,
+      "checksum": 483030
+    }
+  ],
+  "scope": "Shared host; no exclusive CPU/host claim. Prebuilt independent existing root leaves, alternating put/remove. Sequential calls transfer intermediate owned results through clear/append before the next call; the final result is returned directly. Batch and sequence produce identical exact bytes. No insertion/dependency/general speed claim.",
+  "checks": "Full expected bytes before/after timing; one selected warmup in each process; timed loops check error/length and length+endpoint checksum (not full-byte hashing).",
+  "median_ns_per_batch": {
+    "single_control": {
+      "batch": 3012.8266,
+      "sequence": 2677.109
+    },
+    "small_4": {
+      "batch": 3060.3035,
+      "sequence": 9590.5675
+    },
+    "wide_16": {
+      "batch": 417979.16,
+      "sequence": 5715162.18
+    },
+    "wide_64": {
+      "batch": 612759.4666666667,
+      "sequence": 22779410.666666668
+    }
+  },
+  "batch_over_sequence": {
+    "single_control": 1.1254030373809958,
+    "small_4": 0.3190951421800639,
+    "wide_16": 0.07313513542322608,
+    "wide_64": 0.026899706741023093
+  },
+  "completed_utc": "2026-11-05T07:34:43Z"
+}

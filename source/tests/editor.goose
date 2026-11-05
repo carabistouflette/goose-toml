@@ -4,6 +4,7 @@ import toml.source.editor;
 import std;
 import compatibility;
 import reuse_lifetimes;
+import batch;
 fn put(source: const u8[:], path: const u8[:][:], value: const u8[:], expected: const u8[:], version: toml::Version = toml::Version.V1_0) {
     let output, error = toml_source::put(source, path, value, version);
     if error.len > 0 { print(error); }
@@ -19,6 +20,7 @@ fn reject(source: const u8[:], path: const u8[:][:], value: const u8[:]) {
     assert(error.len > 0 && output.len == 0);
 }
 fn main() {
+    batch_tests::run();
     compatibility_tests::run();
     reuse_lifetime_tests::run();
     let source = "# title\r\n[dependencies] # keep\r\n  old = { path = '../old' } # old note\r\n\r\n[package]\r\nname = 'app'\r\n";
