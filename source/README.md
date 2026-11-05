@@ -195,7 +195,9 @@ putting `["v", "new"]` into `v={old=1}` yields `v={"new" = 2, old=1}` for value
 of sequential `put` calls that each prepend to the previous output. An inserted
 fragment's whitespace/comment suffix must also be valid in its final context;
 otherwise terminal validation rejects the complete result with empty output.
-The legacy profile retains its original inline rejection policy.
+The legacy profile retains its original inline rejection policy. Exact insertion
+models, ownership/cap regressions and legacy parity are retained in the
+[inline insertion report](tests/results/inline-insertion/README.md).
 
 Discovery
 reparses the enclosing inline assignment using the existing parser's key/value

@@ -1,0 +1,143 @@
+{
+  "engine_checkpoint": "70fcf374569085075cec44324939a6474cf40c6c",
+  "alias_test_checkpoint": "154dda64ab22bbb882a55d44b25165bc0f5bebe1",
+  "base": "5bb0f511ea204f35045c6576bbc6c070329e425e",
+  "source_sha256": {
+    "source/editor.goose": "d1e9c4648f1d696aa3e45ef3f976555dc1d02908c9c650a85ed85b82f22c8d4d",
+    "source/tests/inline_insert.goose": "efc12676d05b2a60428bff0868667a44b575a6dd5bad02a6c4e7e78c0857a888",
+    "source/tests/inline_insert_model.py": "e551d05afcad7167e74b2f3298ee95b0db28a68d5475f68035984e7952085f61",
+    "source/tests/inline_model.py": "cc71885d85a9740e3a32cbd25240bc074c35b8efb5bed946b4950ea79b83f9a2",
+    "source/tests/model.py": "32879bce84ba1bb1176a51879e6fccce6f6de25795faf9cdc2781e1c138a6b8c",
+    "source/tests/fuzz.goose": "9d250b0e677892098f65de3e6525bc6889e8a1e894396fd738b99b92fc6ef29d",
+    "source/tests/overloads.goose": "0e4518b23d9a2a849cf4c48c105cc3da8f024c50ecf03b70bd897eea68ed9c69",
+    "source/Makefile": "351e1d6caf4d3c5bcb4699b107505b62928746d1ccf745b0467b1614725199e0",
+    "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+    "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+    "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+    "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+    "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+  },
+  "identity_notes": [
+    "Engine, adapters, models and fuzz source are identical at70fcf37 and154dda6. Only the insertion regression fixture gains source-borrowed path/value checks.",
+    "The alias fixture was explicitly rerun in JIT/native/debug and GCC/Clang ASan/UBSan modes at154dda6.",
+    "Fresh legacy parity ran against70fcf37 with clean source/HEAD/harness/binary identities checked before and after; engine/oracle are unchanged at final checkpoint."
+  ],
+  "results": {
+    "root_format_check_test": "pass",
+    "source_format_check_test": "pass JIT/O2/debug-no-BCE",
+    "default_model": 2405,
+    "legacy_model": 533,
+    "batch_model": 818,
+    "inline_replacement_put": 650,
+    "inline_replacement_batch": 778,
+    "inline_insertion_put": 649,
+    "inline_insertion_batch": 777,
+    "model_modes": "native/debug and GCC+Clang ASan/UBSan",
+    "source_fixtures": {
+      "toml1_0": 717,
+      "toml1_1": 720
+    },
+    "legacy_exact_comparisons": 5134,
+    "fuzz": {
+      "runs": 18615,
+      "seconds": 31,
+      "assertion_artifact_self_test": "pass",
+      "note": "persistent local corpus affects mutation history; existing pinned-compiler frexp alignment compilation warning; no runtime finding"
+    },
+    "independent_reviews": "engine and tests/contract reviews found no blockers; original missing-member fixture retained positive, trivia position documented, requested insertion alias coverage added"
+  },
+  "local_logs": {
+    "source_and_gcc": {
+      "local_path": "/tmp/insert-final-gcc.log",
+      "sha256": "ace6f6ffd856bf5dbccca978aac599f38f1ddf917ab436e35160a9c57cafa9ab",
+      "tail": [
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/batch_model.py .build/batch-oracle-sanitize",
+        "818 atomic batch semantic/preservation/failure cases passed",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/inline_model.py .build/oracle-sanitize .build/batch-oracle-sanitize",
+        "650 inline put + 778 inline batch exact/model cases passed",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/inline_insert_model.py .build/oracle-sanitize .build/batch-oracle-sanitize",
+        "649 inline insertion put + 777 batch exact/model cases passed",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "clang": {
+      "local_path": "/tmp/insert-final-clang.log",
+      "sha256": "ec000a831b29c2d40bbbd5f5454c716f2f1a721b5c506351da8786c20dcf3d0f",
+      "tail": [
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/batch_model.py .build/batch-oracle-sanitize",
+        "818 atomic batch semantic/preservation/failure cases passed",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/inline_model.py .build/oracle-sanitize .build/batch-oracle-sanitize",
+        "650 inline put + 778 inline batch exact/model cases passed",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/inline_insert_model.py .build/oracle-sanitize .build/batch-oracle-sanitize",
+        "649 inline insertion put + 777 batch exact/model cases passed",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "fuzz": {
+      "local_path": "/tmp/insert-final-fuzz.log",
+      "sha256": "bd035ac21899d6081051f86fbcce2bc3f62d61be0bfa415fdf683db3e09d111f",
+      "tail": [
+        "1 warning generated.",
+        "Verified Goose assertion failures save the exact triggering input",
+        "Fuzzing source-index, no-op preservation and parsed source edits",
+        "Campaign log: /tmp/goose-toml-alpha-8gho80q4/source/.build/fuzz/run.log",
+        "#18615\tDONE   cov: 2607 ft: 9472 corp: 1176/3298Kb lim: 1048577 exec/s: 600 rss: 207Mb",
+        "Done 18615 runs in 31 second(s)",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "root": {
+      "local_path": "/tmp/insert-root-check.log",
+      "sha256": "f7e6ae5d957a13e86f23f34ae13281440afa100b64012c99f725ecd583db99f3",
+      "tail": [
+        "toml mutation sequence tests passed",
+        ".toolchain/goose/build/goose build tests/overloads.goose -o .build/overloads",
+        "built .build/overloads",
+        "./.build/overloads",
+        "consumer overload regression tests passed",
+        ".toolchain/goose/build/goose run examples/config.goose",
+        "Server port: 8080"
+      ]
+    },
+    "final_alias_direct": {
+      "local_path": "/tmp/insert-alias-direct.log",
+      "sha256": "ec97c2725f8d3015f82526a873f6152b2f55273fc2e40429a691f3f2f83456b6",
+      "tail": [
+        "Inline member insertion checks passed",
+        "Inline assigned-value replacement checks passed",
+        "Atomic snapshot batch checks passed",
+        "Legacy compatibility profile boundary tests passed",
+        "Terminal document reuse lifetime checks passed",
+        "Source-preserving editor tests passed",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "final_alias_gcc": {
+      "local_path": "/tmp/insert-alias-gcc.log",
+      "sha256": "6c233814b2ce91fa9dd453896c5e9ebdee9ceebd9970c495d784a2e2ca63e341",
+      "tail": [
+        "built source/.build/insert-alias-gcc",
+        "Inline member insertion checks passed",
+        "Inline assigned-value replacement checks passed",
+        "Atomic snapshot batch checks passed",
+        "Legacy compatibility profile boundary tests passed",
+        "Terminal document reuse lifetime checks passed",
+        "Source-preserving editor tests passed"
+      ]
+    },
+    "final_alias_clang": {
+      "local_path": "/tmp/insert-alias-clang.log",
+      "sha256": "ed1937f2603df1d0058da8d5c1522b37dc21b7bd6a3c3bd8ea2b1775980c3832",
+      "tail": [
+        "built source/.build/insert-alias-clang",
+        "Inline member insertion checks passed",
+        "Inline assigned-value replacement checks passed",
+        "Atomic snapshot batch checks passed",
+        "Legacy compatibility profile boundary tests passed",
+        "Terminal document reuse lifetime checks passed",
+        "Source-preserving editor tests passed"
+      ]
+    }
+  },
+  "scope": "unreleased default inline insertion; legacy and inline removal unchanged; no new release/pin/consumer/timing claim"
+}
