@@ -77,12 +77,12 @@ for index in range(640):
     assert same(original, model)
     cases.append((10, source, path, new, expected))
 cases += [
+    (10, 'v={x=1}', ['v', 'absent'], '2', 'v={\"absent\" = 2, x=1}'),
     (11, 'v={\r\n# keep\r\n x={a=1,}, # after\r\n y=2,\r\n}', ['v', 'x', 'a'], '3', 'v={\r\n# keep\r\n x={a=3,}, # after\r\n y=2,\r\n}'),
     (11, 'v={"\\x78"=1,}', ['v', 'x'], '"\\e"', 'v={"\\x78"="\\e",}'),
     (11, 'v={x=1,y=2}', ['v', 'x'], '2 # new\n', 'v={x=2 # new\n,y=2}'),
 ]
 for source, path, value in [
-    ('v={x=1}', ['v', 'absent'], '2'),
     ('v={a.b=1,a.c=2}', ['v', 'a'], '2'),
     ('v={x=[{a=1}]}', ['v', 'x', 'a'], '2'),
     ('v={x=1}', ['v', 'x'], '2 # eats closing brace'),

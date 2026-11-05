@@ -243,6 +243,39 @@ fn collect_inline(source: const u8[:], original: toml::Document&, statement: Sta
     }
     return [];
 }
+// Deepest existing prefix; only sealed tables need inline insertion discovery.
+fn inline_parent(doc: toml::Document&, path: const (const u8[:])[:]) -> i64 {
+    var parent = 0;
+    for part in path[..path.len - 1] {
+        let next = child(doc, parent, part);
+        if next < 0 { break; }
+        if doc.nodes[next].kind != toml::Kind.Table { return -1; }
+        parent = next;
+    }
+    return if doc.nodes[parent].state == toml::State.Sealed { parent } else { -1 };
+}
+fn inline_position(source: const u8[:], doc: toml::Document&, parent: i64, values: const InlineValue[:]) -> i64, i64, bool {
+    var node = parent;
+    while node >= 0 && doc.nodes[node].state == toml::State.Sealed {
+        for span in values {
+            if span.node == node && source[span.start] == '{' {
+                return span.start + 1, doc.nodes[node].depth, doc.nodes[node].count > 0;
+            }
+        }
+        node = doc.nodes[node].parent;
+    }
+    return -1, 0, false;
+}
+fn inline_addition(path: const (const u8[:])[:], value: const u8[:], depth: i64,
+    nonempty: bool, repeated: bool) -> u8[>..], u8[>..] {
+    let entry, error = insertion_text(path, value, depth, "", false, Profile.Source);
+    if error.len > 0 { return [], error; }
+    var output: u8[>..] = [];
+    if !nonempty && repeated { output.append(", "); }
+    output.append(entry);
+    if nonempty { output.append(", "); }
+    return output, [];
+}
 // Replace a directly assigned value or insert a new member. Existing bytes
 // outside the splice, including comments and source spellings, are copied.
 fn put_impl(source: const u8[:], path: const u8[:][:], value: const u8[:], version: toml::Version, profile: Profile) -> u8[>..], u8[>..] {
@@ -278,6 +311,25 @@ fn put_impl(source: const u8[:], path: const u8[:][:], value: const u8[:], versi
             }
         }
         return [], owned(if legacy(profile) { "toml-edit: replace a complete assignment, not a declared table" } else { "toml source: value is not a directly assigned source span" });
+    }
+    if !legacy(profile) {
+        let parent = inline_parent(doc, path);
+        if parent >= 0 {
+            let root = inline_owner(doc, parent);
+            for statement in statements {
+                if !statement.header && statement.node == root {
+                    var values: InlineValue[>..] = [];
+                    let error = collect_inline(source, doc, statement, version, values);
+                    if error.len > 0 { return [], error; }
+                    let at, depth, nonempty = inline_position(source, doc, parent, values);
+                    if at < 0 { return [], owned("toml source: inline source layout mismatch"); }
+                    let addition, addition_error = inline_addition(path, value, depth, nonempty, false);
+                    if addition_error.len > 0 { return [], addition_error; }
+                    return splice(source, at, at, addition, doc, version, profile);
+                }
+            }
+            return [], owned("toml source: inline source layout mismatch");
+        }
     }
     let ends = body_ends(doc, statements, profile);
     let at, depth, position_error = insertion_position(doc, ends, path);
@@ -341,7 +393,7 @@ enum Edit {
     Remove { path: const (const u8[:])[:] },
 }
 const MAX_BATCH_EDITS: i64 = 64;
-struct BatchSpan { start: i64, end: i64, request: i64, depth: i64 = -1 }
+struct BatchSpan { start: i64, end: i64, request: i64, depth: i64 = -1, inline_insert: bool = false, inline_nonempty: bool = false }
 fn batch_path(edit: Edit) -> const (const u8[:])[:] {
     match edit { Put p => p.path, Remove r => r.path }
 }
@@ -445,22 +497,44 @@ fn apply(source: const u8[:], edits: const Edit[:], version: toml::Version = tom
                 if !found { return [], batch_error(i, "toml source: value is not a directly assigned source span"); }
             }
         } else {
-            let at, depth, error = insertion_position(doc, ends, batch_path(edit));
-            if error.len > 0 { return [], batch_error(i, error); }
-            spans.push(BatchSpan { start: at, end: at, request: i, depth: depth });
+            let parent = inline_parent(doc, batch_path(edit));
+            if parent >= 0 {
+                let root = inline_owner(doc, parent);
+                if root < 0 || assignment[root] < 0 { return [], batch_error(i, "toml source: inline source layout mismatch"); }
+                var scanned = false;
+                for previous in inline_roots { if previous == root { scanned = true; } }
+                if !scanned {
+                    let error = collect_inline(source, doc, statements[assignment[root]], version, inline_spans);
+                    if error.len > 0 { return [], batch_error(i, error); }
+                    inline_roots.push(root);
+                }
+                let at, depth, nonempty = inline_position(source, doc, parent, inline_spans);
+                if at < 0 { return [], batch_error(i, "toml source: inline source layout mismatch"); }
+                spans.push(BatchSpan { start: at, end: at, request: i, depth: depth, inline_insert: true, inline_nonempty: nonempty });
+            } else {
+                let at, depth, error = insertion_position(doc, ends, batch_path(edit));
+                if error.len > 0 { return [], batch_error(i, error); }
+                spans.push(BatchSpan { start: at, end: at, request: i, depth: depth });
+            }
         }
     }
     if spans.len == 0 { return owned(source), []; }
     sort(spans) { a, b => a.start < b.start || (a.start == b.start &&
         (a.end < b.end || (a.end == b.end && a.request < b.request))) };
-    var output: u8[>..] = []; var copied = 0;
+    var output: u8[>..] = []; var copied = 0; var previous_inline = -1;
     let eol = newline(source);
     for span in spans {
         if span.start < copied { return [], owned("toml source: overlapping batch spans"); }
         if !batch_append(output, source[copied..span.start]) { return [], owned("toml source: output exceeds 1 MiB"); }
         let edit = edits[span.request];
         if batch_put(edit) {
-            if span.start == span.end {
+            if span.inline_insert {
+                let addition, error = inline_addition(batch_path(edit), batch_value(edit), span.depth,
+                    span.inline_nonempty, previous_inline == span.start);
+                if error.len > 0 { return [], batch_error(span.request, error); }
+                if !batch_append(output, addition) { return [], owned("toml source: output exceeds 1 MiB"); }
+                previous_inline = span.start;
+            } else if span.start == span.end {
                 let addition, error = insertion_text(batch_path(edit), batch_value(edit), span.depth, eol,
                     output.len > 0 && output[output.len - 1] != '\n', Profile.Source);
                 if error.len > 0 { return [], batch_error(span.request, error); }

@@ -33,7 +33,7 @@ source index and final validation across its requests.
 
 `put(source, path, raw_value, version = toml::Version.V1_0)` replaces a directly
 assigned value, including an existing value inside an inline table, or inserts a
-new member outside inline tables. `raw_value` is exactly one TOML value;
+new member in an enclosing table or inline table. `raw_value` is exactly one TOML value;
 it is independently parsed under the selected version, preventing extra
 assignments or headers from being injected. Raw spelling is retained. Insertion
 uses the deepest existing table body, with quoted relative dotted names as
@@ -86,7 +86,7 @@ created by an earlier request. Equal paths and ancestor/descendant paths are
 rejected, even when missing. Independent siblings under a shared missing prefix
 are allowed. Insertions at the same original offset appear in request order;
 other spans follow original source order. Newline separation uses the bytes
-already emitted, including the effect of removals. Inline member insertion/removal,
+already emitted, including the effect of removals. Inline member removal,
 header replacements, parser limits and version selection follow `put`/`remove`.
 Batch `Put` also supports existing inline assigned values. Discovery is shared
 for requests in the same enclosing inline value, using original source offsets.
@@ -174,13 +174,32 @@ table. For example, `["dependencies", "helper", "path"]` can update the path in
 `dependencies = { helper = { path = "../old" } }`, copying every byte outside
 that value span. Decoded dotted/quoted keys follow the normal path rules.
 An implicit table introduced only by dotted inline keys has no complete value
-span and cannot be replaced as a whole. Inserting or removing individual inline
-members and selecting array elements remain unsupported. Replacing or removing
+span and cannot be replaced as a whole. Removing individual inline members
+and selecting array elements remain unsupported. Replacing or removing
 the entire directly assigned outer inline table is supported. The legacy
 compatibility profile retains its original rejection of inline children.
 
 Inline replacement is introduced in `v0.1.0-alpha.5` and is not present in
-alpha.4. Discovery
+alpha.4. Inline insertion is unreleased and is not present in alpha.5.
+
+For a missing inline member, `put` and batch `Put` insert immediately after the
+closest existing literal inline table's opening brace, before original leading
+whitespace or comments. Keys use quoted relative dotted segments, allowing a
+missing prefix to be created or an implicit dotted table to be extended. A new
+entry ends with `, ` when the original table has members. For an originally
+empty table, only the second and later same-anchor batch entries receive a
+leading `, `. Existing members, comments, spacing and trailing commas are copied
+verbatim; insertions sharing an anchor appear in request order. For example,
+putting `["v", "new"]` into `v={old=1}` yields `v={"new" = 2, old=1}` for value
+`2`. Batches use the original snapshot, so insertion order need not match a loop
+of sequential `put` calls that each prepend to the previous output. An inserted
+fragment's whitespace/comment suffix must also be valid in its final context;
+otherwise terminal validation rejects the complete result with empty output.
+The legacy profile retains its original inline rejection policy. Exact insertion
+models, ownership/cap regressions and legacy parity are retained in the
+[inline insertion report](tests/results/inline-insertion/README.md).
+
+Discovery
 reparses the enclosing inline assignment using the existing parser's key/value
 routines plus inline framing, recording source positions before decoded text
 enters the arena. It verifies the rebased node/key/parent layout against the
@@ -202,7 +221,7 @@ Each call is bounded independently:
 - Replacement fragment: at most 1 MiB minus four wrapper bytes.
 - Path: 1..64 segments and at most 4,096 total decoded key bytes.
 - Index: at most 65,536 statements, plus existing parser node/depth/key-work limits.
-- Single edits: at most three bounded parsing passes for ordinary insertion/replacement, two for removal; an inline replacement adds one enclosing-value discovery parse.
+- Single edits: at most three bounded parsing passes for ordinary insertion/replacement, two for removal; an inline replacement/insertion adds one enclosing-value discovery parse.
 - Batches: at most 64 requests, 1 MiB aggregate decoded paths/raw values, and the parsing stages above.
 
 Outside existing metered parser/index work, scans, path walks and copying are

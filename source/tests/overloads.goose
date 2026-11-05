@@ -19,6 +19,8 @@ fn main() {
     let bad_edits: toml_source::Edit[1] = [toml_source::Edit.Put { path: x_path, value: "[" }];
     let batch_bad, batch_bad_error = toml_source::apply("x=1", bad_edits);
     assert(batch_bad.len == 0 && find(batch_bad_error, "batch edit 0:") >= 0);
+    let inserted, insert_error = toml_source::put("v={}", ["v", "new"], "2");
+    assert(insert_error.len == 0 && inserted == "v={\"new\" = 2}");
     let inline_output, inline_error = toml_source::put("v={x=1,y={z=2}}", ["v", "y", "z"], "3");
     assert(inline_error.len == 0 && inline_output == "v={x=1,y={z=3}}");
     let legacy_bad, legacy_error = toml_source::legacy_set("x=1", ["x"], "[");

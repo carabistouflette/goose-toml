@@ -34,7 +34,7 @@ fn run() {
         "v={\r\n # keep\r\n x={a=3,}, # after\r\n y=2,\r\n}", toml::Version.V1_1);
     replace("v={x=1, y=2}", ["v", "x"], "{a=2,}", "v={x={a=2,}, y=2}", toml::Version.V1_1);
     replace("v={x=1, y=2}", ["v", "x"], "2 # new comment\n", "v={x=2 # new comment\n, y=2}", toml::Version.V1_1);
-    reject("v={x=1}", ["v", "missing"], "2");
+    replace("v={x=1}", ["v", "missing"], "2", "v={\"missing\" = 2, x=1}");
     reject("v={a.b=1, a.c=2}", ["v", "a"], "2"); // implicit table has no complete value span
     reject("v={x=[{a=1}]}", ["v", "x", "a"], "2");
     reject("v={x=1,}", ["v", "x"], "2");
