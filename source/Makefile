@@ -10,6 +10,8 @@ check:
 	"$(GOOSE)" check tests/overloads.goose
 	"$(GOOSE)" check tests/editor.goose
 	"$(GOOSE)" check tests/oracle.goose
+	"$(GOOSE)" check tests/batch_oracle.goose
+	"$(GOOSE)" check tests/batch_bench.goose
 	"$(GOOSE)" check tests/index.goose
 	"$(GOOSE)" check tests/fuzz.goose
 	"$(GOOSE)" check bench.goose
@@ -31,6 +33,10 @@ property:
 	python3 tests/model.py .build/oracle
 	"$(GOOSE)" build tests/oracle.goose --cc "$(CC)" --debug --no-bce -o .build/oracle-debug
 	python3 tests/model.py .build/oracle-debug
+	"$(GOOSE)" build tests/batch_oracle.goose --cc "$(CC)" -O2 -o .build/batch-oracle
+	python3 tests/batch_model.py .build/batch-oracle
+	"$(GOOSE)" build tests/batch_oracle.goose --cc "$(CC)" --debug --no-bce -o .build/batch-oracle-debug
+	python3 tests/batch_model.py .build/batch-oracle-debug
 conformance:
 	mkdir -p .build
 	"$(GOOSE)" build tests/index.goose --cc "$(CC)" -O2 -o .build/index
@@ -43,6 +49,8 @@ sanitize:
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 ./.build/editor-sanitize
 	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/oracle.goose --cc "$(abspath sanitizer-cc.sh)" --standalone -O2 --no-bce -o .build/oracle-sanitize
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/model.py .build/oracle-sanitize
+	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/batch_oracle.goose --cc "$(abspath sanitizer-cc.sh)" --standalone -O2 --no-bce -o .build/batch-oracle-sanitize
+	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/batch_model.py .build/batch-oracle-sanitize
 
 FUZZ_SECONDS ?= 30
 FUZZ_RUNS ?= 100000
@@ -57,3 +65,6 @@ bench:
 	python3 scripts/benchmark.py --snapshot
 	"$(GOOSE)" build bench.goose --cc "$(CC)" -O2 -o .build/bench
 	BENCH_CC="$(CC)" python3 scripts/benchmark.py .build/bench $(BENCH_ITERATIONS)
+	"$(GOOSE)" build tests/batch_bench.goose --cc "$(CC)" -O2 -o .build/batch-bench
+	./.build/batch-bench batch 8 4 1
+	./.build/batch-bench sequence 8 4 1

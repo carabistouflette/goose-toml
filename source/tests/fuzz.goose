@@ -30,6 +30,17 @@ export fn fuzz_parse(input: const u8[:]) -> i64 {
     else { assert(legacy_added.len == 0); }
     let legacy_edited, legacy_edit_error = toml_source::legacy_set(input[..split], ["a", "b"], input[split..]);
     if legacy_edit_error.len == 0 { check_output(legacy_edited); } else { assert(legacy_edited.len == 0); }
+    let probe: (const u8[:])[1] = ["__source_fuzz_probe"];
+    let other: (const u8[:])[1] = ["__source_fuzz_other"];
+    let requests: toml_source::Edit[2] = [toml_source::Edit.Put { path: probe, value: "{path='世界'}" },
+        toml_source::Edit.Remove { path: other }];
+    let batch, batch_error = toml_source::apply(input, requests);
+    if batch_error.len == 0 { assert(parse_error.len == 0); check_output(batch); }
+    else { assert(batch.len == 0); }
+    let replacement: toml_source::Edit[2] = [toml_source::Edit.Put { path: probe, value: input[split..] },
+        toml_source::Edit.Remove { path: other }];
+    let combined, combined_error = toml_source::apply(input[..split], replacement);
+    if combined_error.len == 0 { check_output(combined); } else { assert(combined.len == 0); }
     return if parse_error.len == 0 { 1 } else { 0 };
 }
 export fn fuzz_assertion_probe(value: i64) { assert(value != 0); }

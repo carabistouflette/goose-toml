@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Added opt-in atomic source batches with `toml_source::Edit` and `apply`.
+  Paths address the original snapshot; overlapping paths are rejected, and a
+  changed batch shares its source index and final validation. Failures return
+  empty output. Existing single-edit and legacy contracts remain unchanged.
+
 ## v0.1.0-alpha.3 — 2026-11-04
 
 - Reused the private source Document for terminal output validation after all
