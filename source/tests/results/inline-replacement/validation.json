@@ -1,0 +1,105 @@
+{
+  "checkpoint": "996f6ef2e0f6f447446868fd9bf561c81784514b",
+  "base": "2043d9c0b32a8237d54b2a45578f2cc4b7ea384c",
+  "source_sha256": {
+    "source/editor.goose": "a4c60f404996ada8780e7759b1184fafd914b820cf95d497ebf4546f0546d333",
+    "source/tests/inline_values.goose": "2a8b03948d33d11214e68472757ba2dc6bad2fd2e6e0829f277fdf32c47db0dc",
+    "source/tests/inline_model.py": "3374589aa1b30c0d0a34336d171e127cb3b2232541fcdcbbcfa9ea734ea8af29",
+    "source/tests/fuzz.goose": "b8b77e5b20ec826fcdf8bfa7c7263734e6f404fb84cf3b337cb2cbb429dbe9d5",
+    "source/tests/oracle.goose": "521c23c2e71c6f5ea61fbf7800d8e66652d9c78826f64d263a3c1ad3b9840cab",
+    "source/tests/model.py": "fcf5760c1a7786d893bd64b0859565e0492565745d0978c119b5e9d8c88b0fa4",
+    "source/tests/overloads.goose": "19a0734cb4ce06621888ac379a87b972fcbd5cc00c8699590cd96e89017dd750",
+    "source/Makefile": "90ad917ada760b22e0c1d3358805717a32344e365bb9d09555840e0b17d7aba4",
+    "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+    "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+    "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a",
+    "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+    "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15"
+  },
+  "source_manifest_check": "every declared file matches immutable checkpoint Git blob; core/parser/writer/text/compiler unchanged vs alpha4",
+  "results": {
+    "direct_modes": "JIT/nativeO2/debug-no-BCE pass including full64 inline puts, same/different owner batches, source aliases, retained errors, exact output cap, combined node/depth failures and legacy rejection",
+    "default_model": 2405,
+    "legacy_model": 533,
+    "batch_model": 818,
+    "inline_put_cases": 650,
+    "inline_batch_cases": 778,
+    "inline_modes": "native/debug and GCC+Clang ASan/UBSan",
+    "fixtures": {
+      "toml1_0": 717,
+      "toml1_1": 720
+    },
+    "sanitizers": "GCC and Clang direct hostile-overload/editor tests plus default/legacy/batch/inline models; leak detection and UB halt enabled",
+    "legacy_differential": 5134,
+    "fuzz": {
+      "runs": 49871,
+      "seconds": 31,
+      "assertion_artifact_self_test": "pass",
+      "maximum_generated_input_bytes": 1048577,
+      "persistent_corpus": "shared local source corpus; numeric seed alone does not reproduce its history",
+      "note": "existing pinned-compiler frexp alignment compilation warning; no runtime assertion/sanitizer finding"
+    },
+    "independent_reviews": "engine and tests/contract reviewers found no blockers; clarified added discovery-budget and inline insertion/removal limitations",
+    "root_format_check_test": "pass"
+  },
+  "local_logs": {
+    "source_and_gcc": {
+      "local_path": "/tmp/inline-final-gcc.log",
+      "sha256": "9184d74bf6d0beb473b77cb0a206212a332ee663a273795893cd84e409769276",
+      "tail": [
+        "2405 source-edit model/preservation cases passed",
+        "533 legacy-profile byte/diagnostic checks passed",
+        "SANITIZER_CC=\"gcc\" \"../.toolchain/goose/build/goose\" build tests/batch_oracle.goose --cc \"/tmp/goose-toml-alpha-8gho80q4/source/sanitizer-cc.sh\" --standalone -O2 --no-bce -o .build/batch-oracle-sanitize",
+        "built .build/batch-oracle-sanitize",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/batch_model.py .build/batch-oracle-sanitize",
+        "818 atomic batch semantic/preservation/failure cases passed",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/inline_model.py .build/oracle-sanitize .build/batch-oracle-sanitize",
+        "650 inline put + 778 inline batch exact/model cases passed",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "clang": {
+      "local_path": "/tmp/inline-final-clang.log",
+      "sha256": "d43f27d753b4020221cec503a303c1a1aec1d4cac14149d9586a82b23475675b",
+      "tail": [
+        "2405 source-edit model/preservation cases passed",
+        "533 legacy-profile byte/diagnostic checks passed",
+        "SANITIZER_CC=\"clang\" \"../.toolchain/goose/build/goose\" build tests/batch_oracle.goose --cc \"/tmp/goose-toml-alpha-8gho80q4/source/sanitizer-cc.sh\" --standalone -O2 --no-bce -o .build/batch-oracle-sanitize",
+        "built .build/batch-oracle-sanitize",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/batch_model.py .build/batch-oracle-sanitize",
+        "818 atomic batch semantic/preservation/failure cases passed",
+        "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/inline_model.py .build/oracle-sanitize .build/batch-oracle-sanitize",
+        "650 inline put + 778 inline batch exact/model cases passed",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "fuzz": {
+      "local_path": "/tmp/inline-final-fuzz.log",
+      "sha256": "fd75a8fbca4271b17d1bb27050328450d1b4f68b544de2e1cf1e77c06111496d",
+      "tail": [
+        " 12125 |             t16 = frexp(t14, t15);",
+        "       |                              ^",
+        "1 warning generated.",
+        "Verified Goose assertion failures save the exact triggering input",
+        "Fuzzing source-index, no-op preservation and parsed source edits",
+        "Campaign log: /tmp/goose-toml-alpha-8gho80q4/source/.build/fuzz/run.log",
+        "#49871\tDONE   cov: 2544 ft: 9587 corp: 1267/3303Kb lim: 1048577 exec/s: 1608 rss: 342Mb",
+        "Done 49871 runs in 31 second(s)",
+        "make: Leaving directory '/tmp/goose-toml-alpha-8gho80q4/source'"
+      ]
+    },
+    "root_format_check_test": {
+      "local_path": "/tmp/inline-root-check.log",
+      "sha256": "f7e6ae5d957a13e86f23f34ae13281440afa100b64012c99f725ecd583db99f3",
+      "tail": [
+        ".toolchain/goose/build/goose build tests/overloads.goose -o .build/overloads",
+        "built .build/overloads",
+        "./.build/overloads",
+        "consumer overload regression tests passed",
+        ".toolchain/goose/build/goose run examples/config.goose",
+        "Server port: 8080"
+      ]
+    }
+  },
+  "scope": "New default existing-inline-value replacement only; ordinary replacement fast path unchanged. Legacy profile, inline insertion/removal, array selectors and prior release tags/pins unchanged. No new timing/performance claim, release or consumer adoption."
+}

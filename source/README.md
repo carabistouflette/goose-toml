@@ -228,7 +228,10 @@ The opt-in target has its own Makefile and tests. Tests include exact source
 comparisons, all ASCII key bytes, source-context cases, 2,405 single-edit and over 800 batch
 semantic/preservation/failure checks against Python `tomllib`, 21 frozen legacy
 output/diagnostic fixtures plus 512 independent insertion byte checks, and source-index equality
-on all pinned TOML 1.0 and 1.1 fixtures. Python comparisons use their shared
+on all pinned TOML 1.0 and 1.1 fixtures. An additional 650 inline `put` and 778
+inline batch frames check exact constructed output and independent semantic
+models; [inline validation evidence](tests/results/inline-replacement/README.md)
+records the unreleased feature checkpoint and its limits. Python comparisons use their shared
 TOML 1.0 subset; explicit tests cover version-specific behavior. Sanitizers
 instrument both editor tests and the independent model adapter. Fuzzing reuses
 all pinned TOML 1.0 fixture inputs and verifies exact Goose assertion crash
