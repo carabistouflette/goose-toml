@@ -1,6 +1,7 @@
 # Missing inline-member insertion validation
 
-This feature is **unreleased**. Engine checkpoint
+This feature is included in **v0.1.0-alpha.6**. It was unreleased during the
+validation recorded here. Engine checkpoint
 `70fcf374569085075cec44324939a6474cf40c6c` and final alias-test checkpoint
 `154dda64ab22bbb882a55d44b25165bc0f5bebe1` have identical engine bytes:
 SHA-256 `d1e9c4648f1d696aa3e45ef3f976555dc1d02908c9c650a85ed85b82f22c8d4d`.

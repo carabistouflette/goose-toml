@@ -59,7 +59,9 @@ resource limits, conflict rules and unsupported layouts are documented separatel
 For one edit, prefer `put`/`remove`; batch timing is workload-dependent.
 Starting with `v0.1.0-alpha.5`, default `put` and batch `Put` can also replace
 existing assigned values inside inline tables while preserving surrounding bytes.
-Inline member insertion/removal and legacy-profile behavior are unchanged.
+Starting with `v0.1.0-alpha.6`, they can also insert missing inline members while
+preserving original bytes and trailing commas. Inline member removal remains unsupported;
+legacy-profile behavior is unchanged.
 
 ## Cost and resource limits
 

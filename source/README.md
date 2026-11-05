@@ -180,7 +180,7 @@ the entire directly assigned outer inline table is supported. The legacy
 compatibility profile retains its original rejection of inline children.
 
 Inline replacement is introduced in `v0.1.0-alpha.5` and is not present in
-alpha.4. Inline insertion is unreleased and is not present in alpha.5.
+alpha.4. Inline insertion is introduced in `v0.1.0-alpha.6` and is not present in alpha.5.
 
 For a missing inline member, `put` and batch `Put` insert immediately after the
 closest existing literal inline table's opening brace, before original leading

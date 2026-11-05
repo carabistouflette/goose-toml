@@ -1,12 +1,23 @@
 # Changelog
 
-## Unreleased
+## v0.1.0-alpha.6 — 2026-11-05
 
 - Default source `put` and batch `Put` insert missing members in inline tables,
   prepending quoted relative dotted keys while preserving existing bytes and
   trailing commas. Shared-anchor batches retain request order, including empty
   tables and shared missing prefixes. Existing limits and final validation
   apply; inline removal and legacy-profile behavior remain unchanged.
+- Validated empty/nested/implicit tables, quoted/dotted keys, TOML 1.1 leading
+  comments and trailing commas, mixed insertion/replacement and source-borrowed
+  requests. Independent insertion models cover 649 single and 777 batch cases
+  per native/debug and GCC/Clang sanitizer mode; exact legacy parity is retained.
+
+New entries precede original leading trivia. Shared-anchor batch order follows
+requests rather than a loop of sequential prepends. Discovery retains its own
+bounded parser budget, and completed output must parse in its final context.
+No new performance or allocation claim is made. See the
+[insertion validation report](source/tests/results/inline-insertion/README.md).
+This remains an experimental prerelease without an API stability promise.
 
 ## v0.1.0-alpha.5 — 2026-11-05
 
