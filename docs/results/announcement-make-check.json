@@ -1,0 +1,17 @@
+{
+  "task": "GL-DOCSTOML-01",
+  "source_commit": "c83a75248af12d4661803acf2f4f10ae4d7db112",
+  "command": [
+    "make",
+    "check"
+  ],
+  "hard_bound_seconds": 180,
+  "started_utc": "2026-11-05T21:33:40.918810+00:00",
+  "ended_utc": "2026-11-05T21:33:43.454638+00:00",
+  "elapsed_seconds": 2.535867309954483,
+  "exit_code": 0,
+  "stdout": ".toolchain/goose/build/goose format --check toml.goose document.goose writer.goose vendor/text.goose examples tests bench\n.toolchain/goose/build/goose check tests/spec11.goose\n.toolchain/goose/build/goose check tests/document.goose\n.toolchain/goose/build/goose check tests/writer.goose\n.toolchain/goose/build/goose check tests/writer-scalars.goose\n.toolchain/goose/build/goose check tests/overloads.goose\n.toolchain/goose/build/goose check tests/mutation.goose\n.toolchain/goose/build/goose check tests/utf8.goose\n.toolchain/goose/build/goose check tests/parser.goose\n.toolchain/goose/build/goose check tests/scalars.goose\n.toolchain/goose/build/goose check tests/lifecycle.goose\n.toolchain/goose/build/goose check tests/fuzz.goose\n.toolchain/goose/build/goose check examples/config.goose\n.toolchain/goose/build/goose check examples/source-edit.goose\n.toolchain/goose/build/goose check tests/decoder.goose\n.toolchain/goose/build/goose check tests/encoder.goose\n.toolchain/goose/build/goose check bench/parse.goose\n",
+  "stderr": "",
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "purpose": "format and type checks including new example; no new timing/correctness campaign"
+}

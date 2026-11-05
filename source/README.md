@@ -1,350 +1,148 @@
-# Source-preserving TOML edits
+# Keep TOML comments and formatting
 
-This opt-in module adds and removes named TOML values while copying all bytes
-outside the edited token spans. It is separate from the semantic document editor
-and canonical writer. It does not change those APIs or enable itself implicitly.
+`toml_source` changes named values while copying bytes outside the edited spans.
+It returns owned output and an owned error string; it never reads or writes files.
+This guide describes **v0.1.0-alpha.6**, commit
+`e5e5644c45e78e8eb05999978bb4155ea0bbb180`.
+
+## Change a value
+
+Save this as `edit.goose` and run it with the [pinned Goose compiler](../docs/platforms.md):
 
 ```goose
-import toml from "../goose-toml"; // adjust your checkout path
+import toml from "carabistouflette/goose-toml@e5e5644c45e78e8eb05999978bb4155ea0bbb180";
 import toml.source.editor;
 import std;
 
 fn main() {
     let original = "# project notes\n[dependencies]\nold = {path='../old'} # keep\n";
-    let updated, error = toml_source::put(original,
+    let output, error = toml_source::put(original,
         ["dependencies", "helper"], "{path='../helper'}");
     if error.len > 0 { print(error); return; }
-    print(updated);
+    print(output);
 }
 ```
 
-The supported entry points are `toml_source::put`, `toml_source::remove`,
-`toml_source::legacy_set`, `toml_source::legacy_remove`, and `toml_source::apply`,
-with the `toml_source::Edit` request type for batches.
-Other declarations are implementation details. The functions return `(owned_output,
-owned_error)`, with an empty error on success and empty output on every error.
-The application owns reading files and atomic publication after success.
-Inputs are borrowed for the duration of the call; no references or source ranges
-escape into the returned text. Each operation privately indexes the original
-source and reparses changed output before returning it. A batch shares that
-source index and final validation across its requests.
+```sh
+/path/to/pinned/goose run edit.goose
+```
 
-## Operations
+`put(source, path, raw_value, version = toml::Version.V1_0)` replaces an assigned
+value or inserts a missing member. The replacement must be exactly one TOML value;
+extra assignments or headers are rejected. Its raw spelling is retained.
+TOML 1.1 requires an explicit `toml::Version.V1_1` argument.
 
-`put(source, path, raw_value, version = toml::Version.V1_0)` replaces a directly
-assigned value, including an existing value inside an inline table, or inserts a
-new member in an enclosing table or inline table. `raw_value` is exactly one TOML value;
-it is independently parsed under the selected version, preventing extra
-assignments or headers from being injected. Raw spelling is retained. Insertion
-uses the deepest existing table body, with quoted relative dotted names as
-needed to create missing tables. New lines use the first source newline style,
-or LF when the source has none. Existing line endings are copied verbatim.
+`remove(source, path, version = toml::Version.V1_0)` removes the named assignment
+or table subtree, including descendants written with dotted keys or separate
+headers. It can remove a whole array of tables. A missing path succeeds with an
+independent owned copy of the validated source.
 
-`remove(source, path, version = toml::Version.V1_0)` removes the assignment or
-header token spans belonging to a named subtree, including descendants declared
-through dotted assignments or separate table headers. A missing path succeeds
-with an owned copy of the original source. Removing a table header also removes
-its associated values; unrelated sections remain. Arrays of tables can be
-removed as a whole, but paths do not select individual array elements.
+Paths contain decoded key segments: `["a.b", "c"]` selects literal key `a.b`,
+then `c`. They are not dotted strings or array indices. Empty keys, Unicode and
+control characters are allowed if their bytes are valid UTF-8; inserted keys
+are quoted and escaped as TOML requires.
 
-Paths contain **decoded table-key segments**, not dotted strings or array
-indices. `["a.b", "c"]` selects literal key `a.b`, then `c`. Empty keys, Unicode
-and escaped controls are supported; keys must contain valid UTF-8. Inserting
-DEL uses `\u007f`, since a literal DEL is prohibited in a TOML quoted key.
+## Apply a batch
 
-The scanner reuses the existing parser's `Reader`, `header`, `assignment_target`
-and `value` routines. Its private offsets refer to the original bytes, never
-the parsed document's decoded key/text arena. Parser declaration rules and work
-budgets apply unchanged. Fixture tests compare the source index's complete
-semantic node layout and arena with the ordinary parser.
-
-## Atomic snapshot batches
-
-`apply(source, edits, version = toml::Version.V1_0)` applies up to 64
-`Edit.Put {path, value}` / `Edit.Remove {path}` requests and returns one owned
-`(output, error)` pair. It uses the default source policies described above;
-the legacy compatibility profile has no batch entry point.
+`apply(source, edits, version = toml::Version.V1_0)` returns one result for up to
+64 `Edit.Put` or `Edit.Remove` requests:
 
 ```goose
-let name_path: (const u8[:])[2] = ["package", "name"];
-let old_path: (const u8[:])[2] = ["dependencies", "old"];
-let edits: toml_source::Edit[2] = [
-    toml_source::Edit.Put {path: name_path, value: "'renamed'"},
-    toml_source::Edit.Remove {path: old_path},
-];
-let output, error = toml_source::apply(original, edits);
+import toml from "carabistouflette/goose-toml@e5e5644c45e78e8eb05999978bb4155ea0bbb180";
+import toml.source.editor;
+import std;
+
+fn main() {
+    let original = "[package]\nname = 'old'\n[dependencies]\nold = 1\n";
+    let name_path: (const u8[:])[2] = ["package", "name"];
+    let old_path: (const u8[:])[2] = ["dependencies", "old"];
+    let edits: toml_source::Edit[2] = [
+        toml_source::Edit.Put {path: name_path, value: "'renamed'"},
+        toml_source::Edit.Remove {path: old_path},
+    ];
+    let output, error = toml_source::apply(original, edits);
+    if error.len > 0 { print(error); return; }
+    print(output);
+}
 ```
 
-Requests borrow their paths and raw values until `apply` returns. Bind path
-arrays before storing requests, as above, and finish growing any backing arrays
-before borrowing their slices. Explicitly type a request array as `Edit[N]` so
-an array containing only one variant still has the common enum type.
+Every request selects the **original snapshot**. A later request cannot target
+something created by an earlier one. Equal paths and ancestor/descendant paths
+are rejected, even when missing. Independent siblings under a shared missing
+prefix are allowed. Insertions sharing an original offset appear in request order.
 
-Every path selects the **original source snapshot**, including insertion
-anchors. This is not a sequence in which a later request can target a value
-created by an earlier request. Equal paths and ancestor/descendant paths are
-rejected, even when missing. Independent siblings under a shared missing prefix
-are allowed. Insertions at the same original offset appear in request order;
-other spans follow original source order. Newline separation uses the bytes
-already emitted, including the effect of removals. Inline member removal,
-header replacements, parser limits and version selection follow `put`/`remove`.
-Batch `Put` also supports existing inline assigned values. Discovery is shared
-for requests in the same enclosing inline value, using original source offsets.
+Requests borrow paths and replacement bytes until the call returns. Bind path
+arrays before creating requests, finish growing backing arrays before borrowing
+them, and explicitly type request arrays as `Edit[N]`.
 
-Validation stages are count/path/budget/conflict preflight, all replacement
-fragments, original-source indexing, span planning, then rendering and final
-parsing. Request-local errors include `batch edit N` with a zero-based index;
-source, total-budget, output-size and final-parser errors are batch-wide.
-The stages determine error precedence, rather than the lowest request index
-across all stages. Every failure returns empty output and an owned diagnostic;
-there is no partial result to publish. An empty batch or all-missing removals
-still validates the source and returns its independent owned copy.
+## What is preserved
 
-The aggregate decoded path bytes plus raw replacement bytes cannot exceed
-1 MiB. Each individual path/fragment and the completed source also obey the
-limits below. One original source index and one final parse cover a changed
-batch, in addition to an independent parse of each replacement fragment and
-on-demand discovery of selected inline owners. The planner shares statement and subtree metadata; bounded lookup costs up to
-O(edits × parser nodes), conflict checks O(edits² × path segments), and span
-sorting O(spans log spans). Temporary storage includes the index, parser nodes,
-statement metadata, and rendered output. This does not promise a strict heap
-allocation budget or a speedup for every batch size/layout.
+Comments, spacing, line endings, quoting and numeric spellings outside changed
+spans remain byte-for-byte intact. Comments inside a replaced multiline value
+belong to that value and are removed with it. Outside comments and blank lines
+remain, even when orphaned. Removing the last child of an implicit table can
+make that table disappear semantically; explicit unrelated headers remain.
 
-Batch validation and the complete-operation measurements, including the
-slower single-edit control and shared-host limits, are retained in the
-[atomic batch report](tests/results/atomic-batches/README.md). This API is
-introduced in `v0.1.0-alpha.4`; alpha.1 through alpha.3 do not contain it.
+Ordinary insertion uses the closest existing table body and quoted relative
+dotted names. Added lines use the source's first newline style, or LF if none.
 
-## Companion compatibility profile
+Alpha.5 adds replacement of values inside inline tables. Alpha.6 adds missing
+inline members, inserted just after the closest literal table's opening brace,
+before its original whitespace or comments. For example, putting value `2` at
+`["v", "new"]` in `v={old=1}` produces `v={"new" = 2, old=1}`. Missing prefixes
+can use relative dotted keys. Entries inserted at the same brace follow batch
+request order; sequential `put` calls can therefore produce a different order.
+Existing members and trailing commas are copied. Replacement fragments must
+also be valid in their final context, including any whitespace/comment suffix.
 
-`legacy_set(source, decoded_path, raw_value)` and
-`legacy_remove(source, decoded_path)` expose the compatibility profile for
+Individual inline-member removal, array-element selection, replacement of a
+header-declared table/AoT, and formatting cleanup are unsupported. An implicit
+inline table introduced only by dotted keys has no complete value span to
+replace. Replacing or removing the whole directly assigned outer inline table
+is supported. Report unsupported layouts rather than silently regenerating a file.
+
+## Errors and limits
+
+Success returns an empty error. **Every failure returns empty output** and an
+owned diagnostic. Inputs are borrowed only for the call; no input views escape.
+Applications decide how to publish a successful result atomically. No partial
+batch is returned. Empty batches and all-missing removals still validate source.
+
+Batch validation proceeds through count/path/budget/conflict checks, replacement
+fragments, original source, span planning, and output validation. This stage
+order determines error precedence. Request-specific errors identify zero-based
+`batch edit N`; source, aggregate-budget, output-size and final-parse errors
+apply to the whole batch.
+
+| Bound | Default operations |
+| --- | --- |
+| Original and final source | 1 MiB each |
+| Replacement fragment | 1 MiB minus the four-byte parse wrapper |
+| Decoded path | 1–64 segments, 4,096 combined bytes |
+| Batch | 64 requests; 1 MiB total decoded paths plus raw values |
+| Source index | 65,536 statements, plus [parser limits](../docs/api.md#cost-and-resource-limits) |
+
+Inline discovery has its own parser work/node/depth budgets, so it can reject a
+source that the initial parse accepted. Changed output is parsed before return.
+A batch shares source indexing and final validation; replacement fragments and
+selected inline owners need additional parsing. Bounded lookup can cost
+O(edits × nodes), conflict checks O(edits² × path segments), and span sorting
+O(spans log spans). Storage grows with bounded input, nodes, statements and
+output. These bounds are not an exact allocation budget; allocation failure
+follows the pinned Goose runtime's policy. Applications must bound repeated calls.
+
+## Compatibility and development
+
+`legacy_set` and `legacy_remove` provide the strict TOML 1.0 profile used by
 [goose-toml-edit](https://github.com/carabistouflette/goose-toml-edit).
-They return the same owned `(output, error)` pair and are fixed to strict
-TOML 1.0. They share the scanner, lookup, subtree selection and splice engine
-with `put`/`remove`; the default operations retain their existing policies.
+Their [separate contract](docs/legacy.md) retains historical output/error bytes,
+larger path allowance, insertion rules and rejection of inline children.
+The profile is available from alpha.2 onward; alpha.1 does not contain it.
+Other declarations in the implementation are private.
 
-The compatibility reference is companion commit
-[`cedb2c3c98affbeb45bd34bc7a6618f5a9b75ad0`](https://github.com/carabistouflette/goose-toml-edit/commit/cedb2c3c98affbeb45bd34bc7a6618f5a9b75ad0).
-The profile preserves its output and diagnostic bytes, including these rules:
-
-- Validate the path first, replacement fragment second, original source third.
-  Parse only the first fragment value using the literal four-byte `x = `
-  wrapper, after validating UTF-8 across the whole fragment. Only spaces/tabs
-  may follow the value. Trailing comments/newlines or statements return the strict-suffix diagnostic without parsing that suffix.
-  Comments/newlines inside a value remain allowed by the TOML grammar.
-- Paths permit 1..64 decoded components and up to 1 MiB combined key bytes.
-  Traversing through a scalar, array or inline table fails before checking for
-  a child. A genuinely missing prefix short-circuits to missing. Removing an
-  entire array of tables remains supported.
-- Insert at root byte zero or immediately after the closest explicit ancestor
-  header's complete line. Use the first source newline style, or LF. New keys
-  use TOML quoting with uppercase control escapes, including `\u007F` for DEL.
-- Before encoding each inserted key, reserve two quote bytes plus six bytes
-  per decoded byte within the 1 MiB insertion cap, including prior separators.
-  This conservative guard can reject a new key whose actual encoding would
-  fit; it does not apply when replacing/removing an existing assignment.
-- Source/output are capped at 1 MiB each and the replacement at 1 MiB minus
-  four wrapper bytes; an empty replacement is rejected. Existing parser limits
-  also apply. Even a missing-key removal reparses its independent owned copy.
-  Every failure returns empty output and an owned nonempty diagnostic.
-
-The companion obtains the complete result before replacing or clearing its
-caller's output, preserving input/output aliasing. This module performs no I/O.
-The compatibility profile is follow-on work and is **not** included in the
-frozen `v0.1.0-alpha.1` release. Use an immutable reviewed commit that contains
-these entry points; do not assume their presence in that alpha tag.
-
-## Preservation and current limits
-
-Existing comments, indentation, blank lines, quote styles and numeric spellings
-outside changed token spans remain byte-for-byte intact. A replaced or removed
-multiline value includes its own internal comments. Leading/trailing comments
-outside the span remain, including orphaned comments and whitespace-only lines;
-the editor does not guess comment ownership or normalize the file.
-
-Removing the last dotted or header-created child can also make its now-empty
-**implicit ancestors** disappear semantically: removing `["a", "b"]` from
-`a.b=1` leaves a blank line, not an explicit empty `[a]` table. Existing explicit
-headers outside the selected subtree remain unchanged.
-
-The default `put` and batch `Put` can replace an existing assigned value inside
-an inline table, including a nested value, an array, or a complete nested inline
-table. For example, `["dependencies", "helper", "path"]` can update the path in
-`dependencies = { helper = { path = "../old" } }`, copying every byte outside
-that value span. Decoded dotted/quoted keys follow the normal path rules.
-An implicit table introduced only by dotted inline keys has no complete value
-span and cannot be replaced as a whole. Removing individual inline members
-and selecting array elements remain unsupported. Replacing or removing
-the entire directly assigned outer inline table is supported. The legacy
-compatibility profile retains its original rejection of inline children.
-
-Inline replacement is introduced in `v0.1.0-alpha.5` and is not present in
-alpha.4. Inline insertion is introduced in `v0.1.0-alpha.6` and is not present in alpha.5.
-
-For a missing inline member, `put` and batch `Put` insert immediately after the
-closest existing literal inline table's opening brace, before original leading
-whitespace or comments. Keys use quoted relative dotted segments, allowing a
-missing prefix to be created or an implicit dotted table to be extended. A new
-entry ends with `, ` when the original table has members. For an originally
-empty table, only the second and later same-anchor batch entries receive a
-leading `, `. Existing members, comments, spacing and trailing commas are copied
-verbatim; insertions sharing an anchor appear in request order. For example,
-putting `["v", "new"]` into `v={old=1}` yields `v={"new" = 2, old=1}` for value
-`2`. Batches use the original snapshot, so insertion order need not match a loop
-of sequential `put` calls that each prepend to the previous output. An inserted
-fragment's whitespace/comment suffix must also be valid in its final context;
-otherwise terminal validation rejects the complete result with empty output.
-The legacy profile retains its original inline rejection policy. Exact insertion
-models, ownership/cap regressions and legacy parity are retained in the
-[inline insertion report](tests/results/inline-insertion/README.md).
-
-Discovery
-reparses the enclosing inline assignment using the existing parser's key/value
-routines plus inline framing, recording source positions before decoded text
-enters the arena. It verifies the rebased node/key/parent layout against the
-original index. Each discovery parse has its own existing node/depth/key-work
-budgets; a valid source can still exhaust a discovery budget. Arrays and strings
-are consumed by the parser, rather than searched for delimiter-like bytes.
-A batch discovers each selected enclosing inline value at most once. Output
-must still parse under the requested version, including replacements whose
-whitespace or comments would otherwise invalidate the surrounding inline table.
-Replacing a header-declared
-table or AoT with a raw value is also unsupported. A source-preserving caller
-should report unsupported layouts without falling back to whole-file
-normalization. Array ordinals, formatting cleanup and sequential dependent edit plans are not
-part of this API.
-
-Each call is bounded independently:
-
-- Original and completed source: at most 1 MiB each.
-- Replacement fragment: at most 1 MiB minus four wrapper bytes.
-- Path: 1..64 segments and at most 4,096 total decoded key bytes.
-- Index: at most 65,536 statements, plus existing parser node/depth/key-work limits.
-- Single edits: at most three bounded parsing passes for ordinary insertion/replacement, two for removal; an inline replacement/insertion adds one enclosing-value discovery parse.
-- Batches: at most 64 requests, 1 MiB aggregate decoded paths/raw values, and the parsing stages above.
-
-Outside existing metered parser/index work, scans, path walks and copying are
-linear in bounded input plus output size for single edits; inline discovery adds
-one parse of the selected enclosing value. Batch planning has the additional
-costs stated above, plus at most one discovery parse per selected inline owner.
-Storage is O(input bytes + parser nodes + statements), not a strict allocation-byte budget. Runtime allocation
-failure follows Goose's normal policy. Applications must bound repeated calls
-and input I/O themselves. No native kernel or runtime dependency is introduced.
-
-## Validation
-
-From a standalone checkout, bootstrap the compiler and official fixtures through
-the root project's documented setup/conformance commands, then:
-
-```sh
-make -C source format check test property conformance
-make -C source sanitize SANITIZER_CC=gcc
-make -C source sanitize SANITIZER_CC=clang
-make -C source fuzz
-```
-
-The opt-in target has its own Makefile and tests. Tests include exact source
-comparisons, all ASCII key bytes, source-context cases, 2,405 single-edit and over 800 batch
-semantic/preservation/failure checks against Python `tomllib`, 21 frozen legacy
-output/diagnostic fixtures plus 512 independent insertion byte checks, and source-index equality
-on all pinned TOML 1.0 and 1.1 fixtures. An additional 650 inline `put` and 778
-inline batch frames check exact constructed output and independent semantic
-models; [inline validation evidence](tests/results/inline-replacement/README.md)
-records the feature checkpoint and its limits. Python comparisons use their shared
-TOML 1.0 subset; explicit tests cover version-specific behavior. Sanitizers
-instrument both editor tests and the independent model adapter. Fuzzing reuses
-all pinned TOML 1.0 fixture inputs and verifies exact Goose assertion crash
-capture before its bounded campaign. Its maximum generated input is 1,048,577
-bytes, covering the first size beyond the API cap. Linux GCC/Clang are required
-for these sanitizer/fuzzer targets. Build output and crash artifacts remain in
-`source/.build/`, outside version control.
-
-## Compatibility-profile validation and timing
-
-The new profile has 21 exact legacy output/diagnostic fixtures from clean
-companion `cedb2c3`, plus 512 independent root/header insertion byte checks.
-`tests/legacy-contract.json` retains the original fixture bytes and reference
-revision. The oracle also transports arbitrary path bytes as hex, including
-NUL and paths above the operating system's argument-size limit. JIT, optimized
-native and debug tests cover exact 1 MiB output, sixfold reservation, path and
-combined parser limits, UTF-8/suffix precedence and hostile consumer overloads.
-The existing 2,405 default model checks and 717/720 source-index fixtures remain
-separate acceptance checks. Wrapper output clearing and aliasing must also be
-validated by the companion's own public-API tests before adoption.
-
-Engine `04c8bef` passed two independent code reviews, GCC/Clang ASan/UBSan,
-and 35,688 Clang/libFuzzer executions in a 31-second bounded campaign, including
-the assertion-artifact self-test. An independent
-[5,134-call differential](tests/results/legacy-parity-04c8bef.json) against clean
-`cedb2c3` compared exact status, output, diagnostic bytes and failure emptiness,
-with Python `tomllib` independently checking successful outputs. Its frozen
-candidate checkout, executable and source hashes were verified before and after
-the campaign. This is canonical-engine evidence; companion/consumer adoption
-has separate gates. The earlier `5cca023` evidence does not cover optimization
-`04c8bef`; the reported final differential does.
-
-[Paired default-operation raw samples and provenance](tests/results/default-profile-04c8bef.json)
-compare alpha `b59b25a` with engine `04c8bef`, using the unchanged four-case
-benchmark, pinned Goose `eadca409`, GCC 16.2.1 and `-O2`, on Linux x86-64 CPU 0.
-One warmup per build precedes nine alternating pairs of 1,000 operations.
-All calls create fresh parser state and owned output, including validation.
-The ratios of candidate/baseline medians were **1.005** (put small), **1.085**
-(remove small), **0.983** (put large) and **0.953** (remove large). The small
-removal regression remains; these samples do not establish a universal speedup.
-This was a shared host, with local GCC tests overlapping on CPU 2 during part
-of the series. Source/binary identities and all samples are retained; readable
-compiler identity and fixture-length consistency were verified after timing,
-as disclosed in the report. The earlier pre-optimization series is also
-[retained without dropping regressions](tests/results/default-profile-initial.json).
-
-To repeat from two clean standalone clones at the desired immutable revisions:
-
-```sh
-python3 source/tests/compare_profiles.py /path/to/baseline /path/to/candidate \
-  --goose /path/to/pinned/goose --cpu 0 --rounds 9 --iterations 1000 \
-  --output /tmp/default-profile.json
-```
-
-The current driver additionally checks its own fingerprint, compiler identity
-and fixture lengths during the run. Its earlier measured revision is recorded
-in the report; the subsequent changes tighten provenance only. Performance of
-the actual thin wrapper must be measured independently against its frozen
-legacy implementation before publishing companion performance claims.
-
-## Recorded complete-operation timings
-
-[Raw samples and provenance](results/2026-11-04-linux-x86_64.json) were measured
-from clean source commit `c9359f380f420ac7c055d9caad1ef20a20c9dccd` after the
-parser consumer-overload hardening in parent
-`c32c7dab44883f8fb5a5a984bf6f3c4c49119d79`. The checkout used an external
-matching compiler through `GOOSE`; no toolchain symlink or tracked edits were
-present. The driver fingerprints sources before compilation and verifies them
-again before and after timing. The report includes compiler/hardware/flags,
-source and binary hashes, every fixture and seven raw samples after one warmup.
-
-Command: `make -C source bench CC=gcc BENCH_ITERATIONS=100`, on Linux x86-64,
-Intel Core Ultra 7 258V, GCC 16.2.1, `-O2`, CPU affinity 0. These are complete
-fresh operations, including all parsing, copying, allocation and validation;
-input construction occurs outside the measured loops. Other processes may run
-on the development machine; no exclusive-host or cross-library claim is made.
-
-| Operation | Input bytes | Median ns/operation |
-| --- | ---: | ---: |
-| put_small | 68 | 2617.6 |
-| remove_small | 68 | 1174.1 |
-| put_large | 289072 | 1773086.4 |
-| remove_large | 289072 | 1595069.2 |
-
-The large fixture contains 256 KiB of commentary and 1,000 dependency entries.
-These cases characterize specific workloads; they do not prove worst-case
-latency or a universal performance ranking. CI runs benchmark smoke execution
-without timing thresholds.
-
-The recorded pre-profile local source validation also passed the consumer-overload regression
-in-process and optimized native, all model/fixture checks under the hardened
-parser, GCC/Clang ASan/UBSan, and 84,695 Clang/libFuzzer executions in 31 seconds
-(seed 20261104, bounded by the 30-second budget). The assertion-bridge self-test
-verified exact crash-artifact capture. That execution count is a recorded
-campaign, not an exhaustive input claim. No source I/O or manifest publication
-was performed by the module.
+See [development commands](../docs/development.md#source-editor),
+[historical validation and measurements](docs/history.md), and
+[benchmark status](../docs/benchmarks.md). Historical timings do not describe
+alpha.6 performance. This documentation revision also adds the runnable local
+example [examples/source-edit.goose](../examples/source-edit.goose); that file
+is not in the alpha.6 tag.

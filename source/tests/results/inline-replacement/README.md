@@ -1,5 +1,9 @@
 # Existing inline-value replacement validation
 
+This is a historical feature-validation record. The named implementation is not
+the complete alpha.6 implementation. See [current source API](../../../README.md)
+and [benchmark status](../../../../docs/benchmarks.md); raw artifacts remain unchanged.
+
 Feature checkpoint `996f6ef2e0f6f447446868fd9bf561c81784514b` adds on-demand
 source-span discovery to default `put` and batch `Put`, included in
 **v0.1.0-alpha.5**. The checkpoint was unreleased during validation; alpha.4

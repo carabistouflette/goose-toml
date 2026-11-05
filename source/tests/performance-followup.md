@@ -1,5 +1,10 @@
 # Source editor performance follow-up
 
+**Historical preparation plan.** The terminal-Document reuse experiment later
+shipped in alpha.3. The trace and proposed gates below refer to the stated de7
+baseline, not current alpha.6 behavior. See the [experiment record](results/document-reuse/README.md)
+and [current benchmark status](../../docs/benchmarks.md).
+
 This is a preparation checkpoint, based on immutable canonical
 `de7dfe092f6d72811417355044e5d024d5600613`. It adds a diagnostic fixture driver
 and a proposed experiment. It changes no engine code, dependency pin or release.
@@ -23,7 +28,7 @@ Goose `eadca409f68210893f366e60d0c2f0dc29a339be` runtime sources:
 `src/runtime/runtime.h` (`gs_stack_block`) and
 `src/runtime/runtime_impl.h` (`gs_reserve_region`).
 
-| Stage | Current behavior | Consequence to investigate |
+| Stage | Behavior at the de7 baseline | Consequence to investigate |
 | --- | --- | --- |
 | Fragment check, set only | Parses synthetic `x = ` plus value for legacy; default retains its own fragment policy | Both legacy implementations validate fragments; no extra pass is inferred merely from consolidation |
 | Source index | Builds a private Document and statement source offsets | Each statement includes context needed for default insertion |

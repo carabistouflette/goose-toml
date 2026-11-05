@@ -1,5 +1,9 @@
 # Atomic snapshot batch validation
 
+This is a historical feature-validation record. The named implementation is not
+the complete alpha.6 implementation. See [current source API](../../../README.md)
+and [benchmark status](../../../../docs/benchmarks.md); raw artifacts remain unchanged.
+
 The `Edit`/`apply` API is included in **v0.1.0-alpha.4**. At validation time it
 was unreleased. Runtime commit
 `95eddfd036e7d156fe3b6ebf5693bb618d009d8a` and benchmark checkpoint

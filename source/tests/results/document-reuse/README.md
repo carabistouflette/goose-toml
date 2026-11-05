@@ -1,5 +1,11 @@
 # Terminal Document reuse: experimental results
 
+**Historical experiment.** Terminal storage reuse shipped in alpha.3
+(`fe849141405009e36e1cce6eb479b395eae18f1a`). The measurements below describe
+the frozen experiment, not alpha.6 latency or allocation behavior.
+See [benchmark status](../../../../docs/benchmarks.md). Original decisions,
+controls, raw samples and regressions are retained as the experiment record.
+
 **Decision: retain as an unreleased candidate for review; do not advance any
 published release or consumer pin.** Correctness and ownership checks passed.
 The fixture uses three fewer runtime data-stack regions, and selected wide
@@ -259,7 +265,7 @@ the exact candidate editor, and build the identical harness/compiler/flags.
 The intentional overlay must not be represented as a passing released-manifest
 check. Restore/retain the released snapshot independently.
 
-## Remaining promotion gates
+## Promotion gates at the time of the experiment
 
 This result justifies retaining a small storage-reuse candidate for review,
 not adopting it into frozen releases. Review the mixed timing and single-run

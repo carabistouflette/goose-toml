@@ -25,7 +25,7 @@ network, or environment I/O. Applications decide where configuration comes from
 and how parsed values are used; parsing TOML does not validate application policy.
 
 Input bytes, nodes, logical depth, scalar-token size, and key-index work have
-explicit limits documented in [README.md](README.md#cost-and-resource-limits).
+explicit limits documented in [the API guide](docs/api.md#cost-and-resource-limits).
 The per-parse work limit does not meter application calls to `find`. Successful
 documents own their decoded data. Discard partial documents on failure and use only supported editor operations; do not modify implementation fields or
 retain borrowed views across edits or reparsing. Editors also cap physical arena

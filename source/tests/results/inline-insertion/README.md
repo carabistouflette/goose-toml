@@ -1,5 +1,9 @@
 # Missing inline-member insertion validation
 
+This is a historical feature-validation record. The named implementation is not
+the complete alpha.6 implementation. See [current source API](../../../README.md)
+and [benchmark status](../../../../docs/benchmarks.md); raw artifacts remain unchanged.
+
 This feature is included in **v0.1.0-alpha.6**. It was unreleased during the
 validation recorded here. Engine checkpoint
 `70fcf374569085075cec44324939a6474cf40c6c` and final alias-test checkpoint

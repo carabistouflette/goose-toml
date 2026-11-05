@@ -1,0 +1,259 @@
+{
+  "reservation": "TOML-ANN-01",
+  "task": "GL-DOCSTOML-01",
+  "started_utc": "2026-11-05T21:18:13.238565+00:00",
+  "max_wall_seconds": 1500,
+  "controller_pid": 2525834,
+  "controller_pgid": 2525834,
+  "commands": [
+    {
+      "label": "docs-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "started_utc": "2026-11-05T21:18:13.258198+00:00",
+      "log": ".build/toml-ann-01/0-docs-head.log",
+      "pid_pgid": 2525842,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:13.263726+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "docs-clean",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "started_utc": "2026-11-05T21:18:13.281826+00:00",
+      "log": ".build/toml-ann-01/1-docs-clean.log",
+      "pid_pgid": 2525843,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:13.291288+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "compiler-head",
+      "argv": [
+        "git",
+        "-C",
+        ".toolchain/goose",
+        "rev-parse",
+        "HEAD"
+      ],
+      "started_utc": "2026-11-05T21:18:13.308178+00:00",
+      "log": ".build/toml-ann-01/2-compiler-head.log",
+      "pid_pgid": 2525844,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:13.313654+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "compiler-clean",
+      "argv": [
+        "git",
+        "-C",
+        ".toolchain/goose",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "started_utc": "2026-11-05T21:18:13.329809+00:00",
+      "log": ".build/toml-ann-01/3-compiler-clean.log",
+      "pid_pgid": 2525845,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:13.345753+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "cpp-head",
+      "argv": [
+        "git",
+        "-C",
+        ".toolchain/tomlplusplus",
+        "rev-parse",
+        "HEAD"
+      ],
+      "started_utc": "2026-11-05T21:18:13.362864+00:00",
+      "log": ".build/toml-ann-01/4-cpp-head.log",
+      "pid_pgid": 2525855,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:13.368052+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "cpp-clean",
+      "argv": [
+        "git",
+        "-C",
+        ".toolchain/tomlplusplus",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "started_utc": "2026-11-05T21:18:13.382903+00:00",
+      "log": ".build/toml-ann-01/5-cpp-clean.log",
+      "pid_pgid": 2525856,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:13.388279+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "gcc-version",
+      "argv": [
+        "gcc",
+        "--version"
+      ],
+      "started_utc": "2026-11-05T21:18:13.404327+00:00",
+      "log": ".build/toml-ann-01/6-gcc-version.log",
+      "pid_pgid": 2525869,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:13.407668+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "g++-version",
+      "argv": [
+        "g++",
+        "--version"
+      ],
+      "started_utc": "2026-11-05T21:18:13.424121+00:00",
+      "log": ".build/toml-ann-01/7-g++-version.log",
+      "pid_pgid": 2525882,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:13.427409+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "one-build",
+      "argv": [
+        "/usr/bin/python3",
+        "scripts/compare.py",
+        "--cpu",
+        "3",
+        "--corpus",
+        "extended",
+        "--build-only"
+      ],
+      "started_utc": "2026-11-05T21:18:13.443524+00:00",
+      "log": ".build/toml-ann-01/8-one-build.log",
+      "pid_pgid": 2525886,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:18:43.053991+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "full-series",
+      "argv": [
+        "/usr/bin/python3",
+        "scripts/compare.py",
+        "--cpu",
+        "3",
+        "--corpus",
+        "extended",
+        "--mode",
+        "full",
+        "--no-build",
+        "--iterations",
+        "100000",
+        "--rounds",
+        "9",
+        "--seed",
+        "20261104",
+        "--timezone",
+        "UTC",
+        "--output",
+        ".build/compare/announcement-full.json"
+      ],
+      "started_utc": "2026-11-05T21:18:43.083876+00:00",
+      "log": ".build/toml-ann-01/9-full-series.log",
+      "pid_pgid": 2527453,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:21:24.914021+00:00",
+      "remaining_group_members": []
+    },
+    {
+      "label": "write-series",
+      "argv": [
+        "/usr/bin/python3",
+        "scripts/compare.py",
+        "--cpu",
+        "3",
+        "--corpus",
+        "extended",
+        "--mode",
+        "write",
+        "--no-build",
+        "--iterations",
+        "100000",
+        "--rounds",
+        "9",
+        "--seed",
+        "20261104",
+        "--timezone",
+        "UTC",
+        "--output",
+        ".build/compare/announcement-write.json"
+      ],
+      "started_utc": "2026-11-05T21:21:24.948829+00:00",
+      "log": ".build/toml-ann-01/10-write-series.log",
+      "pid_pgid": 2532536,
+      "exit_code": 0,
+      "ended_utc": "2026-11-05T21:22:50.253867+00:00",
+      "remaining_group_members": []
+    }
+  ],
+  "exit_code": 0,
+  "input_sha256": {
+    "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15",
+    "TOML_TEST_REVISION": "2fbfc9b437a42dcb68ad08d7dea2b0a203e56a285cc1cb637cc6c443b89ba867",
+    "bench/compare/README.md": "dc70ebdea1189c4c32af38df5bda883de2a434bffe1ddc1ca0f7b96f78512baf",
+    "bench/compare/blackbox.c": "4b625af5075fee61fdbac904a868350c8552c589d5b57cf1b89b023c8bd9833e",
+    "bench/compare/cases/app-server.toml": "475c98a85029bdd76b9b1044eb35c087f7ed5dc25811b91e1e660eb4932d3d4a",
+    "bench/compare/cases/build-project.toml": "3ffff7fda0f5c4ebf54f2c770779afdae6dd3716bff1199a0d05e2207c92a5c1",
+    "bench/compare/cpp/main.cpp": "cc8b721875b0379c6b963204ac93ee237e74f636f62b2d4da7a5e53c388ea284",
+    "bench/compare/dependencies.json": "905d5e28ca3eb0eda73c14c3626bb27a0a55b45ba9e0db34ba59907efc004e1f",
+    "bench/compare/go/go.mod": "1af73164b19e716ac06752821e26b6e011e107e0f5d97a793099a0fb51f8a855",
+    "bench/compare/go/go.sum": "3978e93be4721773d6ab8779e6fd37e11a7d12669075c07beba4cc2ecf5e3b7a",
+    "bench/compare/go/main.go": "9c3abec1433865069e29f26077694eef0f8bf9a2d85dba2fe2af9e390a91226d",
+    "bench/compare/goose.goose": "4b5a922b99cdfd1614b571a8bfbb995811aadefb38ea24e5e0404432c05f9b41",
+    "bench/compare/rust/Cargo.lock": "2a50d655a05a041d4dbfac5c1a08bfed881530d3261ec578312dbd097b93a677",
+    "bench/compare/rust/Cargo.toml": "2e4dbd1cdd8d5c5637ac7dd3497006eaaf5f928eda50a3cc2dba937422ae6e86",
+    "bench/compare/rust/src/main.rs": "8f23160d728159d191fc5a392905e7839a4343d3c4effc45918a54712b538983",
+    "bench/parse.goose": "8bd003117d9d29c8e8d2a2e31422a5bb958f5be1f8242649ff69882e1ded531a",
+    "document.goose": "b0c766e29e572dd6398e203ef3c5091d02d09d2e49c015d7028e5068883aad5b",
+    "scripts/compare.py": "52b7da33e77e863bc24c377fcd290fe6f9cd6a7c4d4b34dc8ed90ddefd0aaef5",
+    "source/editor.goose": "d1e9c4648f1d696aa3e45ef3f976555dc1d02908c9c650a85ed85b82f22c8d4d",
+    "toml.goose": "806fd1ea11d48da77b62dfdba6f6e33d1a6e720c448cfddd486b7d4096a15b47",
+    "vendor/text.goose": "9d26025ab31b8c9590029e6fe8a38e3df097164c76a080a2e10c96ddb48a141d",
+    "writer.goose": "8f5f1e2862caa4fa557c5f31d5a42ed5731ab7bd72a683d6a96518597a111d2a"
+  },
+  "compiler_sha256": "3cad45a18356bf97f4732f1da2012252afd77a652932ddb9c91c5551c04904be",
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "cpu_affinity": [
+    3
+  ],
+  "gcc_version": "gcc (GCC) 16.2.1 20260810\nCopyright (C) 2026 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "g++_version": "g++ (GCC) 16.2.1 20260810\nCopyright (C) 2026 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "full_report_sha256": "5e041be9353925b0fa4d98ce35770aa45039891508a84115920fa2b1802c5adc",
+  "write_report_sha256": "88f70f964820dbbb154e1d25503edc6473a8146e975c8ac6c73ff192fbf35193",
+  "cleanup_groups": {
+    "2525842": [],
+    "2525843": [],
+    "2525844": [],
+    "2525845": [],
+    "2525855": [],
+    "2525856": [],
+    "2525869": [],
+    "2525882": [],
+    "2525886": [],
+    "2527453": [],
+    "2532536": []
+  },
+  "all_owned_groups_absent": true,
+  "ended_utc": "2026-11-05T21:22:50.588651+00:00",
+  "elapsed_wall_seconds": 277.3501266250387,
+  "controller_source_sha256": "154ccccd17fa1b34eef45b78898b1c9052dc40e0bb80f8b43b92a40fbbbe1833"
+}

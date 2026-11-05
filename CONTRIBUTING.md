@@ -6,10 +6,9 @@ Use focused branches and Conventional Commits. Commit working milestones regular
 
 Pin a reviewed full upstream compiler commit in `GOOSE_REVISION`. Compiler changes require full validation. No stability guarantee exists before 1.0. Report vulnerabilities through the private process in [SECURITY.md](SECURITY.md).
 
-
 For behavior or vendored-source changes, also run `make conformance property
 scalar writer-scalar security sanitize fuzz`. Optional fuzz campaigns need Clang and its sanitizer
-runtimes; see the README. Preserve immutable vendor provenance and licenses.
+runtimes; see [development commands](docs/development.md). Preserve immutable vendor provenance and licenses.
 Measure performance changes with the same workload source, pinned compiler and
 C compiler flags; retain raw samples and report any regressions and limitations.
 

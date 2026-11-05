@@ -3,10 +3,11 @@
 The supported semantic workflow is parse or initialize a document, inspect it,
 modify values through editor functions, and serialize it. Comments, whitespace,
 declaration style and numeric spellings are not preserved. Automatic struct
-mapping and source-format editing are outside this API.
+mapping is outside this API. Use the [source editor](../source/README.md)
+to retain formatting. This example uses released alpha.6.
 
 ```goose
-import toml from "../goose-toml"; // adjust to your checkout
+import toml from "carabistouflette/goose-toml@e5e5644c45e78e8eb05999978bb4155ea0bbb180";
 import std;
 
 fn main() {

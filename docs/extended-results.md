@@ -1,5 +1,9 @@
 # Expanded parsing and writing measurements
 
+**Historical measurements.** These implementation hashes differ from alpha.6.
+Keep these samples tied to their measured revision; see [benchmark status](benchmarks.md)
+for currentness and [methodology](../bench/compare/README.md) for measurement scope.
+
 Measured code and benchmark source: [`7f12af5c7d26d077b531383589949b5c976f5a68`](https://github.com/carabistouflette/goose-toml/commit/7f12af5c7d26d077b531383589949b5c976f5a68). Built from an isolated checkout of the tracked source. The reported untracked `.toolchain` entry is a symlink to external pinned development tools, not modified library source.
 
 Twelve inputs include the original eight workloads, original app/server and project configurations, a schedule covering all four TOML datetime kinds, and finite floats from subnormal values through ±1e300. The default benchmark corpus remains the original eight. [Methodology and setup](../bench/compare/README.md).
@@ -76,6 +80,7 @@ The alpha also includes later consumer-overload hardening, including direct pinn
 ## Reproduce
 
 ```sh
+git checkout --detach 7f12af5c7d26d077b531383589949b5c976f5a68
 python3 scripts/compare.py --cpu 1 --corpus extended --mode full --iterations 100000 --rounds 9 --output .build/compare/extended-full.json
 python3 scripts/compare.py --cpu 1 --corpus extended --mode write --no-build --iterations 100000 --rounds 9 --output .build/compare/extended-write.json
 make writer-scalar

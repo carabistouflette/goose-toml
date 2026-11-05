@@ -1,5 +1,9 @@
 # Measured results and validation
 
+**Historical measurements.** These implementation hashes differ from alpha.6.
+Keep these samples tied to their measured revision; see [benchmark status](benchmarks.md)
+for currentness and [methodology](../bench/compare/README.md) for measurement scope.
+
 ## Parser snapshot
 
 Measurements below use parser commit
@@ -44,6 +48,7 @@ security conclusion follows from them.
 Reproduce with the same source and toolchain:
 
 ```sh
+git checkout --detach 9e8e4bcfbd227ed206cf59594d0ce329d5ebfb86
 make setup
 .toolchain/goose/build/goose build bench/parse.goose --cc gcc -O2 -o .build/publication-bench
 python3 scripts/benchmark.py --candidate .build/publication-bench --iterations 100000 --repeats 9 --output .build/publication-results.json
