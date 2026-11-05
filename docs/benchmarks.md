@@ -6,11 +6,12 @@ or the newest date in a report. The current release is alpha.6,
 
 ## Alpha.6 measurements
 
-The existing numeric reports do **not** match alpha.6's complete implementation.
-The queued refresh uses the unchanged twelve-case comparison: fresh parsing
-plus a semantic walk, then writing an existing document. Results are pending;
-no current cross-language ranking is claimed. The source/harness identity audit
-is recorded in [benchmark-currentness.json](benchmark-currentness.json).
+[Alpha.6 results](alpha6-results.md) cover twelve cases: fresh parsing plus a
+semantic walk, then writing an existing document. Nine rounds per series retain
+all samples and show medians plus dispersion. Runtime and executable harness
+hashes match the release; machine, toolchain, dependencies, output differences
+and slower writer cases are explicit. The older numeric reports remain
+historical. See the [identity audit](benchmark-currentness.json).
 
 Source-editor latency and memory improvements are **not claimed for alpha.6**.
 Its earlier experiments remain historical. A separate source-editor benchmark
@@ -62,5 +63,5 @@ commands on alpha.6 produces a new experiment, not a reproduction.
 
 The expanded historical harness has a changed README in this documentation
 revision; its executable sources and dependency locks are unchanged. The fresh
-build will fingerprint that documentation change too. No broad runtime bridge
+build fingerprints that documentation change too. No broad runtime bridge
 is valid: parser index/error handling and writer integer/float paths changed.

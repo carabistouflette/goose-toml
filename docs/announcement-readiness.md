@@ -41,8 +41,11 @@ byte-identical to the release.
   example asserts exact output. [Commands and output](results/announcement-examples.json).
 - Optional setup/conformance/fuzz commands: checked against maintained targets;
   the full historical campaigns are not repeated for prose changes.
-- Current parse/write results: queued for one finite, explicitly granted window.
-  No build or timing is authorized by this document.
+- Current parse/write results: PASS under explicit reservation TOML-ANN-01.
+  Exactly one build and the two fixed twelve-case/nine-round series completed
+  in 277.350 seconds including cleanup. All 864 samples, tool/lock/source hashes
+  and process-group cleanup are retained in [the results](alpha6-results.md).
+  There was no retry, extra series or source-editor timing.
 
 [Frozen input provenance](announcement-readiness-inputs.json) records runtime,
 executable harness, compiler binary/source and dependency locks. Existing
@@ -50,6 +53,6 @@ executable harness, compiler binary/source and dependency locks. Existing
 blobs from alpha.6, not inferred from report dates. All old raw JSON is unchanged.
 No alpha.6 source-editor performance claim requires a separate campaign.
 
-Final example commands, measurement outcomes, public documentation revision and
-hosted checks will be recorded before the announcement-readiness handoff.
+Example commands and measurement outcomes are recorded above. Final public
+documentation revision and hosted checks remain pending publication.
 The upstream discussion remains unopened.

@@ -83,6 +83,6 @@ file replacement.
 - [Release history](CHANGELOG.md), [security](SECURITY.md),
   [third-party notices](THIRD_PARTY_NOTICES.md), [contributing](CONTRIBUTING.md)
 
-Historical benchmark records are linked separately. They do not establish a
-current cross-language ranking. See [GitHub releases](https://github.com/carabistouflette/goose-toml/releases)
+Benchmarks cover fixed workloads with explicit source identities and limitations;
+they do not establish a universal ranking. Historical records remain separate. See [GitHub releases](https://github.com/carabistouflette/goose-toml/releases)
 for published versions.
