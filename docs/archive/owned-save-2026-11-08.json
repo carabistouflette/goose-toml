@@ -1,0 +1,217 @@
+{
+  "date": "2026-11-08",
+  "scope": "read-only identity/ownership reconciliation; no new validation or qualification",
+  "canonical_head": "1014af21fda372a471ec4bde710a2e1989e05996",
+  "canonical_branch": "feat/toml-parity",
+  "canonical_status": " M tests/fuzz.goose\n?? source/\n",
+  "index_sha256": "a4a62ab26b5d167ad57c3194cefb55950bb989b6b1e25996caa5860941cbea9a",
+  "public_main": "926a9048af12083634298eb27712b801b7c1abbe",
+  "untracked_unignored_source_file_count": 23,
+  "total_reconciled_source_and_fuzz_file_count": 24,
+  "files": [
+    {
+      "path": "tests/fuzz.goose",
+      "git_blob": "69153e40171d262f7249be979e1b3db8454597e3",
+      "sha256": "67da6f36293c01d40220148ecd7499639f1a5f30da4dc66dd7404e436bdca3ad",
+      "bytes": 8033,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/Makefile",
+      "git_blob": "9657356545a00dd4dbff3b4195bdf63bcb25dfe5",
+      "sha256": "be38e431ba87233031beadad2cbbe2d7265eb7f2d5dba397736351e6253b7946",
+      "bytes": 2213,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/README.md",
+      "git_blob": "77dfda9848b39c8d5ec9cce12a0c894c23989c2b",
+      "sha256": "16a6f2f1ea2aad78c6bcaa89b561e13b31b62fe6896cf57dc44718e263acbb77",
+      "bytes": 14065,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/bench.goose",
+      "git_blob": "4bbb42be97dc93682952cf2251bbcbc78cbaae66",
+      "sha256": "021608bd0dba00c009bb49ace00440aec1c8894d5cb02c1455ea97f2ca35fbf6",
+      "bytes": 1896,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/editor.goose",
+      "git_blob": "318ead7790e1d9febca129be52e243b4d6776389",
+      "sha256": "7664b58ea6901c422a95d676ecc7c4bc50613754db5d76580b37bd6a13f791a9",
+      "bytes": 13296,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/results/2026-11-04-linux-x86_64.json",
+      "git_blob": "f99f7163bfda446519863db166fff8c0a1ef7fa1",
+      "sha256": "5b9ba875ab3dfd1e05ca1ccf74108b786f12bdc9596f8b60f1a544aa55cb680c",
+      "bytes": 2179,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/sanitizer-cc.sh",
+      "git_blob": "16cc51504aecc637670d3ac851929bdcc500ad5a",
+      "sha256": "e9442733d323d47eddaa54da0c5e1927ddb6f4750efded606c12724f319259d9",
+      "bytes": 167,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/scripts/benchmark.py",
+      "git_blob": "9100c576cdd18fffa08bc3780248ed4408a72f74",
+      "sha256": "07f5ca914858d4844e2baef0454b88bec9b5e97f43f9103a7a46f86d357d5b1f",
+      "bytes": 3752,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/scripts/fuzz.py",
+      "git_blob": "bef9d4092ddf50e6002ad71cf2494261daa8ec4b",
+      "sha256": "2e406f40ae8ee118958a7cd882a2aa7198b814412524a52be1d62b378e4bab6d",
+      "bytes": 5383,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/compare_profiles.py",
+      "git_blob": "d1d65d5358a99614c596919e6e5c6cc290977533",
+      "sha256": "25f4eca18162a7f11390e2d2f0dfe396e73dbe52d3a8c19635e450d11a641b80",
+      "bytes": 6132,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/compatibility.goose",
+      "git_blob": "9f9f9c169a64961f4e16fe7a3091e5e19ea1a99a",
+      "sha256": "e72f7e92918dc8cbded22d055e94c1f05b350e095e7a72880c2a24d7f193fbb1",
+      "bytes": 4955,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/compatibility.py",
+      "git_blob": "519c61f9da1a6f87d36f214655d5dd9d3b8c4b1d",
+      "sha256": "477ceeafea427825b08a63464bb765a3172e76573714eda067850594f2ec113f",
+      "bytes": 2876,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/conformance.py",
+      "git_blob": "41749a581e16e87fea922319557c2eb385b645f0",
+      "sha256": "3cf7d01ac50891bd018b25f820efff1e40868b3fd7480a97d75e277ecefc0d03",
+      "bytes": 1185,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/editor.goose",
+      "git_blob": "e35c407cf862ecdf8e899c9af543e765a3fe5403",
+      "sha256": "db331a012311e8500ac43ee82b7e68bd391c1d81fa5a9dd2c981412c5f957d09",
+      "bytes": 4857,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/fuzz.c",
+      "git_blob": "94a90dbd78fc7f5ed37844f7c037cf3273cc57eb",
+      "sha256": "25c306e054af4215a720d5100945257e5b3a1c66e2c40d9928952415b7d2a22a",
+      "bytes": 981,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/fuzz.goose",
+      "git_blob": "c02b017eb627baffbcf20885cea340a51c02a14b",
+      "sha256": "7c146bfcbda0b888532c4c4c79b759496cdfd7580cc548e1f8cb17d9df0e1a0f",
+      "bytes": 2242,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/index.goose",
+      "git_blob": "ee8221916059a152890b2dcf280743c685ab64bc",
+      "sha256": "9d351f65896b97451b7b92949fbac3c622bd81d51fa9a5dff75d9a2a6f6702d6",
+      "bytes": 1547,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/legacy-contract.json",
+      "git_blob": "72807152a68fd2d6c9c583b4cd6d7a7b4d56fdde",
+      "sha256": "f137e22aec1276deb6728fd261d77ece3f76c5eac1de6d7cb0dde804b9f50fbd",
+      "bytes": 21971,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/model.py",
+      "git_blob": "3465aa03beacced86b5f0c96d43b15d43223c5f9",
+      "sha256": "e3b267bdd4ef683ad5cdf65180b22604c6aab7e545ca9dbd2cf15a68b970f00f",
+      "bytes": 3786,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/oracle.goose",
+      "git_blob": "7580662a83ad675c9e87598bf04b3fb8099302ed",
+      "sha256": "ed2b0501a38257be8c0511c56fbd4ddee94451256da7e0b7f7df66018c002710",
+      "bytes": 2604,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/overloads.goose",
+      "git_blob": "afecce1773752420afa930cdc54a10e2d73404fe",
+      "sha256": "276378793ddd3c56cef2347233b0d70ec24d7b2d5553fa33527fc2c0c41ee9ad",
+      "bytes": 2216,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/results/default-profile-04c8bef.json",
+      "git_blob": "dc26fb5859f13493ed3384bae529cb48e573810e",
+      "sha256": "525beb6082267815eb7e5c1436a69a57917a010a25a1b8709bfbd68e33890107",
+      "bytes": 14266,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/results/default-profile-initial.json",
+      "git_blob": "31cb9ac50386b5c7afe1258b36b5a3519ad4c74e",
+      "sha256": "4b8283e50cbd68e60b5b7f6ef24ef84af43a62e97f0e9e10ae8135f4ed15ac8c",
+      "bytes": 9479,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    },
+    {
+      "path": "source/tests/results/legacy-parity-04c8bef.json",
+      "git_blob": "499b64ee6803d56792ab7cf65bc7f8ce3bcd48ec",
+      "sha256": "8db913f811728aef5d8dce9dcd83b6dfdf5a4a813172e97768dc5ece2535e858",
+      "bytes": 3322,
+      "identical_public_head": "745c37aaadd444da7df938c341f8e9f5c7669a56"
+    }
+  ],
+  "local_refs": [
+    {
+      "ref": "chore/source-performance-plan",
+      "head": "3f111333d685a9d2aa0c1a71d1a7e001e9e0ea14",
+      "already_in_public_main_history": true
+    },
+    {
+      "ref": "feat/source-preserving-editor",
+      "head": "2d5afe588cd4aa06f3cc2755dc8493328572b5fc",
+      "already_in_public_main_history": true
+    },
+    {
+      "ref": "feat/source-editor-compatibility",
+      "head": "745c37aaadd444da7df938c341f8e9f5c7669a56",
+      "already_in_public_main_history": true
+    },
+    {
+      "ref": "feat/toml-parity",
+      "head": "1014af21fda372a471ec4bde710a2e1989e05996",
+      "already_in_public_main_history": true
+    },
+    {
+      "ref": "feat/toml-parser",
+      "head": "850ac24a8cc29777392b543f494161b8ef80d9f1",
+      "already_in_public_main_history": true
+    }
+  ],
+  "excluded_generated_files": [
+    "source/tests/__pycache__/compatibility.cpython-314.pyc"
+  ],
+  "limitations": [
+    "Unignored files only; ignored build products and caches are not source deltas.",
+    "Historical copies do not establish current-code validation. No tests/builds/fuzz/timing/reviews were run.",
+    "Temporary alpha6 documentation clone and local .build/announcement-publication.json no longer exist; no claim of recovering their original bytes.",
+    "No source stages/reset/cleanup; canonical dirty checkout deliberately preserved."
+  ]
+}
